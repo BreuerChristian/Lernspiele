@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#00695c"/>
+  <!-- Zahlenstrahl-Linie -->
+  <line x1="76" y1="280" x2="436" y2="280" stroke="white" stroke-width="14" stroke-linecap="round"/>
+  <!-- Markierungen / Ticks -->
+  <g stroke="white" stroke-width="10" stroke-linecap="round">
+    <line x1="116" y1="262" x2="116" y2="298"/>
+    <line x1="196" y1="262" x2="196" y2="298"/>
+    <line x1="276" y1="262" x2="276" y2="298"/>
+    <line x1="356" y1="262" x2="356" y2="298"/>
+  </g>
+  <!-- Zahlen unter dem Strahl -->
+  <g fill="white" font-family="Verdana, Tahoma, sans-serif" font-size="48" font-weight="bold" text-anchor="middle">
+    <text x="116" y="370">2</text>
+    <text x="196" y="370">4</text>
+    <text x="356" y="370">8</text>
+  </g>
+  <!-- Fragezeichen-Kreis an der Luecke -->
+  <circle cx="276" cy="180" r="62" fill="#ffd54f" stroke="white" stroke-width="8"/>
+  <text x="276" y="180" fill="#00695c" font-family="Verdana, Tahoma, sans-serif" font-size="80" font-weight="bold" text-anchor="middle" dominant-baseline="central">?</text>
+</svg>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Zahlenreihen</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#00695c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #e0f2f1;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #e0f2f1 0%, #80cbc4 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #00695c;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #00796b;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #00695c;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #b2dfdb;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #80cbc4; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #00695c;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #e0f2f1;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #004d40;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #b2dfdb; }
+        .stage-choice.active {
+            background: #b2dfdb;
+            border-color: #00695c;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #00695c;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #00796b;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #009688, #00695c);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0, 105, 92, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #e0f2f1 0%, #80cbc4 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #00695c;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #00695c;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 16px 20px;
+            gap: 14px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #004d40;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* ---------- Zahlenstrahl ---------- */
+        .strahl-wrap {
+            width: 100%;
+            max-width: 520px;
+            background: white;
+            border-radius: 18px;
+            padding: 14px 10px 10px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+        .strahl {
+            width: 100%;
+            display: block;
+            height: auto;
+        }
+        .strahl .axis {
+            stroke: #00695c;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+        }
+        .strahl .tick {
+            stroke: #00695c;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            opacity: 0.55;
+        }
+        .strahl .tick-major {
+            stroke: #00695c;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            opacity: 1;
+        }
+        .strahl .tick-num {
+            fill: #00695c;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            font-size: 7px;
+            text-anchor: middle;
+            opacity: 0.7;
+        }
+        .strahl .marker {
+            fill: #009688;
+        }
+        .strahl .marker-label {
+            fill: #004d40;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            font-size: 9px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+        .strahl .gap-marker {
+            fill: #ffd54f;
+            stroke: #00695c;
+            stroke-width: 1.4;
+        }
+        .strahl .gap-q {
+            fill: #00695c;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+
+        /* ---------- Reihen-Anzeige ---------- */
+        .reihe {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            width: 100%;
+            max-width: 520px;
+        }
+        .reihe-cell {
+            min-width: 56px;
+            min-height: 64px;
+            padding: 10px 14px;
+            background: white;
+            border-radius: 14px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #004d40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+        .reihe-cell.gap {
+            background: #ffd54f;
+            color: #00695c;
+            border: 3px dashed #00695c;
+            min-width: 64px;
+        }
+        .reihe-cell.gap.filled {
+            background: #c4e6b8;
+            border: 3px solid #6cab4e;
+            color: #2f5e1d;
+            animation: pop 0.4s ease-out;
+        }
+        @keyframes pop {
+            0%   { transform: scale(0.6); }
+            60%  { transform: scale(1.12); }
+            100% { transform: scale(1); }
+        }
+        .reihe-comma {
+            font-size: 1.4rem;
+            color: #00695c;
+            opacity: 0.5;
+            margin: 0 -2px;
+        }
+
+        /* ---------- Antworten ---------- */
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            width: 100%;
+            max-width: 460px;
+        }
+        .answer {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 16px 8px;
+            font-family: inherit;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #004d40;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.1s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+        }
+        .answer:hover { background: #e0f2f1; }
+        .answer:active { transform: translateY(1px); }
+        .answer.correct {
+            background: #c4e6b8;
+            border-color: #6cab4e;
+            color: #2f5e1d;
+        }
+        .answer.locked {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .answer.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        @media (max-width: 380px) {
+            .answer { font-size: 1.4rem; padding: 14px 6px; }
+            .reihe-cell { font-size: 1.4rem; min-width: 48px; min-height: 56px; padding: 8px 10px; }
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+        }
+        @media (max-height: 600px) {
+            .prompt { font-size: 1rem; }
+            .answer { padding: 12px 6px; font-size: 1.4rem; }
+            .game-area { padding: 10px 12px 14px; gap: 10px; }
+            .reihe-cell { font-size: 1.4rem; min-height: 52px; padding: 8px 10px; }
+            .strahl-wrap { padding: 10px 8px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Zahlenreihen</h1>
+        <p class="sub">Welche Zahl fehlt?</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="eins">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">+1-Schritte</span>
+                        <span class="ex">3, 4, _, 6, 7</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="zwei">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">+2-Schritte</span>
+                        <span class="ex">2, 4, _, 8, 10</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="gross">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">+5, +10 oder rückwärts</span>
+                        <span class="ex">5, 10, 15, _, 25 · 10, 8, 6, _, 2</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt">Welche Zahl fehlt?</div>
+
+        <div class="strahl-wrap">
+            <svg class="strahl" id="strahl" viewBox="0 0 220 50" preserveAspectRatio="xMidYMid meet" aria-label="Zahlenstrahl"></svg>
+        </div>
+
+        <div class="reihe" id="reihe"></div>
+
+        <div class="answers" id="answers"></div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  STAGES
+    // ====================================================
+    // Pro Stufe: Liste fester Aufgaben (start, step, length).
+    // length = Anzahl der gezeigten Zahlen (inkl. Luecke).
+    // Lueckenposition wird pro Runde zufaellig gewaehlt.
+    //
+    // Zahlenraum: alle Zahlen muessen >= 0 und <= 20 sein,
+    // damit der Zahlenstrahl 0..20 die ganze Reihe enthaelt.
+    const STAGES = {
+        eins: {
+            label: '+1-Schritte',
+            tasks: [
+                { start: 1,  step: 1, len: 5 },
+                { start: 2,  step: 1, len: 5 },
+                { start: 3,  step: 1, len: 5 },
+                { start: 4,  step: 1, len: 5 },
+                { start: 5,  step: 1, len: 5 },
+                { start: 6,  step: 1, len: 5 },
+                { start: 7,  step: 1, len: 5 },
+                { start: 8,  step: 1, len: 5 },
+                { start: 10, step: 1, len: 5 },
+                { start: 12, step: 1, len: 5 },
+                { start: 14, step: 1, len: 5 },
+                { start: 16, step: 1, len: 5 },
+            ],
+        },
+        zwei: {
+            label: '+2-Schritte',
+            tasks: [
+                { start: 0,  step: 2, len: 5 },
+                { start: 2,  step: 2, len: 5 },
+                { start: 4,  step: 2, len: 5 },
+                { start: 6,  step: 2, len: 5 },
+                { start: 8,  step: 2, len: 5 },
+                { start: 10, step: 2, len: 5 },
+                { start: 1,  step: 2, len: 5 },
+                { start: 3,  step: 2, len: 5 },
+                { start: 5,  step: 2, len: 5 },
+                { start: 7,  step: 2, len: 5 },
+                { start: 9,  step: 2, len: 5 },
+                { start: 11, step: 2, len: 5 },
+            ],
+        },
+        gross: {
+            label: '+5, +10 oder rückwärts',
+            tasks: [
+                // +5
+                { start: 0,  step: 5, len: 5 },
+                { start: 5,  step: 5, len: 4 },
+                // +10 (kompakt, damit 20 nicht ueberschritten wird)
+                { start: 0,  step: 10, len: 3 },
+                // rueckwaerts +1 (negativer Schritt)
+                { start: 8,  step: -1, len: 5 },
+                { start: 10, step: -1, len: 5 },
+                { start: 12, step: -1, len: 5 },
+                { start: 15, step: -1, len: 5 },
+                // rueckwaerts +2
+                { start: 10, step: -2, len: 5 },
+                { start: 12, step: -2, len: 5 },
+                { start: 14, step: -2, len: 5 },
+                { start: 16, step: -2, len: 5 },
+                { start: 18, step: -2, len: 5 },
+                { start: 20, step: -2, len: 5 },
+                // rueckwaerts +5
+                { start: 20, step: -5, len: 5 },
+            ],
+        },
+    };
+
+    const ROUND_SIZE = 7; // Aufgaben pro Runde (ohne Wiederholung)
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        deck: [],          // gemischte Aufgaben fuer die aktuelle Runde
+        deckIndex: 0,
+        current: null,     // { numbers, gapIndex, answer, options }
+        locked: false,     // true zwischen "richtig" und "neue Aufgabe"
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'zahlenreihen-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.08);
+            setTimeout(() => tone(880, 0.22, 'sine', 0.08), 110);
+        },
+    };
+
+    // ====================================================
+    //  AUFGABE GENERIEREN
+    // ====================================================
+    function buildTask(spec) {
+        // Komplette Reihe aus Spec
+        const numbers = [];
+        for (let i = 0; i < spec.len; i++) {
+            numbers.push(spec.start + i * spec.step);
+        }
+        // Luecke: irgendwo zwischen index 0 und len-1
+        const gapIndex = randInt(0, spec.len - 1);
+        const answer = numbers[gapIndex];
+
+        // Optionen: korrekt + Distraktoren (+/-1, +/-2 vom korrekten Wert).
+        // Filter: keine Duplikate, keine Werte die in der sichtbaren Reihe vorkommen
+        // (sonst verraet sich die Antwort durch eine Zahl die schon im Strang steht).
+        const visible = numbers.filter((_, i) => i !== gapIndex);
+        const candidates = [answer - 2, answer - 1, answer + 1, answer + 2]
+            .filter(v => v >= 0 && v !== answer && !visible.includes(v));
+        const distractors = shuffle(candidates).slice(0, 3);
+        // Falls weniger als 3 verfuegbar (z.B. bei answer=0/1), mit weiteren auffuellen
+        let extra = 3;
+        while (distractors.length < 3) {
+            const cand = answer + (extra * (Math.random() < 0.5 ? -1 : 1));
+            if (cand >= 0 && cand !== answer && !visible.includes(cand) && !distractors.includes(cand)) {
+                distractors.push(cand);
+            }
+            extra++;
+            if (extra > 30) break; // safety
+        }
+        const options = shuffle([answer, ...distractors]);
+        return { numbers, gapIndex, answer, options };
+    }
+
+    function buildDeck(stage) {
+        return shuffle(STAGES[stage].tasks).slice(0, ROUND_SIZE);
+    }
+
+    // ====================================================
+    //  RENDERING: REIHE
+    // ====================================================
+    function renderReihe(task) {
+        const c = $('reihe');
+        c.innerHTML = '';
+        for (let i = 0; i < task.numbers.length; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'reihe-cell';
+            if (i === task.gapIndex) {
+                cell.classList.add('gap');
+                cell.id = 'reihe-gap';
+                cell.textContent = '?';
+            } else {
+                cell.textContent = task.numbers[i];
+            }
+            c.appendChild(cell);
+            if (i < task.numbers.length - 1) {
+                const sep = document.createElement('span');
+                sep.className = 'reihe-comma';
+                sep.textContent = ',';
+                c.appendChild(sep);
+            }
+        }
+    }
+
+    // ====================================================
+    //  RENDERING: ZAHLENSTRAHL
+    // ====================================================
+    // viewBox 0..220 x 0..50; Achse von x=10 bis x=210 entspricht 0..20.
+    function renderStrahl(task) {
+        const svg = $('strahl');
+        const NS = 'http://www.w3.org/2000/svg';
+        // Clear
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+        const xMin = 10, xMax = 210, yAxis = 28;
+        const xOf = (n) => xMin + (n / 20) * (xMax - xMin);
+
+        // Hauptachse
+        const axis = document.createElementNS(NS, 'line');
+        axis.setAttribute('x1', xMin);
+        axis.setAttribute('y1', yAxis);
+        axis.setAttribute('x2', xMax);
+        axis.setAttribute('y2', yAxis);
+        axis.setAttribute('class', 'axis');
+        svg.appendChild(axis);
+
+        // Ticks 0..20: alle Einer-Ticks duenn, jeder fuenfte (0/5/10/15/20) major + Beschriftung
+        for (let n = 0; n <= 20; n++) {
+            const x = xOf(n);
+            const major = (n % 5 === 0);
+            const tick = document.createElementNS(NS, 'line');
+            tick.setAttribute('x1', x);
+            tick.setAttribute('y1', major ? yAxis - 4 : yAxis - 2.5);
+            tick.setAttribute('x2', x);
+            tick.setAttribute('y2', major ? yAxis + 4 : yAxis + 2.5);
+            tick.setAttribute('class', major ? 'tick-major' : 'tick');
+            svg.appendChild(tick);
+            if (major) {
+                const t = document.createElementNS(NS, 'text');
+                t.setAttribute('x', x);
+                t.setAttribute('y', yAxis + 12);
+                t.setAttribute('class', 'tick-num');
+                t.textContent = String(n);
+                svg.appendChild(t);
+            }
+        }
+
+        // Marker fuer gegebene Zahlen
+        for (let i = 0; i < task.numbers.length; i++) {
+            const n = task.numbers[i];
+            if (n < 0 || n > 20) continue; // Sicherheitsnetz; sollte nie auftreten
+            const x = xOf(n);
+            const isGap = (i === task.gapIndex);
+            if (isGap) {
+                // Fragezeichen-Bubble
+                const circle = document.createElementNS(NS, 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', yAxis - 12);
+                circle.setAttribute('r', 6);
+                circle.setAttribute('class', 'gap-marker');
+                svg.appendChild(circle);
+                const q = document.createElementNS(NS, 'text');
+                q.setAttribute('x', x);
+                q.setAttribute('y', yAxis - 12);
+                q.setAttribute('class', 'gap-q');
+                q.textContent = '?';
+                svg.appendChild(q);
+            } else {
+                const circle = document.createElementNS(NS, 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', yAxis - 12);
+                circle.setAttribute('r', 5.5);
+                circle.setAttribute('class', 'marker');
+                svg.appendChild(circle);
+                const lbl = document.createElementNS(NS, 'text');
+                lbl.setAttribute('x', x);
+                lbl.setAttribute('y', yAxis - 12);
+                lbl.setAttribute('class', 'marker-label');
+                lbl.setAttribute('fill', 'white');
+                lbl.textContent = String(n);
+                svg.appendChild(lbl);
+            }
+        }
+    }
+
+    // ====================================================
+    //  RENDERING ANTWORTEN
+    // ====================================================
+    function renderAnswers(task) {
+        const c = $('answers');
+        c.innerHTML = '';
+        task.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'answer';
+            btn.textContent = String(opt);
+            btn.addEventListener('click', () => onAnswer(btn, opt));
+            c.appendChild(btn);
+        });
+    }
+
+    function onAnswer(btn, opt) {
+        if (state.locked) return;
+        if (opt === state.current.answer) {
+            // Tap-Race-Schutz: Lock setzen *bevor* irgendwelche delayed Aktionen passieren
+            state.locked = true;
+            btn.classList.add('correct');
+            // andere Buttons sperren
+            document.querySelectorAll('.answer').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            // Luecke ausfuellen
+            const gapCell = $('reihe-gap');
+            if (gapCell) {
+                gapCell.textContent = String(opt);
+                gapCell.classList.add('filled');
+            }
+            sfx.correct();
+            setTimeout(() => nextRound(), 1200);
+        } else {
+            btn.classList.remove('wiggle');
+            // Reflow erzwingen, damit die Animation neu startet
+            void btn.offsetWidth;
+            btn.classList.add('wiggle');
+        }
+    }
+
+    // ====================================================
+    //  RUNDEN
+    // ====================================================
+    function nextRound() {
+        state.locked = false;
+        if (state.deckIndex >= state.deck.length) {
+            // Deck leer -> neu mischen (kein Endscreen, kein Wettbewerb;
+            // einfach weiterspielen oder via × zur Übersicht)
+            state.deck = buildDeck(state.stage);
+            state.deckIndex = 0;
+        }
+        const spec = state.deck[state.deckIndex++];
+        const task = buildTask(spec);
+        state.current = task;
+        renderStrahl(task);
+        renderReihe(task);
+        renderAnswers(task);
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        switchScreen('game');
+        state.deck = buildDeck(state.stage);
+        state.deckIndex = 0;
+        nextRound();
+    }
+
+    function backToStart() {
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+
+    (function init() {
+        const prefs = loadPrefs();
+        selectStage(prefs.stage || 'eins');
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>

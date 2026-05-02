@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#00695c"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205, also 51..461) -->
+  <!-- Zahlenstrahl-Linie -->
+  <line x1="116" y1="290" x2="396" y2="290" stroke="white" stroke-width="12" stroke-linecap="round"/>
+  <!-- Markierungen -->
+  <g stroke="white" stroke-width="9" stroke-linecap="round">
+    <line x1="146" y1="274" x2="146" y2="306"/>
+    <line x1="216" y1="274" x2="216" y2="306"/>
+    <line x1="286" y1="274" x2="286" y2="306"/>
+    <line x1="356" y1="274" x2="356" y2="306"/>
+  </g>
+  <!-- Zahlen -->
+  <g fill="white" font-family="Verdana, Tahoma, sans-serif" font-size="40" font-weight="bold" text-anchor="middle">
+    <text x="146" y="358">2</text>
+    <text x="216" y="358">4</text>
+    <text x="356" y="358">8</text>
+  </g>
+  <!-- Fragezeichen-Kreis -->
+  <circle cx="286" cy="208" r="52" fill="#ffd54f" stroke="white" stroke-width="7"/>
+  <text x="286" y="208" fill="#00695c" font-family="Verdana, Tahoma, sans-serif" font-size="68" font-weight="bold" text-anchor="middle" dominant-baseline="central">?</text>
+</svg>
