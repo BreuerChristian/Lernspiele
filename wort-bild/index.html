@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Wort-Bild-Memory</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#00838f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #e0f4f5;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #e0f4f5 0%, #a3dde0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #00838f;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #00697a;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #00838f;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #cdeef0;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #b3e4e7; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #00838f;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #e0f4f5;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #00697a;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #c2e8eb; }
+        .stage-choice.active {
+            background: #c2e8eb;
+            border-color: #00838f;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #00838f;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #00697a;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #26a4af, #00838f);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0, 131, 143, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #e0f4f5 0%, #a3dde0 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #00838f;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-progress {
+            color: #00697a;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #00838f;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 16px 22px;
+            gap: 14px;
+            min-height: 0;
+        }
+        .word-card {
+            background: white;
+            border-radius: 22px;
+            padding: 22px 26px;
+            box-shadow: 0 8px 22px rgba(0, 131, 143, 0.18);
+            text-align: center;
+            min-width: min(86vw, 460px);
+            max-width: min(86vw, 460px);
+        }
+        .word {
+            color: #005662;
+            font-size: clamp(2.4rem, 9vw, 3.8rem);
+            font-weight: bold;
+            letter-spacing: 0.06em;
+            line-height: 1;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            word-break: break-word;
+        }
+
+        .images {
+            display: grid;
+            gap: 14px;
+            width: 100%;
+            max-width: 520px;
+        }
+        .images.opt-3 { grid-template-columns: repeat(3, 1fr); }
+        .images.opt-4 { grid-template-columns: repeat(2, 1fr); }
+
+        .img-btn {
+            background: white;
+            border: 4px solid transparent;
+            border-radius: 20px;
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 14px rgba(0, 131, 143, 0.18);
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+        }
+        .img-btn svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .img-btn:hover { background: #effafb; }
+        .img-btn:active { transform: translateY(1px); }
+        .img-btn.correct {
+            background: #d4f0d0;
+            border-color: #6cab4e;
+        }
+        .img-btn.locked {
+            pointer-events: none;
+            opacity: 0.55;
+        }
+        .img-btn.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .images { gap: 10px; }
+            .img-btn { padding: 6px; border-width: 3px; }
+        }
+        @media (max-height: 640px) {
+            .word-card { padding: 14px 18px; }
+            .game-area { padding: 12px 12px 14px; gap: 10px; }
+            .images { gap: 10px; }
+        }
+
+        /* ---------- End-Screen ---------- */
+        #screen-end {
+            background: linear-gradient(135deg, #e0f4f5 0%, #a3dde0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #screen-end .card {
+            background: white;
+            border-radius: 28px;
+            padding: 36px 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-end h2 {
+            color: #00838f;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        #screen-end p {
+            color: #00697a;
+            font-size: 1.05rem;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        .end-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .end-btn {
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(0, 131, 143, 0.22);
+        }
+        .end-btn.primary {
+            background: linear-gradient(145deg, #26a4af, #00838f);
+            color: white;
+        }
+        .end-btn.secondary {
+            background: #cdeef0;
+            color: #00697a;
+        }
+        .end-btn:active { transform: translateY(1px); }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Wort-Bild-Memory</h1>
+        <p class="sub">Lies das Wort und tipp das passende Bild.</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="kurz">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Kurze Wörter</span>
+                        <span class="ex">AUTO, MAUS, BALL ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="mittel">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Mittlere Wörter</span>
+                        <span class="ex">APFEL, KATZE, BANANE ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="lang">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Längere Wörter</span>
+                        <span class="ex">ELEFANT, GIRAFFE, REGENSCHIRM ...</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <div class="hud-progress" id="hud-progress"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="word-card">
+            <div class="word" id="word"></div>
+        </div>
+        <div class="images" id="images"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     END-SCREEN
+============================================================ -->
+<div id="screen-end" class="screen hidden">
+    <div class="card">
+        <h2>Fertig!</h2>
+        <p id="end-text">Magst du nochmal?</p>
+        <div class="end-buttons">
+            <button class="end-btn primary" id="btn-again">Nochmal spielen</button>
+            <button class="end-btn secondary" id="btn-end-back">Andere Stufe wählen</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  BILD-BIBLIOTHEK
+    //  Jedes Wort hat ein einfaches Inline-SVG (viewBox 0 0 100 100).
+    //  Klare, kindgerechte Formen, gut erkennbar auch klein.
+    // ====================================================
+    const PICS = {
+        AUTO: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="14" y="46" width="72" height="22" rx="6" fill="#e74c3c"/>
+            <path d="M 24 46 L 32 30 L 68 30 L 76 46 Z" fill="#c0392b"/>
+            <rect x="36" y="34" width="14" height="11" rx="2" fill="#bde6f4"/>
+            <rect x="52" y="34" width="14" height="11" rx="2" fill="#bde6f4"/>
+            <circle cx="30" cy="70" r="9" fill="#2c3e50"/>
+            <circle cx="70" cy="70" r="9" fill="#2c3e50"/>
+            <circle cx="30" cy="70" r="3" fill="#7f8c8d"/>
+            <circle cx="70" cy="70" r="3" fill="#7f8c8d"/>
+        </svg>`,
+        MAUS: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="60" rx="28" ry="22" fill="#9aa3a8"/>
+            <circle cx="32" cy="40" r="11" fill="#9aa3a8"/>
+            <circle cx="68" cy="40" r="11" fill="#9aa3a8"/>
+            <circle cx="32" cy="40" r="6" fill="#f8c7d6"/>
+            <circle cx="68" cy="40" r="6" fill="#f8c7d6"/>
+            <circle cx="42" cy="58" r="2.5" fill="#222"/>
+            <circle cx="58" cy="58" r="2.5" fill="#222"/>
+            <ellipse cx="50" cy="68" rx="3" ry="2" fill="#222"/>
+            <path d="M 76 70 Q 92 66 88 84" stroke="#9aa3a8" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <line x1="42" y1="68" x2="32" y2="70" stroke="#444" stroke-width="0.8"/>
+            <line x1="42" y1="69" x2="32" y2="73" stroke="#444" stroke-width="0.8"/>
+            <line x1="58" y1="68" x2="68" y2="70" stroke="#444" stroke-width="0.8"/>
+            <line x1="58" y1="69" x2="68" y2="73" stroke="#444" stroke-width="0.8"/>
+        </svg>`,
+        BALL: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="36" fill="white" stroke="#222" stroke-width="2.5"/>
+            <path d="M 50 14 L 50 86 M 14 50 L 86 50" stroke="#222" stroke-width="2"/>
+            <path d="M 24 24 L 76 76 M 76 24 L 24 76" stroke="#222" stroke-width="2"/>
+            <circle cx="50" cy="50" r="6" fill="#222"/>
+        </svg>`,
+        KUH: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="42" width="60" height="32" rx="10" fill="white" stroke="#222" stroke-width="2"/>
+            <ellipse cx="78" cy="46" rx="14" ry="11" fill="white" stroke="#222" stroke-width="2"/>
+            <ellipse cx="83" cy="48" rx="6" ry="4" fill="#f8c7d6"/>
+            <circle cx="74" cy="42" r="1.5" fill="#222"/>
+            <circle cx="80" cy="42" r="1.5" fill="#222"/>
+            <ellipse cx="35" cy="55" rx="8" ry="6" fill="#222"/>
+            <ellipse cx="58" cy="62" rx="9" ry="6" fill="#222"/>
+            <rect x="26" y="74" width="6" height="14" fill="#222"/>
+            <rect x="40" y="74" width="6" height="14" fill="#222"/>
+            <rect x="54" y="74" width="6" height="14" fill="#222"/>
+            <rect x="68" y="74" width="6" height="14" fill="#222"/>
+            <path d="M 88 38 Q 92 32 86 32" stroke="#222" stroke-width="2" fill="none"/>
+            <path d="M 70 38 Q 66 32 72 32" stroke="#222" stroke-width="2" fill="none"/>
+        </svg>`,
+        BAUM: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="44" y="60" width="12" height="28" fill="#7a4a1a"/>
+            <circle cx="50" cy="42" r="28" fill="#4caf50"/>
+            <circle cx="34" cy="48" r="14" fill="#5cbf60"/>
+            <circle cx="66" cy="48" r="14" fill="#5cbf60"/>
+            <circle cx="50" cy="30" r="14" fill="#5cbf60"/>
+        </svg>`,
+        HAUS: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="22" y="48" width="56" height="40" fill="#f4d6a3" stroke="#222" stroke-width="2"/>
+            <path d="M 16 50 L 50 22 L 84 50 Z" fill="#c0392b" stroke="#222" stroke-width="2"/>
+            <rect x="42" y="62" width="16" height="26" fill="#7a4a1a" stroke="#222" stroke-width="1.5"/>
+            <circle cx="54" cy="76" r="1.5" fill="#f4d76c"/>
+            <rect x="28" y="56" width="10" height="10" fill="#bde6f4" stroke="#222" stroke-width="1.5"/>
+            <rect x="62" y="56" width="10" height="10" fill="#bde6f4" stroke="#222" stroke-width="1.5"/>
+        </svg>`,
+        HUND: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="62" rx="26" ry="18" fill="#c89868"/>
+            <circle cx="50" cy="40" r="18" fill="#c89868"/>
+            <path d="M 32 30 Q 24 36 30 50 L 38 44 Z" fill="#a87a4a"/>
+            <path d="M 68 30 Q 76 36 70 50 L 62 44 Z" fill="#a87a4a"/>
+            <circle cx="43" cy="40" r="2.2" fill="#222"/>
+            <circle cx="57" cy="40" r="2.2" fill="#222"/>
+            <ellipse cx="50" cy="48" rx="3" ry="2.2" fill="#222"/>
+            <path d="M 47 50 Q 50 54 53 50" stroke="#222" stroke-width="1.5" fill="none"/>
+            <path d="M 74 56 Q 86 56 84 70" stroke="#c89868" stroke-width="6" fill="none" stroke-linecap="round"/>
+        </svg>`,
+        FISCH: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 22 50 Q 36 30 60 30 Q 78 30 82 50 Q 78 70 60 70 Q 36 70 22 50 Z" fill="#3498db"/>
+            <path d="M 22 50 L 8 36 L 14 50 L 8 64 Z" fill="#2980b9"/>
+            <circle cx="64" cy="44" r="3" fill="white"/>
+            <circle cx="64" cy="44" r="1.5" fill="#222"/>
+            <path d="M 50 38 Q 60 50 50 62" stroke="#2980b9" stroke-width="2" fill="none"/>
+            <path d="M 38 42 Q 46 50 38 58" stroke="#2980b9" stroke-width="2" fill="none"/>
+        </svg>`,
+        IGEL: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="55" cy="58" rx="32" ry="22" fill="#7a4a1a"/>
+            <g stroke="#3a2a14" stroke-width="1.6" fill="none">
+                <line x1="30" y1="40" x2="26" y2="32"/>
+                <line x1="40" y1="34" x2="38" y2="24"/>
+                <line x1="50" y1="32" x2="50" y2="22"/>
+                <line x1="60" y1="34" x2="62" y2="24"/>
+                <line x1="70" y1="38" x2="74" y2="30"/>
+                <line x1="78" y1="46" x2="86" y2="42"/>
+                <line x1="36" y1="58" x2="32" y2="64"/>
+                <line x1="48" y1="62" x2="48" y2="72"/>
+                <line x1="62" y1="62" x2="64" y2="72"/>
+                <line x1="74" y1="58" x2="80" y2="62"/>
+            </g>
+            <ellipse cx="22" cy="58" rx="12" ry="10" fill="#e8c89a"/>
+            <circle cx="18" cy="56" r="2" fill="#222"/>
+            <circle cx="14" cy="60" r="2" fill="#222"/>
+            <line x1="36" y1="80" x2="36" y2="88" stroke="#7a4a1a" stroke-width="3"/>
+            <line x1="68" y1="80" x2="68" y2="88" stroke="#7a4a1a" stroke-width="3"/>
+        </svg>`,
+        OFEN: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="18" width="60" height="70" rx="4" fill="#bdc3c7" stroke="#222" stroke-width="2"/>
+            <rect x="26" y="24" width="48" height="6" rx="2" fill="#7f8c8d"/>
+            <circle cx="32" cy="27" r="1.6" fill="#e74c3c"/>
+            <circle cx="40" cy="27" r="1.6" fill="#444"/>
+            <circle cx="48" cy="27" r="1.6" fill="#444"/>
+            <circle cx="68" cy="27" r="1.6" fill="#444"/>
+            <rect x="28" y="36" width="44" height="46" rx="2" fill="#34495e" stroke="#222" stroke-width="1.5"/>
+            <path d="M 38 70 Q 44 50 50 62 Q 56 50 62 70" fill="#f4a017"/>
+            <path d="M 42 70 Q 46 60 50 66 Q 54 60 58 70" fill="#f4d76c"/>
+        </svg>`,
+        EI: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="54" rx="26" ry="34" fill="#fff4d6" stroke="#c9a86a" stroke-width="2"/>
+            <ellipse cx="42" cy="40" rx="6" ry="9" fill="white" opacity="0.7"/>
+        </svg>`,
+        APFEL: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 26 Q 30 24 24 46 Q 22 76 44 84 Q 50 86 56 84 Q 78 76 76 46 Q 70 24 50 26 Z" fill="#e74c3c"/>
+            <path d="M 50 26 Q 52 16 60 14" stroke="#7a4a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <ellipse cx="62" cy="22" rx="6" ry="3" fill="#4caf50" transform="rotate(-20 62 22)"/>
+            <ellipse cx="40" cy="40" rx="5" ry="7" fill="white" opacity="0.4"/>
+        </svg>`,
+        KATZE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="62" rx="26" ry="20" fill="#f4a017"/>
+            <circle cx="50" cy="44" r="20" fill="#f4a017"/>
+            <path d="M 32 30 L 36 16 L 44 28 Z" fill="#f4a017"/>
+            <path d="M 68 30 L 64 16 L 56 28 Z" fill="#f4a017"/>
+            <path d="M 34 28 L 36 22 L 40 28 Z" fill="#f8c7d6"/>
+            <path d="M 66 28 L 64 22 L 60 28 Z" fill="#f8c7d6"/>
+            <circle cx="42" cy="44" r="2.5" fill="#222"/>
+            <circle cx="58" cy="44" r="2.5" fill="#222"/>
+            <path d="M 50 50 L 47 54 L 53 54 Z" fill="#222"/>
+            <path d="M 50 54 Q 47 58 44 56" stroke="#222" stroke-width="1.4" fill="none"/>
+            <path d="M 50 54 Q 53 58 56 56" stroke="#222" stroke-width="1.4" fill="none"/>
+            <line x1="42" y1="50" x2="32" y2="48" stroke="#222" stroke-width="0.8"/>
+            <line x1="42" y1="52" x2="32" y2="54" stroke="#222" stroke-width="0.8"/>
+            <line x1="58" y1="50" x2="68" y2="48" stroke="#222" stroke-width="0.8"/>
+            <line x1="58" y1="52" x2="68" y2="54" stroke="#222" stroke-width="0.8"/>
+        </svg>`,
+        BANANE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 20 30 Q 22 70 60 80 Q 84 84 86 70 Q 80 76 70 72 Q 40 68 32 38 Q 28 30 22 28 Z" fill="#f4d76c" stroke="#c9a300" stroke-width="2"/>
+            <path d="M 22 28 L 22 22 L 26 22 L 26 30" fill="#7a4a1a"/>
+            <path d="M 84 70 L 88 68 L 90 72 L 86 74 Z" fill="#7a4a1a"/>
+        </svg>`,
+        SCHIFF: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 14 64 L 86 64 L 78 80 L 22 80 Z" fill="#c0392b" stroke="#222" stroke-width="2"/>
+            <rect x="38" y="46" width="24" height="18" fill="white" stroke="#222" stroke-width="2"/>
+            <rect x="42" y="50" width="6" height="6" fill="#bde6f4"/>
+            <rect x="52" y="50" width="6" height="6" fill="#bde6f4"/>
+            <line x1="50" y1="46" x2="50" y2="14" stroke="#7a4a1a" stroke-width="3"/>
+            <path d="M 50 16 L 70 28 L 50 32 Z" fill="#3498db"/>
+            <path d="M 6 80 Q 18 76 30 80 Q 42 76 54 80 Q 66 76 78 80 Q 90 76 98 80 L 98 92 L 6 92 Z" fill="#3498db"/>
+        </svg>`,
+        TISCH: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="14" y="38" width="72" height="10" rx="2" fill="#a87a4a" stroke="#222" stroke-width="2"/>
+            <rect x="20" y="48" width="6" height="36" fill="#7a4a1a" stroke="#222" stroke-width="1.5"/>
+            <rect x="74" y="48" width="6" height="36" fill="#7a4a1a" stroke="#222" stroke-width="1.5"/>
+        </svg>`,
+        BLUME: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="50" x2="50" y2="90" stroke="#4caf50" stroke-width="4"/>
+            <ellipse cx="38" cy="74" rx="10" ry="5" fill="#4caf50" transform="rotate(-30 38 74)"/>
+            <ellipse cx="62" cy="78" rx="10" ry="5" fill="#4caf50" transform="rotate(30 62 78)"/>
+            <circle cx="50" cy="30" r="10" fill="#f4d76c"/>
+            <circle cx="34" cy="38" r="10" fill="#e94e77"/>
+            <circle cx="66" cy="38" r="10" fill="#e94e77"/>
+            <circle cx="50" cy="14" r="10" fill="#e94e77"/>
+            <circle cx="40" cy="22" r="10" fill="#e94e77"/>
+            <circle cx="60" cy="22" r="10" fill="#e94e77"/>
+            <circle cx="50" cy="30" r="6" fill="#f4a017"/>
+        </svg>`,
+        KRONE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 18 70 L 18 40 L 32 56 L 50 30 L 68 56 L 82 40 L 82 70 Z" fill="#f4d76c" stroke="#c9a300" stroke-width="2"/>
+            <rect x="18" y="70" width="64" height="8" fill="#e6a23c" stroke="#c9a300" stroke-width="2"/>
+            <circle cx="32" cy="56" r="3" fill="#e94e77"/>
+            <circle cx="50" cy="30" r="3" fill="#3498db"/>
+            <circle cx="68" cy="56" r="3" fill="#4caf50"/>
+            <circle cx="34" cy="74" r="2" fill="#e94e77"/>
+            <circle cx="50" cy="74" r="2" fill="#3498db"/>
+            <circle cx="66" cy="74" r="2" fill="#4caf50"/>
+        </svg>`,
+        PIRAT: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="54" r="26" fill="#e8c89a"/>
+            <path d="M 22 36 Q 50 22 78 36 L 80 46 L 20 46 Z" fill="#222"/>
+            <path d="M 76 32 L 88 28 L 86 38 Z" fill="#222"/>
+            <circle cx="76" cy="32" r="2" fill="white"/>
+            <path d="M 30 56 L 44 56 L 44 64 L 30 64 Z" fill="#222"/>
+            <line x1="22" y1="58" x2="30" y2="58" stroke="#222" stroke-width="2"/>
+            <line x1="44" y1="58" x2="56" y2="58" stroke="#222" stroke-width="2"/>
+            <circle cx="60" cy="58" r="2" fill="#222"/>
+            <path d="M 40 70 Q 50 76 60 70" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <line x1="56" y1="68" x2="58" y2="74" stroke="#7a4a1a" stroke-width="1.5"/>
+        </svg>`,
+        BIRNE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 30 Q 38 32 36 50 Q 30 70 42 84 Q 50 88 58 84 Q 70 70 64 50 Q 62 32 50 30 Z" fill="#cfe04a" stroke="#8aa030" stroke-width="2"/>
+            <path d="M 50 30 Q 50 22 56 18" stroke="#7a4a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <ellipse cx="58" cy="20" rx="5" ry="3" fill="#4caf50" transform="rotate(-25 58 20)"/>
+        </svg>`,
+        SCHMETTERLING: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="50" rx="3" ry="22" fill="#222"/>
+            <circle cx="50" cy="28" r="3" fill="#222"/>
+            <line x1="48" y1="26" x2="42" y2="18" stroke="#222" stroke-width="1.4"/>
+            <line x1="52" y1="26" x2="58" y2="18" stroke="#222" stroke-width="1.4"/>
+            <path d="M 47 38 Q 18 22 18 50 Q 18 64 38 60 Q 48 56 47 50 Z" fill="#e94e77" stroke="#222" stroke-width="1.5"/>
+            <path d="M 53 38 Q 82 22 82 50 Q 82 64 62 60 Q 52 56 53 50 Z" fill="#e94e77" stroke="#222" stroke-width="1.5"/>
+            <path d="M 47 56 Q 22 60 28 78 Q 40 84 48 70 Q 49 64 47 60 Z" fill="#f4a017" stroke="#222" stroke-width="1.5"/>
+            <path d="M 53 56 Q 78 60 72 78 Q 60 84 52 70 Q 51 64 53 60 Z" fill="#f4a017" stroke="#222" stroke-width="1.5"/>
+            <circle cx="30" cy="42" r="3" fill="#fff"/>
+            <circle cx="70" cy="42" r="3" fill="#fff"/>
+            <circle cx="34" cy="70" r="2" fill="#fff"/>
+            <circle cx="66" cy="70" r="2" fill="#fff"/>
+        </svg>`,
+        ELEFANT: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="46" cy="58" rx="28" ry="20" fill="#9aa3a8"/>
+            <circle cx="68" cy="46" r="16" fill="#9aa3a8"/>
+            <ellipse cx="58" cy="34" rx="10" ry="8" fill="#9aa3a8"/>
+            <path d="M 80 50 Q 90 56 88 70 Q 84 78 78 72" fill="#9aa3a8"/>
+            <circle cx="72" cy="44" r="1.8" fill="#222"/>
+            <rect x="22" y="74" width="6" height="14" fill="#9aa3a8"/>
+            <rect x="34" y="74" width="6" height="14" fill="#9aa3a8"/>
+            <rect x="54" y="74" width="6" height="14" fill="#9aa3a8"/>
+            <rect x="66" y="74" width="6" height="14" fill="#9aa3a8"/>
+            <path d="M 18 60 Q 12 64 16 70" stroke="#9aa3a8" stroke-width="3" fill="none"/>
+        </svg>`,
+        GIRAFFE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="36" y="56" width="34" height="26" rx="6" fill="#f4d76c"/>
+            <rect x="58" y="14" width="12" height="44" fill="#f4d76c"/>
+            <ellipse cx="68" cy="14" rx="9" ry="7" fill="#f4d76c"/>
+            <circle cx="71" cy="13" r="1.5" fill="#222"/>
+            <line x1="62" y1="8" x2="60" y2="4" stroke="#7a4a1a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="68" y1="6" x2="68" y2="2" stroke="#7a4a1a" stroke-width="2" stroke-linecap="round"/>
+            <rect x="38" y="82" width="6" height="10" fill="#7a4a1a"/>
+            <rect x="50" y="82" width="6" height="10" fill="#7a4a1a"/>
+            <rect x="60" y="82" width="6" height="10" fill="#7a4a1a"/>
+            <circle cx="44" cy="64" r="3" fill="#a87a4a"/>
+            <circle cx="56" cy="68" r="2.5" fill="#a87a4a"/>
+            <circle cx="62" cy="62" r="2.5" fill="#a87a4a"/>
+            <circle cx="62" cy="22" r="2" fill="#a87a4a"/>
+            <circle cx="62" cy="36" r="2" fill="#a87a4a"/>
+            <circle cx="64" cy="48" r="2" fill="#a87a4a"/>
+        </svg>`,
+        KROKODIL: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="62" rx="38" ry="10" fill="#4caf50"/>
+            <path d="M 12 56 L 70 50 L 88 58 L 70 66 L 12 66 Z" fill="#5cbf60"/>
+            <circle cx="76" cy="52" r="3" fill="#222"/>
+            <path d="M 14 60 L 16 56 L 18 60 L 20 56 L 22 60 L 24 56 L 26 60" stroke="#2d6f30" stroke-width="1" fill="none"/>
+            <path d="M 14 64 L 16 68 L 18 64 L 20 68 L 22 64 L 24 68 L 26 64" stroke="#2d6f30" stroke-width="1" fill="none"/>
+            <path d="M 30 70 L 30 78 M 50 70 L 50 78 M 70 70 L 70 78" stroke="#4caf50" stroke-width="3"/>
+            <path d="M 22 70 L 22 78 M 60 70 L 60 78" stroke="#4caf50" stroke-width="3"/>
+        </svg>`,
+        ERDBEERE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 32 Q 26 32 24 56 Q 26 78 50 88 Q 74 78 76 56 Q 74 32 50 32 Z" fill="#e74c3c"/>
+            <path d="M 32 30 L 26 22 L 36 26 L 40 18 L 46 28 L 50 18 L 54 28 L 60 18 L 64 26 L 74 22 L 68 30 Z" fill="#4caf50"/>
+            <g fill="#f4d76c">
+                <ellipse cx="36" cy="46" rx="1.5" ry="2.4"/>
+                <ellipse cx="50" cy="44" rx="1.5" ry="2.4"/>
+                <ellipse cx="64" cy="46" rx="1.5" ry="2.4"/>
+                <ellipse cx="32" cy="60" rx="1.5" ry="2.4"/>
+                <ellipse cx="44" cy="58" rx="1.5" ry="2.4"/>
+                <ellipse cx="56" cy="58" rx="1.5" ry="2.4"/>
+                <ellipse cx="68" cy="60" rx="1.5" ry="2.4"/>
+                <ellipse cx="38" cy="72" rx="1.5" ry="2.4"/>
+                <ellipse cx="50" cy="74" rx="1.5" ry="2.4"/>
+                <ellipse cx="62" cy="72" rx="1.5" ry="2.4"/>
+            </g>
+        </svg>`,
+        REGENSCHIRM: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 12 50 Q 50 14 88 50 Z" fill="#e94e77" stroke="#222" stroke-width="2"/>
+            <path d="M 12 50 Q 22 44 32 50" fill="none" stroke="#222" stroke-width="1.4"/>
+            <path d="M 32 50 Q 41 44 50 50" fill="none" stroke="#222" stroke-width="1.4"/>
+            <path d="M 50 50 Q 59 44 68 50" fill="none" stroke="#222" stroke-width="1.4"/>
+            <path d="M 68 50 Q 78 44 88 50" fill="none" stroke="#222" stroke-width="1.4"/>
+            <line x1="50" y1="14" x2="50" y2="84" stroke="#7a4a1a" stroke-width="3"/>
+            <path d="M 50 84 Q 50 92 58 90" stroke="#7a4a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>`,
+        SONNE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="18" fill="#f4d76c" stroke="#c9a300" stroke-width="2"/>
+            <g stroke="#f4a017" stroke-width="4" stroke-linecap="round">
+                <line x1="50" y1="10" x2="50" y2="22"/>
+                <line x1="50" y1="78" x2="50" y2="90"/>
+                <line x1="10" y1="50" x2="22" y2="50"/>
+                <line x1="78" y1="50" x2="90" y2="50"/>
+                <line x1="22" y1="22" x2="30" y2="30"/>
+                <line x1="70" y1="70" x2="78" y2="78"/>
+                <line x1="78" y1="22" x2="70" y2="30"/>
+                <line x1="22" y1="78" x2="30" y2="70"/>
+            </g>
+            <circle cx="44" cy="46" r="1.6" fill="#222"/>
+            <circle cx="56" cy="46" r="1.6" fill="#222"/>
+            <path d="M 44 56 Q 50 60 56 56" stroke="#222" stroke-width="1.6" fill="none"/>
+        </svg>`,
+        STERN: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 12 L 58 38 L 86 38 L 64 54 L 72 82 L 50 66 L 28 82 L 36 54 L 14 38 L 42 38 Z" fill="#f4d76c" stroke="#c9a300" stroke-width="2"/>
+        </svg>`,
+        HERZ: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50 86 C 22 66 16 42 28 30 C 38 22 50 28 50 38 C 50 28 62 22 72 30 C 84 42 78 66 50 86 Z" fill="#e94e77" stroke="#a82048" stroke-width="2"/>
+        </svg>`,
+        BROT: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="56" rx="36" ry="22" fill="#c89868" stroke="#7a4a1a" stroke-width="2"/>
+            <path d="M 22 50 Q 36 34 50 38" stroke="#7a4a1a" stroke-width="2" fill="none"/>
+            <path d="M 30 56 Q 44 40 58 44" stroke="#7a4a1a" stroke-width="2" fill="none"/>
+            <path d="M 38 62 Q 52 46 66 50" stroke="#7a4a1a" stroke-width="2" fill="none"/>
+        </svg>`,
+        BRILLE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="50" r="16" fill="white" stroke="#222" stroke-width="3"/>
+            <circle cx="70" cy="50" r="16" fill="white" stroke="#222" stroke-width="3"/>
+            <line x1="46" y1="50" x2="54" y2="50" stroke="#222" stroke-width="3"/>
+            <line x1="14" y1="50" x2="6" y2="44" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+            <line x1="86" y1="50" x2="94" y2="44" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+        VOGEL: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="48" cy="58" rx="24" ry="18" fill="#3498db"/>
+            <circle cx="68" cy="46" r="14" fill="#3498db"/>
+            <path d="M 80 46 L 92 50 L 80 52 Z" fill="#f4a017"/>
+            <circle cx="72" cy="44" r="1.8" fill="#222"/>
+            <path d="M 28 60 Q 18 64 16 76 Q 24 70 36 70 Z" fill="#2980b9"/>
+            <line x1="42" y1="76" x2="42" y2="86" stroke="#f4a017" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="54" y1="76" x2="54" y2="86" stroke="#f4a017" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`,
+        AUGE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 10 50 Q 50 18 90 50 Q 50 82 10 50 Z" fill="white" stroke="#222" stroke-width="2.5"/>
+            <circle cx="50" cy="50" r="14" fill="#3498db"/>
+            <circle cx="50" cy="50" r="6" fill="#222"/>
+            <circle cx="46" cy="46" r="2" fill="white"/>
+        </svg>`,
+        WOLKE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="34" cy="58" rx="18" ry="14" fill="white" stroke="#9aa3a8" stroke-width="2"/>
+            <ellipse cx="60" cy="50" rx="22" ry="18" fill="white" stroke="#9aa3a8" stroke-width="2"/>
+            <ellipse cx="76" cy="60" rx="14" ry="11" fill="white" stroke="#9aa3a8" stroke-width="2"/>
+            <rect x="22" y="60" width="60" height="14" fill="white"/>
+        </svg>`,
+        FROSCH: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="60" rx="32" ry="22" fill="#4caf50"/>
+            <circle cx="34" cy="38" r="10" fill="#4caf50"/>
+            <circle cx="66" cy="38" r="10" fill="#4caf50"/>
+            <circle cx="34" cy="38" r="6" fill="white"/>
+            <circle cx="66" cy="38" r="6" fill="white"/>
+            <circle cx="34" cy="38" r="3" fill="#222"/>
+            <circle cx="66" cy="38" r="3" fill="#222"/>
+            <path d="M 34 64 Q 50 76 66 64" stroke="#2d6f30" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="22" cy="80" rx="10" ry="4" fill="#4caf50"/>
+            <ellipse cx="78" cy="80" rx="10" ry="4" fill="#4caf50"/>
+        </svg>`,
+        BUCH: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 14 24 L 50 30 L 50 84 L 14 78 Z" fill="#f4f4f4" stroke="#222" stroke-width="2"/>
+            <path d="M 86 24 L 50 30 L 50 84 L 86 78 Z" fill="#f4f4f4" stroke="#222" stroke-width="2"/>
+            <line x1="50" y1="30" x2="50" y2="84" stroke="#222" stroke-width="2"/>
+            <line x1="20" y1="38" x2="44" y2="42" stroke="#9aa3a8" stroke-width="1.4"/>
+            <line x1="20" y1="46" x2="44" y2="50" stroke="#9aa3a8" stroke-width="1.4"/>
+            <line x1="20" y1="54" x2="44" y2="58" stroke="#9aa3a8" stroke-width="1.4"/>
+            <line x1="56" y1="42" x2="80" y2="38" stroke="#9aa3a8" stroke-width="1.4"/>
+            <line x1="56" y1="50" x2="80" y2="46" stroke="#9aa3a8" stroke-width="1.4"/>
+            <line x1="56" y1="58" x2="80" y2="54" stroke="#9aa3a8" stroke-width="1.4"/>
+        </svg>`,
+        ZUG: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="14" y="40" width="50" height="30" rx="4" fill="#c0392b" stroke="#222" stroke-width="2"/>
+            <rect x="64" y="30" width="22" height="40" rx="4" fill="#c0392b" stroke="#222" stroke-width="2"/>
+            <rect x="68" y="36" width="14" height="14" rx="2" fill="#bde6f4"/>
+            <rect x="20" y="46" width="10" height="10" fill="#bde6f4"/>
+            <rect x="34" y="46" width="10" height="10" fill="#bde6f4"/>
+            <rect x="48" y="46" width="10" height="10" fill="#bde6f4"/>
+            <rect x="74" y="20" width="6" height="12" fill="#7f8c8d"/>
+            <circle cx="26" cy="76" r="6" fill="#222"/>
+            <circle cx="50" cy="76" r="6" fill="#222"/>
+            <circle cx="74" cy="76" r="6" fill="#222"/>
+        </svg>`,
+        BETT: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="14" y="58" width="72" height="22" fill="#a87a4a" stroke="#222" stroke-width="2"/>
+            <rect x="20" y="48" width="36" height="14" rx="3" fill="#bde6f4" stroke="#222" stroke-width="1.5"/>
+            <rect x="14" y="40" width="10" height="22" fill="#7a4a1a" stroke="#222" stroke-width="2"/>
+            <rect x="76" y="46" width="10" height="16" fill="#7a4a1a" stroke="#222" stroke-width="2"/>
+            <rect x="14" y="80" width="6" height="10" fill="#7a4a1a"/>
+            <rect x="80" y="80" width="6" height="10" fill="#7a4a1a"/>
+        </svg>`,
+        TASSE: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 24 30 L 24 76 Q 24 84 32 84 L 60 84 Q 68 84 68 76 L 68 30 Z" fill="white" stroke="#222" stroke-width="2"/>
+            <path d="M 68 40 Q 84 42 84 56 Q 84 70 68 72" fill="none" stroke="#222" stroke-width="2.5"/>
+            <ellipse cx="46" cy="32" rx="22" ry="4" fill="#a3dde0" stroke="#222" stroke-width="1"/>
+            <path d="M 36 22 Q 38 16 36 12" stroke="#9aa3a8" stroke-width="1.5" fill="none"/>
+            <path d="M 46 20 Q 48 14 46 10" stroke="#9aa3a8" stroke-width="1.5" fill="none"/>
+            <path d="M 56 22 Q 58 16 56 12" stroke="#9aa3a8" stroke-width="1.5" fill="none"/>
+        </svg>`,
+        SCHUH: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 14 70 L 14 56 Q 28 50 38 44 Q 48 38 56 44 Q 64 50 80 52 Q 90 54 90 64 L 90 72 Z" fill="#3498db" stroke="#222" stroke-width="2"/>
+            <rect x="14" y="70" width="76" height="6" fill="#222"/>
+            <line x1="38" y1="50" x2="42" y2="58" stroke="white" stroke-width="2"/>
+            <line x1="46" y1="46" x2="50" y2="54" stroke="white" stroke-width="2"/>
+            <line x1="54" y1="46" x2="58" y2="54" stroke="white" stroke-width="2"/>
+        </svg>`,
+        HAND: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 28 88 L 28 50 Q 28 44 34 44 Q 40 44 40 50 L 40 36 Q 40 28 46 28 Q 52 28 52 36 L 52 32 Q 52 24 58 24 Q 64 24 64 32 L 64 38 Q 64 32 70 32 Q 76 32 76 40 L 76 64 Q 76 80 64 88 Z" fill="#f8d6b3" stroke="#222" stroke-width="2"/>
+        </svg>`,
+        BANK: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect x="14" y="48" width="72" height="10" fill="#a87a4a" stroke="#222" stroke-width="2"/>
+            <rect x="14" y="34" width="6" height="14" fill="#a87a4a" stroke="#222" stroke-width="1.5"/>
+            <rect x="80" y="34" width="6" height="14" fill="#a87a4a" stroke="#222" stroke-width="1.5"/>
+            <rect x="20" y="58" width="6" height="26" fill="#7a4a1a" stroke="#222" stroke-width="1.5"/>
+            <rect x="74" y="58" width="6" height="26" fill="#7a4a1a" stroke="#222" stroke-width="1.5"/>
+        </svg>`,
+    };
+
+    // ====================================================
+    //  STAGES — welche Wörter gehören zu welcher Stufe?
+    // ====================================================
+    const STAGES = {
+        kurz: {
+            label: 'Kurze Wörter',
+            words: ['AUTO','MAUS','BALL','KUH','BAUM','HAUS','HUND','FISCH','IGEL','OFEN','EI','BROT','HAND','BANK'],
+            optionCount: 3,
+            roundLength: 7
+        },
+        mittel: {
+            label: 'Mittlere Wörter',
+            words: ['APFEL','KATZE','BANANE','SCHIFF','TISCH','BLUME','KRONE','PIRAT','BIRNE','SONNE','STERN','HERZ','BRILLE','VOGEL','AUGE','WOLKE','FROSCH','BUCH','BETT','TASSE','SCHUH','ZUG'],
+            optionCount: 4,
+            roundLength: 8
+        },
+        lang: {
+            label: 'Längere Wörter',
+            words: ['SCHMETTERLING','ELEFANT','GIRAFFE','KROKODIL','ERDBEERE','REGENSCHIRM'],
+            optionCount: 4,
+            roundLength: 6
+        },
+    };
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        queue: [],          // verbleibende Wörter dieser Runde
+        total: 0,           // Gesamtzahl Wörter dieser Runde
+        currentWord: null,
+        locked: false,
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'wort-bild-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.08);
+            setTimeout(() => tone(880, 0.22, 'sine', 0.08), 110);
+        },
+    };
+
+    // ====================================================
+    //  RUNDE AUFBAUEN
+    // ====================================================
+    function startRound() {
+        const cfg = STAGES[state.stage];
+        const len = Math.min(cfg.roundLength, cfg.words.length);
+        // Wörter, die ein Bild haben (Sicherheits-Check)
+        const valid = cfg.words.filter(w => PICS[w]);
+        state.queue = shuffle(valid).slice(0, len);
+        state.total = state.queue.length;
+        nextTask();
+    }
+
+    function buildOptions(correct) {
+        const cfg = STAGES[state.stage];
+        // Distraktoren bevorzugt aus derselben Stufe; auffüllen aus allen verfügbaren Bildern
+        const sameStage = cfg.words.filter(w => w !== correct && PICS[w]);
+        const allOthers = Object.keys(PICS).filter(w => w !== correct);
+        const pool = sameStage.length >= cfg.optionCount - 1 ? sameStage : allOthers;
+        const distractors = shuffle(pool).slice(0, cfg.optionCount - 1);
+        return shuffle([correct, ...distractors]);
+    }
+
+    function nextTask() {
+        if (state.queue.length === 0) {
+            endRound();
+            return;
+        }
+        state.locked = false;
+        const word = state.queue.shift();
+        state.currentWord = word;
+
+        const done = state.total - state.queue.length;
+        $('hud-progress').textContent = done + ' / ' + state.total;
+
+        $('word').textContent = word;
+        const options = buildOptions(word);
+        renderImages(options, word);
+    }
+
+    function renderImages(options, correct) {
+        const c = $('images');
+        c.innerHTML = '';
+        c.classList.toggle('opt-3', options.length === 3);
+        c.classList.toggle('opt-4', options.length === 4);
+        options.forEach(w => {
+            const btn = document.createElement('button');
+            btn.className = 'img-btn';
+            btn.setAttribute('aria-label', w);
+            btn.innerHTML = PICS[w];
+            btn.addEventListener('click', () => onPick(btn, w, correct));
+            c.appendChild(btn);
+        });
+    }
+
+    function onPick(btn, picked, correct) {
+        if (state.locked) return;
+        if (picked === correct) {
+            state.locked = true;
+            btn.classList.add('correct');
+            document.querySelectorAll('.img-btn').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            sfx.correct();
+            setTimeout(nextTask, 1100);
+        } else {
+            btn.classList.remove('wiggle');
+            void btn.offsetWidth;
+            btn.classList.add('wiggle');
+        }
+    }
+
+    function endRound() {
+        $('end-text').textContent = 'Du hast alle Wörter gelesen. Magst du nochmal?';
+        switchScreen('end');
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game', 'end'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        switchScreen('game');
+        startRound();
+    }
+
+    function backToStart() {
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-again').addEventListener('click', () => { switchScreen('game'); startRound(); });
+    $('btn-end-back').addEventListener('click', backToStart);
+
+    (function init() {
+        const prefs = loadPrefs();
+        const stage = (prefs.stage && STAGES[prefs.stage]) ? prefs.stage : 'kurz';
+        selectStage(stage);
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>

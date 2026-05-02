@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#00838f"/>
+  <!-- Wort-Karte oben -->
+  <rect x="96" y="96" width="320" height="120" rx="22" fill="white" stroke="#005662" stroke-width="6"/>
+  <text x="256" y="173" text-anchor="middle" font-family="Verdana,Tahoma,sans-serif" font-size="68" font-weight="bold" fill="#005662">BALL</text>
+  <!-- Pfeil nach unten -->
+  <path d="M 256 240 L 256 308 M 226 282 L 256 312 L 286 282" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Bild unten: Ball -->
+  <circle cx="256" cy="394" r="68" fill="#fff" stroke="#005662" stroke-width="6"/>
+  <path d="M 188 394 L 324 394 M 256 326 L 256 462 M 208 346 L 304 442 M 304 346 L 208 442" stroke="#005662" stroke-width="5" fill="none" stroke-linecap="round"/>
+</svg>

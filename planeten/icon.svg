@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="#3a2476"/>
+      <stop offset="100%" stop-color="#0b1030"/>
+    </radialGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff7c2"/>
+      <stop offset="55%" stop-color="#ffce4a"/>
+      <stop offset="100%" stop-color="#e07a1a"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- Sterne -->
+  <g fill="white">
+    <circle cx="80"  cy="90"  r="2.5"/>
+    <circle cx="430" cy="120" r="2"/>
+    <circle cx="120" cy="380" r="2"/>
+    <circle cx="400" cy="430" r="2.5"/>
+    <circle cx="60"  cy="240" r="1.5"/>
+    <circle cx="460" cy="280" r="1.8"/>
+  </g>
+  <!-- Bahnen -->
+  <ellipse cx="256" cy="256" rx="130" ry="60" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+  <ellipse cx="256" cy="256" rx="190" ry="92" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <!-- Sonne -->
+  <circle cx="256" cy="256" r="58" fill="url(#sun)"/>
+  <!-- Strahlen -->
+  <g stroke="#ffce4a" stroke-width="6" stroke-linecap="round" opacity="0.55">
+    <line x1="256" y1="170" x2="256" y2="195"/>
+    <line x1="256" y1="317" x2="256" y2="342"/>
+    <line x1="170" y1="256" x2="195" y2="256"/>
+    <line x1="317" y1="256" x2="342" y2="256"/>
+  </g>
+  <!-- Erde (innere Bahn rechts) -->
+  <circle cx="386" cy="256" r="14" fill="#3a8fd6"/>
+  <path d="M376 252 q5 -4 10 0 t10 2" fill="none" stroke="#5fb878" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+  <!-- Saturn (aeussere Bahn links unten) -->
+  <g transform="translate(110 312) rotate(-18)">
+    <ellipse cx="0" cy="0" rx="38" ry="9" fill="none" stroke="#e6c878" stroke-width="4"/>
+    <circle cx="0" cy="0" r="20" fill="#e8b95c"/>
+    <ellipse cx="0" cy="0" rx="38" ry="9" fill="none" stroke="#e6c878" stroke-width="4" stroke-dasharray="60 200" stroke-dashoffset="-30"/>
+  </g>
+</svg>

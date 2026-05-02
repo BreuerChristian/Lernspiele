@@ -1,4 +1,4 @@
-const CACHE = 'tier-geraeusche-v2';
+const CACHE = 'tier-geraeusche-v3';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -7,21 +7,21 @@ const CORE_ASSETS = [
   './icon-maskable.svg'
 ];
 // Sound-Dateien werden best-effort gecacht (fehlen ist okay - dann greift der
-// Speech-Synthesis-Fallback im Spiel).
+// Speech-Synthesis-Fallback im Spiel). Mischformat OGG/OPUS/MP3, je Quelle.
+// Maus hat keine Datei - reiner Speech-Fallback.
 const SOUND_ASSETS = [
-  './sounds/kuh.mp3',
-  './sounds/hund.mp3',
-  './sounds/katze.mp3',
-  './sounds/hahn.mp3',
-  './sounds/schaf.mp3',
-  './sounds/schwein.mp3',
-  './sounds/pferd.mp3',
+  './sounds/kuh.ogg',
+  './sounds/hund.ogg',
+  './sounds/katze.ogg',
+  './sounds/hahn.ogg',
+  './sounds/schaf.ogg',
+  './sounds/schwein.ogg',
+  './sounds/pferd.ogg',
   './sounds/ente.mp3',
-  './sounds/frosch.mp3',
-  './sounds/maus.mp3',
+  './sounds/frosch.oga',
   './sounds/eule.mp3',
-  './sounds/biene.mp3',
-  './sounds/loewe.mp3'
+  './sounds/biene.opus',
+  './sounds/loewe.ogg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -54,7 +54,7 @@ self.addEventListener('fetch', (event) => {
   // Sounds: network-first mit Cache-Fallback. So werden nachtraeglich
   // hinzugefuegte/geaenderte Tier-Aufnahmen sofort erkannt, und der Cache
   // dient nur als Offline-Sicherung.
-  if (url.pathname.endsWith('.mp3') || url.pathname.includes('/sounds/')) {
+  if (url.pathname.includes('/sounds/')) {
     event.respondWith(
       fetch(event.request).then((res) => {
         if (res && res.ok) {

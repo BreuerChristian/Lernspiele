@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#00838f"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205, also 51..461) -->
+  <!-- Wort-Karte oben -->
+  <rect x="116" y="126" width="280" height="100" rx="18" fill="white" stroke="#005662" stroke-width="5"/>
+  <text x="256" y="195" text-anchor="middle" font-family="Verdana,Tahoma,sans-serif" font-size="56" font-weight="bold" fill="#005662">BALL</text>
+  <!-- Pfeil nach unten -->
+  <path d="M 256 246 L 256 300 M 230 278 L 256 304 L 282 278" stroke="white" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Bild unten: Ball -->
+  <circle cx="256" cy="370" r="58" fill="#fff" stroke="#005662" stroke-width="5"/>
+  <path d="M 198 370 L 314 370 M 256 312 L 256 428 M 215 329 L 297 411 M 297 329 L 215 411" stroke="#005662" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>

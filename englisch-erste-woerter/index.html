@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Erste englische Wörter</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#1565c0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #e3f1fb;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #e3f1fb 0%, #b7d8f3 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 30px 26px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #1565c0;
+            font-size: 2.1rem;
+            margin-bottom: 4px;
+        }
+        #screen-start .sub {
+            color: #2a6fb3;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #1565c0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #d6e8f7;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #b7d8f3; }
+
+        .group { margin-bottom: 18px; text-align: left; }
+        .group h2 {
+            color: #1565c0;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .topic-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .topic-choice {
+            background: #e3f1fb;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 12px;
+            font-family: inherit;
+            font-size: 0.98rem;
+            color: #2a6fb3;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .topic-choice:hover { background: #cfe5f7; }
+        .topic-choice.active {
+            background: #cfe5f7;
+            border-color: #1565c0;
+        }
+        .topic-choice .emoji { font-size: 2rem; line-height: 1; }
+        .topic-choice .label {
+            font-weight: bold;
+            color: #1565c0;
+        }
+        .topic-choice .count {
+            font-size: 0.8rem;
+            color: #5b87b3;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 4px;
+            padding: 18px;
+            background: linear-gradient(145deg, #1e88e5, #1565c0);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(21, 101, 192, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #e3f1fb 0%, #b7d8f3 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-topic {
+            color: #1565c0;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-count {
+            color: #5b87b3;
+            font-size: 0.9rem;
+            margin-left: 6px;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #1565c0;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px 16px;
+            gap: 10px;
+            min-height: 0;
+        }
+
+        .card-row {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 0;
+        }
+        .nav-btn {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            border: none;
+            border-radius: 50%;
+            background: white;
+            color: #1565c0;
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s, opacity 0.15s;
+        }
+        .nav-btn:hover { background: #f0f7fd; }
+        .nav-btn:active { transform: scale(0.94); }
+        .nav-btn[aria-disabled="true"] {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .word-card {
+            background: white;
+            border-radius: 26px;
+            padding: 18px 18px 20px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+            flex: 1;
+            max-width: 460px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-height: 0;
+            min-width: 0;
+        }
+        .word-card.fade {
+            animation: fadeIn 0.32s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .pic-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 0;
+        }
+        .pic-svg {
+            width: min(54vw, 260px);
+            height: auto;
+            max-height: min(38vh, 260px);
+            display: block;
+        }
+
+        .word-en {
+            color: #1565c0;
+            font-size: clamp(2rem, 7vw, 2.6rem);
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.1;
+        }
+        .word-de {
+            color: #5b87b3;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            text-align: center;
+            margin-top: -2px;
+        }
+
+        .listen-row {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        #btn-listen {
+            background: linear-gradient(145deg, #1e88e5, #1565c0);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 28px;
+            font-family: inherit;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(21, 101, 192, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.1s;
+        }
+        #btn-listen:active { transform: translateY(2px); }
+        #btn-listen.speaking { animation: pulse 0.9s ease-in-out infinite; }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 6px 14px rgba(21, 101, 192, 0.35); }
+            50%      { box-shadow: 0 6px 22px rgba(21, 101, 192, 0.6); }
+        }
+        #btn-listen .ico { font-size: 1.3rem; }
+        #btn-listen[hidden] { display: none; }
+
+        .visual-hint {
+            min-height: 1.4em;
+            color: #1565c0;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .visual-hint.show { opacity: 1; }
+
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.7rem; }
+            #screen-start .card { padding: 22px 18px; }
+            .topic-choice { padding: 12px 8px; font-size: 0.92rem; }
+            .topic-choice .emoji { font-size: 1.7rem; }
+            .nav-btn { width: 48px; height: 48px; font-size: 1.5rem; }
+            .word-card { padding: 14px 14px 16px; }
+        }
+        @media (max-height: 600px) {
+            .pic-svg { max-height: 30vh; }
+            #btn-listen { padding: 11px 22px; font-size: 1.05rem; }
+            .word-card { padding: 12px 14px 14px; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Erste englische Wörter</h1>
+        <p class="sub">Bilder anschauen, Wörter hören.</p>
+
+        <div class="group">
+            <h2>Was möchtest du anschauen?</h2>
+            <div class="topic-list" id="topic-list">
+                <button class="topic-choice" data-topic="tiere">
+                    <span class="emoji">🐱</span>
+                    <span class="label">Tiere</span>
+                    <span class="count">11 Wörter</span>
+                </button>
+                <button class="topic-choice" data-topic="farben">
+                    <span class="emoji">🎨</span>
+                    <span class="label">Farben</span>
+                    <span class="count">7 Wörter</span>
+                </button>
+                <button class="topic-choice" data-topic="zahlen">
+                    <span class="emoji">🔢</span>
+                    <span class="label">Zahlen</span>
+                    <span class="count">10 Wörter</span>
+                </button>
+                <button class="topic-choice" data-topic="familie">
+                    <span class="emoji">👪</span>
+                    <span class="label">Familie</span>
+                    <span class="count">5 Wörter</span>
+                </button>
+                <button class="topic-choice" data-topic="essen">
+                    <span class="emoji">🍎</span>
+                    <span class="label">Essen</span>
+                    <span class="count">6 Wörter</span>
+                </button>
+                <button class="topic-choice" data-topic="alle">
+                    <span class="emoji">🌍</span>
+                    <span class="label">Alle</span>
+                    <span class="count">39 Wörter</span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div>
+            <span class="hud-topic" id="hud-topic"></span>
+            <span class="hud-count" id="hud-count"></span>
+        </div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="card-row">
+            <button class="nav-btn" id="btn-prev" aria-label="Vorherige Karte">‹</button>
+            <div class="word-card" id="word-card">
+                <div class="pic-wrap" id="pic-wrap"></div>
+                <div>
+                    <div class="word-en" id="word-en"></div>
+                    <div class="word-de" id="word-de"></div>
+                </div>
+                <div class="listen-row">
+                    <button id="btn-listen" type="button">
+                        <span class="ico">🔊</span><span>Hör zu!</span>
+                    </button>
+                    <div class="visual-hint" id="visual-hint"></div>
+                </div>
+            </div>
+            <button class="nav-btn" id="btn-next" aria-label="Nächste Karte">›</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  WORT-DATEN
+    // ====================================================
+    // Inline-SVG-Bilder, damit alles werbe- und CDN-frei lokal lebt.
+    // Schlicht gehalten — Erkennbarkeit > Detailgrad.
+    const SVG = {
+        cat: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="115" r="60" fill="#f4a259"/><polygon points="55,75 50,30 85,60" fill="#f4a259"/><polygon points="145,75 150,30 115,60" fill="#f4a259"/><polygon points="62,68 60,42 80,60" fill="#ffd6a5"/><polygon points="138,68 140,42 120,60" fill="#ffd6a5"/><circle cx="80" cy="105" r="6" fill="#222"/><circle cx="120" cy="105" r="6" fill="#222"/><polygon points="100,118 92,128 108,128" fill="#c46a4a"/><path d="M100,128 Q92,140 84,134 M100,128 Q108,140 116,134" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/><line x1="55" y1="118" x2="35" y2="112" stroke="#222" stroke-width="2"/><line x1="55" y1="125" x2="33" y2="125" stroke="#222" stroke-width="2"/><line x1="145" y1="118" x2="165" y2="112" stroke="#222" stroke-width="2"/><line x1="145" y1="125" x2="167" y2="125" stroke="#222" stroke-width="2"/></svg>`,
+        dog: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><ellipse cx="50" cy="80" rx="22" ry="38" fill="#a06236"/><ellipse cx="150" cy="80" rx="22" ry="38" fill="#a06236"/><circle cx="100" cy="115" r="62" fill="#c9874e"/><ellipse cx="100" cy="135" rx="32" ry="22" fill="#f5dfc7"/><circle cx="80" cy="108" r="6" fill="#222"/><circle cx="120" cy="108" r="6" fill="#222"/><ellipse cx="100" cy="128" rx="9" ry="7" fill="#222"/><path d="M100,135 Q100,150 90,148 M100,135 Q100,150 110,148" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M85,148 Q100,160 115,148" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+        cow: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><ellipse cx="100" cy="120" rx="68" ry="55" fill="white"/><ellipse cx="70" cy="100" rx="18" ry="14" fill="#222"/><ellipse cx="135" cy="135" rx="22" ry="16" fill="#222"/><ellipse cx="120" cy="95" rx="14" ry="10" fill="#222"/><ellipse cx="100" cy="150" rx="34" ry="22" fill="#fbd1c7"/><ellipse cx="88" cy="148" rx="3" ry="5" fill="#222"/><ellipse cx="112" cy="148" rx="3" ry="5" fill="#222"/><circle cx="82" cy="115" r="5" fill="#222"/><circle cx="118" cy="115" r="5" fill="#222"/><polygon points="40,80 30,55 60,75" fill="#f5dfc7"/><polygon points="160,80 170,55 140,75" fill="#f5dfc7"/></svg>`,
+        pig: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><ellipse cx="100" cy="115" rx="65" ry="55" fill="#f7b6c2"/><polygon points="62,75 50,45 85,65" fill="#f7b6c2"/><polygon points="138,75 150,45 115,65" fill="#f7b6c2"/><ellipse cx="100" cy="135" rx="22" ry="16" fill="#e58aa0"/><circle cx="92" cy="135" r="3" fill="#7a3848"/><circle cx="108" cy="135" r="3" fill="#7a3848"/><circle cx="80" cy="110" r="5" fill="#222"/><circle cx="120" cy="110" r="5" fill="#222"/><path d="M88,155 Q100,162 112,155" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+        horse: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M40,180 L40,120 Q40,80 80,80 L120,80 Q160,80 160,120 L160,180" fill="#a06236"/><ellipse cx="140" cy="60" rx="22" ry="32" fill="#a06236"/><polygon points="125,38 122,18 138,32" fill="#a06236"/><polygon points="155,38 158,18 142,32" fill="#a06236"/><circle cx="148" cy="58" r="4" fill="#222"/><ellipse cx="155" cy="78" rx="3" ry="4" fill="#222"/><path d="M115,55 Q90,40 80,70 Q70,90 85,95" fill="#5a3820"/><line x1="60" y1="180" x2="60" y2="155" stroke="#5a3820" stroke-width="6"/><line x1="140" y1="180" x2="140" y2="155" stroke="#5a3820" stroke-width="6"/></svg>`,
+        sheep: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="60" cy="110" r="22" fill="#f5f5f5"/><circle cx="90" cy="95" r="26" fill="#f5f5f5"/><circle cx="120" cy="100" r="24" fill="#f5f5f5"/><circle cx="140" cy="115" r="22" fill="#f5f5f5"/><circle cx="100" cy="125" r="30" fill="#f5f5f5"/><ellipse cx="100" cy="140" rx="22" ry="20" fill="#5a3820"/><circle cx="92" cy="138" r="3" fill="#fff"/><circle cx="108" cy="138" r="3" fill="#fff"/><ellipse cx="100" cy="148" rx="6" ry="4" fill="#3a2010"/><line x1="80" y1="170" x2="80" y2="185" stroke="#3a2010" stroke-width="6"/><line x1="120" y1="170" x2="120" y2="185" stroke="#3a2010" stroke-width="6"/></svg>`,
+        fish: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><ellipse cx="95" cy="100" rx="62" ry="38" fill="#4fa3d9"/><polygon points="155,100 195,70 195,130" fill="#4fa3d9"/><circle cx="70" cy="92" r="7" fill="white"/><circle cx="70" cy="92" r="3.5" fill="#222"/><path d="M40,100 Q60,90 80,100 Q60,110 40,100" fill="#2c7eb3"/><path d="M95,75 Q120,60 145,75" stroke="#2c7eb3" stroke-width="3" fill="none"/><path d="M95,125 Q120,140 145,125" stroke="#2c7eb3" stroke-width="3" fill="none"/></svg>`,
+        bird: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="110" r="50" fill="#f4d35e"/><circle cx="118" cy="80" r="22" fill="#f4d35e"/><circle cx="124" cy="78" r="4" fill="#222"/><polygon points="138,82 158,78 138,90" fill="#e07a3c"/><path d="M70,130 Q60,160 90,150" fill="#d6b94b"/><line x1="95" y1="160" x2="95" y2="180" stroke="#e07a3c" stroke-width="3"/><line x1="115" y1="160" x2="115" y2="180" stroke="#e07a3c" stroke-width="3"/><polygon points="92,180 87,184 100,184" fill="#e07a3c"/><polygon points="115,180 110,184 123,184" fill="#e07a3c"/></svg>`,
+        mouse: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="65" cy="80" r="22" fill="#b8b8b8"/><circle cx="135" cy="80" r="22" fill="#b8b8b8"/><circle cx="65" cy="80" r="12" fill="#f5c6c6"/><circle cx="135" cy="80" r="12" fill="#f5c6c6"/><ellipse cx="100" cy="120" rx="55" ry="48" fill="#b8b8b8"/><circle cx="85" cy="115" r="5" fill="#222"/><circle cx="115" cy="115" r="5" fill="#222"/><ellipse cx="100" cy="135" rx="6" ry="4" fill="#7a3848"/><path d="M155,150 Q180,150 180,170" stroke="#b8b8b8" stroke-width="6" fill="none" stroke-linecap="round"/></svg>`,
+        rabbit: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><ellipse cx="78" cy="55" rx="14" ry="36" fill="#f0f0f0"/><ellipse cx="122" cy="55" rx="14" ry="36" fill="#f0f0f0"/><ellipse cx="78" cy="58" rx="7" ry="24" fill="#f5b6b6"/><ellipse cx="122" cy="58" rx="7" ry="24" fill="#f5b6b6"/><circle cx="100" cy="125" r="55" fill="#f0f0f0"/><circle cx="85" cy="118" r="6" fill="#222"/><circle cx="115" cy="118" r="6" fill="#222"/><polygon points="100,135 92,142 108,142" fill="#f5b6b6"/><path d="M92,148 Q100,158 108,148" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+        frog: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><ellipse cx="100" cy="125" rx="72" ry="48" fill="#7cc26b"/><circle cx="65" cy="80" r="22" fill="#7cc26b"/><circle cx="135" cy="80" r="22" fill="#7cc26b"/><circle cx="65" cy="80" r="14" fill="white"/><circle cx="135" cy="80" r="14" fill="white"/><circle cx="65" cy="82" r="7" fill="#222"/><circle cx="135" cy="82" r="7" fill="#222"/><path d="M65,125 Q100,150 135,125" stroke="#3d6e2e" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="40" cy="155" rx="20" ry="10" fill="#7cc26b"/><ellipse cx="160" cy="155" rx="20" ry="10" fill="#7cc26b"/></svg>`,
+
+        red:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="100" r="78" fill="#e53935"/><circle cx="100" cy="100" r="78" fill="none" stroke="#a01a17" stroke-width="4"/></svg>`,
+        blue:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="100" r="78" fill="#1e88e5"/><circle cx="100" cy="100" r="78" fill="none" stroke="#0d47a1" stroke-width="4"/></svg>`,
+        green:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="100" r="78" fill="#43a047"/><circle cx="100" cy="100" r="78" fill="none" stroke="#1b5e20" stroke-width="4"/></svg>`,
+        yellow: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="100" r="78" fill="#fdd835"/><circle cx="100" cy="100" r="78" fill="none" stroke="#c8a000" stroke-width="4"/></svg>`,
+        black:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="100" r="78" fill="#222"/><circle cx="100" cy="100" r="78" fill="none" stroke="#000" stroke-width="4"/></svg>`,
+        white:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="100" r="78" fill="white"/><circle cx="100" cy="100" r="78" fill="none" stroke="#888" stroke-width="4"/></svg>`,
+        orange: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="100" r="78" fill="#fb8c00"/><circle cx="100" cy="100" r="78" fill="none" stroke="#bf360c" stroke-width="4"/></svg>`,
+
+        // Zahlen: grosse Ziffer + Punkte als Anzahl-Visualisierung
+        numCard: (n, dots) => {
+            const cols = Math.min(dots, 5);
+            const rows = Math.ceil(dots / 5);
+            let circles = '';
+            for (let i = 0; i < dots; i++) {
+                const r = Math.floor(i / 5);
+                const c = i % 5;
+                const cx = 40 + c * 28 + (rows > 1 ? 0 : (5 - cols) * 14);
+                const cy = 150 + (r - (rows - 1) / 2) * 24;
+                circles += `<circle cx="${cx}" cy="${cy}" r="9" fill="#1565c0"/>`;
+            }
+            return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><text x="100" y="95" text-anchor="middle" font-family="Verdana,Tahoma,sans-serif" font-size="100" font-weight="bold" fill="#1565c0">${n}</text>${circles}</svg>`;
+        },
+
+        mother: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="70" r="36" fill="#fbd0a4"/><path d="M55,70 Q60,30 100,28 Q140,30 145,70 Q142,55 100,55 Q58,55 55,70 Z" fill="#7a3a1e"/><path d="M55,95 Q60,80 75,72 Q60,82 55,95" fill="#7a3a1e"/><path d="M145,95 Q140,80 125,72 Q140,82 145,95" fill="#7a3a1e"/><circle cx="88" cy="72" r="3.5" fill="#222"/><circle cx="112" cy="72" r="3.5" fill="#222"/><path d="M88,90 Q100,98 112,90" stroke="#222" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M50,180 L60,120 Q100,108 140,120 L150,180 Z" fill="#c2185b"/></svg>`,
+        father: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="72" r="36" fill="#fbd0a4"/><path d="M64,55 Q70,32 100,32 Q130,32 136,55 Q120,48 100,48 Q80,48 64,55 Z" fill="#3a2010"/><circle cx="88" cy="74" r="3.5" fill="#222"/><circle cx="112" cy="74" r="3.5" fill="#222"/><path d="M82,98 Q100,108 118,98 Q100,104 82,98" fill="#3a2010"/><path d="M50,180 L60,120 Q100,108 140,120 L150,180 Z" fill="#1565c0"/></svg>`,
+        sister: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="80" r="32" fill="#fbd0a4"/><path d="M68,80 Q70,42 100,40 Q130,42 132,80 Q130,68 100,68 Q70,68 68,80 Z" fill="#e6a040"/><path d="M68,108 Q72,90 80,82 Q68,98 68,108" fill="#e6a040"/><path d="M132,108 Q128,90 120,82 Q132,98 132,108" fill="#e6a040"/><circle cx="90" cy="80" r="3" fill="#222"/><circle cx="110" cy="80" r="3" fill="#222"/><path d="M90,94 Q100,100 110,94" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M62,180 L70,128 Q100,118 130,128 L138,180 Z" fill="#7cc26b"/></svg>`,
+        brother: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="80" r="32" fill="#fbd0a4"/><path d="M70,68 Q74,48 100,46 Q126,48 130,68 Q116,62 100,62 Q84,62 70,68 Z" fill="#5a3820"/><circle cx="90" cy="80" r="3" fill="#222"/><circle cx="110" cy="80" r="3" fill="#222"/><path d="M90,96 Q100,100 110,96" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M62,180 L70,128 Q100,118 130,128 L138,180 Z" fill="#1e88e5"/></svg>`,
+        baby: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><circle cx="100" cy="100" r="60" fill="#fbd0a4"/><circle cx="78" cy="60" r="6" fill="#222" opacity="0.3"/><circle cx="122" cy="60" r="6" fill="#222" opacity="0.3"/><circle cx="85" cy="100" r="4" fill="#222"/><circle cx="115" cy="100" r="4" fill="#222"/><ellipse cx="100" cy="125" rx="10" ry="5" fill="#e58aa0"/><circle cx="70" cy="125" r="6" fill="#f5b6b6"/><circle cx="130" cy="125" r="6" fill="#f5b6b6"/></svg>`,
+
+        apple:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M100,55 Q70,55 60,80 Q50,120 80,160 Q100,175 120,160 Q150,120 140,80 Q130,55 100,55 Z" fill="#e53935"/><path d="M100,55 Q105,40 120,38" stroke="#5a3820" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="118" cy="42" rx="10" ry="4" fill="#7cc26b" transform="rotate(-25 118 42)"/><ellipse cx="78" cy="80" rx="10" ry="6" fill="#fbb4ae"/></svg>`,
+        banana: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M40,140 Q40,40 130,40 Q140,42 138,52 Q90,55 60,100 Q40,140 40,140 Z" fill="#fdd835"/><path d="M40,140 Q40,40 130,40 Q140,42 138,52 Q90,55 60,100 Q40,140 40,140 Z" fill="none" stroke="#a07a00" stroke-width="2.5"/><ellipse cx="132" cy="46" rx="6" ry="4" fill="#5a3820"/><path d="M40,140 Q60,150 80,142" stroke="#a07a00" stroke-width="2.5" fill="none"/></svg>`,
+        bread:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M30,130 Q30,80 70,70 Q90,55 110,65 Q140,55 160,80 Q175,100 165,130 Q165,160 130,165 Q90,170 60,165 Q30,160 30,130 Z" fill="#d4a574"/><path d="M50,110 Q70,100 90,108" stroke="#a07a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M110,108 Q130,98 150,110" stroke="#a07a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M70,130 Q100,138 130,130" stroke="#a07a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+        milk:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M70,55 L70,40 L130,40 L130,55 L145,80 L145,170 L55,170 L55,80 Z" fill="white" stroke="#1565c0" stroke-width="3"/><rect x="65" y="90" width="70" height="40" fill="#1565c0"/><text x="100" y="118" text-anchor="middle" font-family="Verdana,Tahoma,sans-serif" font-size="22" font-weight="bold" fill="white">MILK</text></svg>`,
+        cheese: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><polygon points="30,160 170,160 170,110 30,140" fill="#fdd835"/><polygon points="30,140 170,110 100,60" fill="#ffe97a"/><polygon points="30,160 30,140 100,60 170,110 170,160" fill="none" stroke="#a07a00" stroke-width="3"/><circle cx="80" cy="135" r="6" fill="#a07a00"/><circle cx="125" cy="125" r="5" fill="#a07a00"/><circle cx="105" cy="148" r="4" fill="#a07a00"/></svg>`,
+        water:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M100,30 Q60,90 60,130 Q60,170 100,170 Q140,170 140,130 Q140,90 100,30 Z" fill="#4fa3d9"/><path d="M100,30 Q60,90 60,130 Q60,170 100,170 Q140,170 140,130 Q140,90 100,30 Z" fill="none" stroke="#0d47a1" stroke-width="3"/><ellipse cx="85" cy="120" rx="12" ry="20" fill="white" opacity="0.4"/></svg>`,
+    };
+
+    const WORDS = {
+        tiere: [
+            { en: 'Cat',    de: 'Katze',    pic: SVG.cat },
+            { en: 'Dog',    de: 'Hund',     pic: SVG.dog },
+            { en: 'Cow',    de: 'Kuh',      pic: SVG.cow },
+            { en: 'Pig',    de: 'Schwein',  pic: SVG.pig },
+            { en: 'Horse',  de: 'Pferd',    pic: SVG.horse },
+            { en: 'Sheep',  de: 'Schaf',    pic: SVG.sheep },
+            { en: 'Fish',   de: 'Fisch',    pic: SVG.fish },
+            { en: 'Bird',   de: 'Vogel',    pic: SVG.bird },
+            { en: 'Mouse',  de: 'Maus',     pic: SVG.mouse },
+            { en: 'Rabbit', de: 'Hase',     pic: SVG.rabbit },
+            { en: 'Frog',   de: 'Frosch',   pic: SVG.frog },
+        ],
+        farben: [
+            { en: 'Red',    de: 'Rot',     pic: SVG.red },
+            { en: 'Blue',   de: 'Blau',    pic: SVG.blue },
+            { en: 'Green',  de: 'Grün',    pic: SVG.green },
+            { en: 'Yellow', de: 'Gelb',    pic: SVG.yellow },
+            { en: 'Black',  de: 'Schwarz', pic: SVG.black },
+            { en: 'White',  de: 'Weiß',    pic: SVG.white },
+            { en: 'Orange', de: 'Orange',  pic: SVG.orange },
+        ],
+        zahlen: [
+            { en: 'One',   de: 'Eins',  pic: SVG.numCard(1, 1) },
+            { en: 'Two',   de: 'Zwei',  pic: SVG.numCard(2, 2) },
+            { en: 'Three', de: 'Drei',  pic: SVG.numCard(3, 3) },
+            { en: 'Four',  de: 'Vier',  pic: SVG.numCard(4, 4) },
+            { en: 'Five',  de: 'Fünf',  pic: SVG.numCard(5, 5) },
+            { en: 'Six',   de: 'Sechs', pic: SVG.numCard(6, 6) },
+            { en: 'Seven', de: 'Sieben', pic: SVG.numCard(7, 7) },
+            { en: 'Eight', de: 'Acht',  pic: SVG.numCard(8, 8) },
+            { en: 'Nine',  de: 'Neun',  pic: SVG.numCard(9, 9) },
+            { en: 'Ten',   de: 'Zehn',  pic: SVG.numCard(10, 10) },
+        ],
+        familie: [
+            { en: 'Mother',  de: 'Mutter',    pic: SVG.mother },
+            { en: 'Father',  de: 'Vater',     pic: SVG.father },
+            { en: 'Sister',  de: 'Schwester', pic: SVG.sister },
+            { en: 'Brother', de: 'Bruder',    pic: SVG.brother },
+            { en: 'Baby',    de: 'Baby',      pic: SVG.baby },
+        ],
+        essen: [
+            { en: 'Apple',  de: 'Apfel',  pic: SVG.apple },
+            { en: 'Banana', de: 'Banane', pic: SVG.banana },
+            { en: 'Bread',  de: 'Brot',   pic: SVG.bread },
+            { en: 'Milk',   de: 'Milch',  pic: SVG.milk },
+            { en: 'Cheese', de: 'Käse',   pic: SVG.cheese },
+            { en: 'Water',  de: 'Wasser', pic: SVG.water },
+        ],
+    };
+
+    const TOPIC_LABELS = {
+        tiere:   'Tiere',
+        farben:  'Farben',
+        zahlen:  'Zahlen',
+        familie: 'Familie',
+        essen:   'Essen',
+        alle:    'Alle',
+    };
+
+    function getCards(topic) {
+        if (topic === 'alle') {
+            return [
+                ...WORDS.tiere,
+                ...WORDS.farben,
+                ...WORDS.zahlen,
+                ...WORDS.familie,
+                ...WORDS.essen,
+            ];
+        }
+        return WORDS[topic] || [];
+    }
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        topic: null,
+        cards: [],
+        index: 0,
+        ttsAvailable: ('speechSynthesis' in window),
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+
+    const STORAGE_KEY = 'englisch-erste-woerter-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ topic: state.topic })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO / SPEECH
+    // ====================================================
+    let audioCtx = null;
+    let speechWarmedUp = false;
+    let pendingSpeechTimer = null;
+    let hintTimer = null;
+
+    function ensureAudioCtx() {
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
+        // Speech-Warmup: stille Utterance synchron im User-Geste-Click,
+        // damit spaetere Utterances auf iOS/Safari erlaubt sind.
+        if (!speechWarmedUp && 'speechSynthesis' in window) {
+            try {
+                const u = new SpeechSynthesisUtterance(' ');
+                u.volume = 0;
+                u.lang = 'en-US';
+                speechSynthesis.speak(u);
+                speechWarmedUp = true;
+            } catch (e) { /* ignore */ }
+        }
+        return audioCtx;
+    }
+
+    function showVisualHint(card) {
+        // Sichtbarer Fallback wenn TTS nicht verfuegbar oder noch nicht warmgelaufen.
+        // Ohne diesen Hinweis tippt das Kind auf "Hoer zu!" und nichts passiert.
+        const hint = $('visual-hint');
+        if (!hint) return;
+        hint.textContent = `🔊 ${card.en}`;
+        hint.classList.add('show');
+        if (hintTimer) clearTimeout(hintTimer);
+        hintTimer = setTimeout(() => {
+            hint.classList.remove('show');
+            hintTimer = null;
+        }, 1800);
+    }
+
+    function speakWord(card) {
+        const btn = $('btn-listen');
+        if (!('speechSynthesis' in window)) {
+            showVisualHint(card);
+            return;
+        }
+        if (pendingSpeechTimer) clearTimeout(pendingSpeechTimer);
+        try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+        // cancel() ist async — kurz warten, sonst werden schnelle aufeinanderfolgende
+        // Tipps verschluckt.
+        pendingSpeechTimer = setTimeout(() => {
+            pendingSpeechTimer = null;
+            try {
+                const u = new SpeechSynthesisUtterance(card.en);
+                u.lang = 'en-US';
+                u.rate = 0.85;
+                u.pitch = 1.0;
+                u.volume = 1.0;
+                if (btn) btn.classList.add('speaking');
+                u.onend = () => { if (btn) btn.classList.remove('speaking'); };
+                u.onerror = () => {
+                    if (btn) btn.classList.remove('speaking');
+                    showVisualHint(card);
+                };
+                speechSynthesis.speak(u);
+            } catch (e) {
+                if (btn) btn.classList.remove('speaking');
+                showVisualHint(card);
+            }
+        }, 60);
+    }
+
+    function stopSpeech() {
+        if (pendingSpeechTimer) { clearTimeout(pendingSpeechTimer); pendingSpeechTimer = null; }
+        if ('speechSynthesis' in window) {
+            try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+        }
+        const btn = $('btn-listen');
+        if (btn) btn.classList.remove('speaking');
+    }
+
+    // ====================================================
+    //  KARTEN-RENDERING
+    // ====================================================
+    function renderCard() {
+        if (!state.cards.length) return;
+        const card = state.cards[state.index];
+
+        $('pic-wrap').innerHTML = `<div class="pic-svg">${card.pic}</div>`;
+        $('word-en').textContent = card.en;
+        $('word-de').textContent = card.de;
+
+        // HUD: aktuelle Position
+        $('hud-count').textContent = `${state.index + 1} / ${state.cards.length}`;
+
+        // Nav-Pfeile aktualisieren
+        $('btn-prev').setAttribute('aria-disabled', state.index === 0 ? 'true' : 'false');
+        $('btn-next').setAttribute('aria-disabled', state.index === state.cards.length - 1 ? 'true' : 'false');
+
+        // Visual Hint zuruecksetzen
+        const hint = $('visual-hint');
+        hint.classList.remove('show');
+        hint.textContent = '';
+
+        // Kleine Fade-Animation neu antriggern (Reflow erzwingen)
+        const wc = $('word-card');
+        wc.classList.remove('fade');
+        void wc.offsetWidth;
+        wc.classList.add('fade');
+    }
+
+    function gotoCard(newIndex) {
+        if (newIndex < 0 || newIndex >= state.cards.length) return;
+        if (newIndex === state.index) return;
+        // Bei Karten-Wechsel laufende Sprachausgabe stoppen — KEIN Auto-Play hier
+        // (iOS-Audio nach setTimeout ist unzuverlaessig, User muss selbst tippen).
+        stopSpeech();
+        state.index = newIndex;
+        renderCard();
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.topic) return;
+        const cards = getCards(state.topic);
+        if (!cards.length) return;
+        savePrefs();
+        state.cards = cards;
+        state.index = 0;
+
+        $('hud-topic').textContent = TOPIC_LABELS[state.topic] || '';
+
+        // Listen-Button verstecken wenn TTS gar nicht verfuegbar UND auch kein
+        // visueller Fallback Mehrwert haette? Wir behalten ihn — der Hint zeigt
+        // dann zumindest die Schreibweise.
+        const listenBtn = $('btn-listen');
+        if (listenBtn) listenBtn.hidden = false;
+
+        switchScreen('game');
+        renderCard();
+    }
+
+    function backToStart() {
+        stopSpeech();
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectTopic(value) {
+        $('topic-list').querySelectorAll('.topic-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.topic === value);
+        });
+        state.topic = value;
+    }
+
+    document.querySelectorAll('#topic-list .topic-choice').forEach(b => {
+        b.addEventListener('click', () => selectTopic(b.dataset.topic));
+    });
+
+    $('btn-start').addEventListener('click', () => {
+        // ensureAudioCtx muss synchron im Click-Handler laufen (User-Geste),
+        // damit Speech auf iOS/Safari spaeter freigeschaltet ist.
+        ensureAudioCtx();
+        startGame();
+    });
+    $('btn-back').addEventListener('click', backToStart);
+
+    $('btn-prev').addEventListener('click', () => gotoCard(state.index - 1));
+    $('btn-next').addEventListener('click', () => gotoCard(state.index + 1));
+
+    $('btn-listen').addEventListener('click', () => {
+        // Erneuter Warmup-Aufruf schadet nicht — wenn schon warm, ist es ein No-Op.
+        ensureAudioCtx();
+        if (!state.cards.length) return;
+        speakWord(state.cards[state.index]);
+    });
+
+    // Tastatur: Pfeiltasten und Leertaste = vorlesen
+    document.addEventListener('keydown', (e) => {
+        if ($('screen-game').classList.contains('hidden')) return;
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); gotoCard(state.index - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); gotoCard(state.index + 1); }
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            ensureAudioCtx();
+            if (state.cards.length) speakWord(state.cards[state.index]);
+        }
+        if (e.key === 'Escape') backToStart();
+    });
+
+    (function init() {
+        const prefs = loadPrefs();
+        selectTopic(prefs.topic && (TOPIC_LABELS[prefs.topic]) ? prefs.topic : 'tiere');
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>

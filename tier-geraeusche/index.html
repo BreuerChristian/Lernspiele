@@ -378,25 +378,27 @@
 
     // ====================================================
     //  TIERE
-    //  Sounds: lege passende {id}.mp3 in den Ordner "sounds/" -
-    //  CC0-Quellen z.B. https://pixabay.com/sound-effects/
-    //  Solange keine Datei vorhanden ist, greift der Speech-
-    //  Synthesis-Fallback (Browser spricht "say"-Text).
+    //  Sounds liegen in "sounds/" - mit verschiedenen Endungen je nachdem
+    //  was die Quelle liefert (Wikimedia Commons: ueberwiegend OGG, ein paar
+    //  MP3/OPUS). Wer ein Tier ohne "file"-Feld hat (z.B. maus), nutzt den
+    //  SpeechSynthesis-Fallback. Browser ohne Codec-Support bekommen
+    //  ebenfalls automatisch den Speech-Fallback (siehe playAnimal).
+    //  Quellen + Lizenzen siehe sounds/CREDITS.md.
     // ====================================================
     const ANIMALS = [
-        { id: 'kuh',     name: 'Kuh',     emoji: '🐄', say: 'Muuuuuh' },
-        { id: 'hund',    name: 'Hund',    emoji: '🐶', say: 'Wau, wau' },
-        { id: 'katze',   name: 'Katze',   emoji: '🐱', say: 'Miau' },
-        { id: 'hahn',    name: 'Hahn',    emoji: '🐓', say: 'Kikeriki' },
-        { id: 'schaf',   name: 'Schaf',   emoji: '🐑', say: 'Mäh, mäh' },
-        { id: 'schwein', name: 'Schwein', emoji: '🐷', say: 'Oink, oink' },
-        { id: 'pferd',   name: 'Pferd',   emoji: '🐴', say: 'Iiiiih' },
-        { id: 'ente',    name: 'Ente',    emoji: '🦆', say: 'Quak, quak' },
-        { id: 'frosch',  name: 'Frosch',  emoji: '🐸', say: 'Kwäk, kwäk' },
-        { id: 'maus',    name: 'Maus',    emoji: '🐭', say: 'Piep, piep' },
-        { id: 'eule',    name: 'Eule',    emoji: '🦉', say: 'Huhu' },
-        { id: 'biene',   name: 'Biene',   emoji: '🐝', say: 'Summ, summ' },
-        { id: 'loewe',   name: 'Löwe',    emoji: '🦁', say: 'Brüll, brüll' },
+        { id: 'kuh',     name: 'Kuh',     emoji: '🐄', say: 'Muuuuuh',     file: 'kuh.ogg' },
+        { id: 'hund',    name: 'Hund',    emoji: '🐶', say: 'Wau, wau',    file: 'hund.ogg' },
+        { id: 'katze',   name: 'Katze',   emoji: '🐱', say: 'Miau',        file: 'katze.ogg' },
+        { id: 'hahn',    name: 'Hahn',    emoji: '🐓', say: 'Kikeriki',    file: 'hahn.ogg' },
+        { id: 'schaf',   name: 'Schaf',   emoji: '🐑', say: 'Mäh, mäh',    file: 'schaf.ogg' },
+        { id: 'schwein', name: 'Schwein', emoji: '🐷', say: 'Oink, oink',  file: 'schwein.ogg' },
+        { id: 'pferd',   name: 'Pferd',   emoji: '🐴', say: 'Iiiiih',      file: 'pferd.ogg' },
+        { id: 'ente',    name: 'Ente',    emoji: '🦆', say: 'Quak, quak',  file: 'ente.mp3' },
+        { id: 'frosch',  name: 'Frosch',  emoji: '🐸', say: 'Kwäk, kwäk',  file: 'frosch.oga' },
+        { id: 'maus',    name: 'Maus',    emoji: '🐭', say: 'Piep, piep' /* nur Speech */ },
+        { id: 'eule',    name: 'Eule',    emoji: '🦉', say: 'Huhu',        file: 'eule.mp3' },
+        { id: 'biene',   name: 'Biene',   emoji: '🐝', say: 'Summ, summ',  file: 'biene.opus' },
+        { id: 'loewe',   name: 'Löwe',    emoji: '🦁', say: 'Brüll, brüll', file: 'loewe.ogg' },
     ];
 
     // ====================================================
@@ -533,11 +535,11 @@
 
     function playAnimal(animal) {
         stopAnimalSound();
-        if (state.audioFailed[animal.id]) {
+        if (!animal.file || state.audioFailed[animal.id]) {
             speakFallback(animal);
             return;
         }
-        const audio = new Audio(`sounds/${animal.id}.mp3`);
+        const audio = new Audio(`sounds/${animal.file}`);
         audio.preload = 'auto';
         state.currentAudio = audio;
         let handled = false;

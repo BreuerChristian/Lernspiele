@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Reim-Paare</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#ec407a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #fde4ec;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #fde4ec 0%, #f8bbd0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #c2185b;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #ad1457;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #c2185b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #fce4ec;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #f8bbd0; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #c2185b;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #fde4ec;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #6e1f41;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #f8bbd0; }
+        .stage-choice.active {
+            background: #f8bbd0;
+            border-color: #ec407a;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #c2185b;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #8a3a5e;
+        }
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fde4ec;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 22px;
+        }
+        .toggle-row .lbl {
+            color: #c2185b;
+            font-weight: bold;
+        }
+        .toggle-row .hint {
+            color: #8a3a5e;
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+        .toggle {
+            position: relative;
+            width: 54px;
+            height: 30px;
+            border-radius: 15px;
+            background: #f8bbd0;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.18s;
+        }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            background: white;
+            transition: transform 0.18s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle.on {
+            background: #ec407a;
+        }
+        .toggle.on::after {
+            transform: translateX(24px);
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #ec407a, #ad1457);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(194, 24, 91, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #fde4ec 0%, #f8bbd0 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #c2185b;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #c2185b;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hud-btn.muted {
+            opacity: 0.45;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px 20px;
+            gap: 12px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #6e1f41;
+            font-size: 1.15rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .pictures {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            min-height: 0;
+        }
+        .pic-card {
+            background: white;
+            border-radius: 20px;
+            padding: 12px;
+            box-shadow: 0 8px 18px rgba(194, 24, 91, 0.18);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: transform 0.12s, box-shadow 0.15s;
+            flex: 1;
+            max-width: 220px;
+            min-width: 0;
+        }
+        .pic-card:hover { transform: translateY(-2px); }
+        .pic-card:active { transform: translateY(1px); }
+        .pic-card.flash {
+            animation: pop 0.4s ease;
+        }
+        @keyframes pop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pic-svg {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-height: 38vh;
+        }
+        .pic-label {
+            color: #6e1f41;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .pic-bridge {
+            color: #c2185b;
+            font-size: 1.6rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 460px;
+        }
+        .answer {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 16px 8px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #6e1f41;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.1s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .answer .icon {
+            font-size: 1.5rem;
+        }
+        .answer.yes { color: #2e7d32; }
+        .answer.no  { color: #c2185b; }
+        .answer:hover { background: #fce4ec; }
+        .answer:active { transform: translateY(1px); }
+        .answer.correct {
+            background: #c8e6c9;
+            border-color: #66bb6a;
+            color: #2e7d32;
+        }
+        .answer.locked {
+            pointer-events: none;
+            opacity: 0.55;
+        }
+        .answer.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        /* ---------- Stufe 3: drei Bilder ---------- */
+        .triple-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            min-height: 0;
+        }
+        .triple-target {
+            background: white;
+            border-radius: 18px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 6px 14px rgba(194, 24, 91, 0.18);
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+        .triple-target .pic-svg {
+            width: clamp(80px, 22vh, 140px);
+            max-height: 22vh;
+        }
+        .triple-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 520px;
+        }
+        .triple-row .pic-card {
+            max-width: none;
+        }
+        .triple-row .pic-svg {
+            max-height: 26vh;
+        }
+        .triple-row .pic-label {
+            font-size: 0.95rem;
+        }
+        .pic-card.correct {
+            background: #c8e6c9;
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+        }
+        .pic-card.locked {
+            pointer-events: none;
+            opacity: 0.55;
+        }
+        .pic-card.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+
+        .speech-hint {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.95);
+            color: #6e1f41;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+            z-index: 50;
+            max-width: 90vw;
+            text-align: center;
+        }
+        .speech-hint.show { opacity: 1; }
+
+        @media (max-width: 380px) {
+            .pic-label { font-size: 0.95rem; }
+            .answer { font-size: 1rem; padding: 14px 6px; }
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+        }
+        @media (max-height: 600px) {
+            .prompt { font-size: 1rem; }
+            .answer { padding: 12px 6px; font-size: 1rem; }
+            .game-area { padding: 8px 12px 12px; gap: 8px; }
+            .pic-label { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Reim-Paare</h1>
+        <p class="sub">Klingt das gleich am Ende?</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="leicht">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Leicht</span>
+                        <span class="ex">Haus & Maus, Hund & Mund ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="knapp">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Knapper</span>
+                        <span class="ex">aehnliche Woerter, genauer hinhoeren ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="drei">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Drei Bilder</span>
+                        <span class="ex">welches reimt sich auf das obere?</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div class="toggle-row">
+            <div>
+                <div class="lbl">Vorlesen</div>
+                <div class="hint">Tippe ein Bild zum Anhoeren</div>
+            </div>
+            <button class="toggle" id="toggle-speech" aria-label="Vorlesen ein/aus"></button>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurueck">×</button>
+    </div>
+    <div class="game-area" id="game-area">
+        <!-- Inhalt wird je nach Stufe gerendert -->
+    </div>
+    <div class="speech-hint" id="speech-hint" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  WORT-INVENTAR + SVG-ICONS
+    // ====================================================
+    // Jedes Wort hat eine "rhyme"-Gruppe. Gleiche Gruppe = reimt sich.
+    // Distinkte Gruppen = reimt sich nicht.
+    const WORDS = {
+        haus:    { label: 'Haus',   rhyme: 'aus' },
+        maus:    { label: 'Maus',   rhyme: 'aus' },
+        hund:    { label: 'Hund',   rhyme: 'und' },
+        mund:    { label: 'Mund',   rhyme: 'und' },
+        fisch:   { label: 'Fisch',  rhyme: 'isch' },
+        tisch:   { label: 'Tisch',  rhyme: 'isch' },
+        sonne:   { label: 'Sonne',  rhyme: 'onne' },
+        tonne:   { label: 'Tonne',  rhyme: 'onne' },
+        bein:    { label: 'Bein',   rhyme: 'ein' },
+        stein:   { label: 'Stein',  rhyme: 'ein' },
+        klein:   { label: 'klein',  rhyme: 'ein' }, // fuer Stufe 2 (kein Bild noetig - aber wir haben eins)
+        hose:    { label: 'Hose',   rhyme: 'ose' },
+        rose:    { label: 'Rose',   rhyme: 'ose' },
+        katze:   { label: 'Katze',  rhyme: 'atze' },
+        tatze:   { label: 'Tatze',  rhyme: 'atze' },
+        kuh:     { label: 'Kuh',    rhyme: 'uh'  },
+        schuh:   { label: 'Schuh',  rhyme: 'uh'  },
+        ball:    { label: 'Ball',   rhyme: 'all' },
+        stall:   { label: 'Stall',  rhyme: 'all' },
+        baum:    { label: 'Baum',   rhyme: 'aum' },
+        traum:   { label: 'Traum',  rhyme: 'aum' },
+        hand:    { label: 'Hand',   rhyme: 'and' },
+        sand:    { label: 'Sand',   rhyme: 'and' },
+        // Distraktoren / Solitaere (eigene Reim-Gruppe, oft genutzt zum Nicht-Reimen)
+        auto:    { label: 'Auto',   rhyme: 'auto'  },
+        apfel:   { label: 'Apfel',  rhyme: 'apfel' },
+        schule:  { label: 'Schule', rhyme: 'ule'   },
+        glas:    { label: 'Glas',   rhyme: 'as'    },
+        steg:    { label: 'Steg',   rhyme: 'eg'    }, // dichter Distraktor zu "Stein"
+    };
+
+    // SVG-Icons je Wort. Alle viewBox 0 0 100 100.
+    const ICONS = {
+        haus: `<rect x="20" y="40" width="60" height="48" fill="#ffe0b2" stroke="#6e1f41" stroke-width="3"/>
+               <polygon points="50,15 14,42 86,42" fill="#e57373" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+               <rect x="42" y="60" width="16" height="28" fill="#6e1f41"/>
+               <rect x="26" y="50" width="10" height="10" fill="#fff" stroke="#6e1f41" stroke-width="2"/>
+               <rect x="64" y="50" width="10" height="10" fill="#fff" stroke="#6e1f41" stroke-width="2"/>`,
+
+        maus: `<ellipse cx="55" cy="62" rx="30" ry="22" fill="#bcaaa4" stroke="#6e1f41" stroke-width="3"/>
+               <circle cx="32" cy="44" r="11" fill="#bcaaa4" stroke="#6e1f41" stroke-width="3"/>
+               <circle cx="78" cy="44" r="11" fill="#bcaaa4" stroke="#6e1f41" stroke-width="3"/>
+               <circle cx="32" cy="44" r="4" fill="#f8bbd0"/>
+               <circle cx="78" cy="44" r="4" fill="#f8bbd0"/>
+               <circle cx="38" cy="58" r="2.5" fill="#3a1a26"/>
+               <circle cx="28" cy="63" r="2" fill="#3a1a26"/>
+               <path d="M 84 70 Q 96 76 90 88" fill="none" stroke="#6e1f41" stroke-width="3" stroke-linecap="round"/>`,
+
+        hund: `<ellipse cx="50" cy="62" rx="26" ry="20" fill="#a1887f" stroke="#6e1f41" stroke-width="3"/>
+               <circle cx="50" cy="40" r="18" fill="#a1887f" stroke="#6e1f41" stroke-width="3"/>
+               <ellipse cx="34" cy="30" rx="6" ry="12" fill="#795548" stroke="#6e1f41" stroke-width="2"/>
+               <ellipse cx="66" cy="30" rx="6" ry="12" fill="#795548" stroke="#6e1f41" stroke-width="2"/>
+               <circle cx="44" cy="40" r="2.5" fill="#3a1a26"/>
+               <circle cx="56" cy="40" r="2.5" fill="#3a1a26"/>
+               <ellipse cx="50" cy="48" rx="3.5" ry="2.5" fill="#3a1a26"/>
+               <path d="M 50 51 Q 46 56 50 58 Q 54 56 50 51" fill="#3a1a26"/>`,
+
+        mund: `<ellipse cx="50" cy="50" rx="34" ry="22" fill="#ef9a9a" stroke="#6e1f41" stroke-width="3"/>
+               <path d="M 22 50 Q 50 60 78 50" fill="none" stroke="#6e1f41" stroke-width="3"/>
+               <rect x="34" y="40" width="6" height="14" fill="white" stroke="#6e1f41" stroke-width="1.5"/>
+               <rect x="42" y="40" width="6" height="14" fill="white" stroke="#6e1f41" stroke-width="1.5"/>
+               <rect x="50" y="40" width="6" height="14" fill="white" stroke="#6e1f41" stroke-width="1.5"/>
+               <rect x="58" y="40" width="6" height="14" fill="white" stroke="#6e1f41" stroke-width="1.5"/>`,
+
+        fisch: `<path d="M 14 50 Q 28 25 60 30 Q 80 32 86 50 Q 80 68 60 70 Q 28 75 14 50 Z" fill="#4fc3f7" stroke="#6e1f41" stroke-width="3"/>
+                <polygon points="14,50 0,30 5,50 0,70" fill="#4fc3f7" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+                <circle cx="70" cy="44" r="3" fill="#3a1a26"/>
+                <path d="M 40 44 Q 50 50 40 56" fill="none" stroke="#0277bd" stroke-width="2"/>`,
+
+        tisch: `<rect x="14" y="42" width="72" height="10" fill="#a1887f" stroke="#6e1f41" stroke-width="3"/>
+                <rect x="20" y="52" width="8" height="36" fill="#a1887f" stroke="#6e1f41" stroke-width="3"/>
+                <rect x="72" y="52" width="8" height="36" fill="#a1887f" stroke="#6e1f41" stroke-width="3"/>
+                <rect x="36" y="30" width="14" height="14" fill="#fff59d" stroke="#6e1f41" stroke-width="2"/>
+                <circle cx="64" cy="36" r="6" fill="#ef9a9a" stroke="#6e1f41" stroke-width="2"/>`,
+
+        sonne: `<circle cx="50" cy="50" r="22" fill="#fdd835" stroke="#6e1f41" stroke-width="3"/>
+                <g stroke="#fdd835" stroke-width="5" stroke-linecap="round">
+                  <line x1="50" y1="10" x2="50" y2="22"/>
+                  <line x1="50" y1="78" x2="50" y2="90"/>
+                  <line x1="10" y1="50" x2="22" y2="50"/>
+                  <line x1="78" y1="50" x2="90" y2="50"/>
+                  <line x1="22" y1="22" x2="30" y2="30"/>
+                  <line x1="70" y1="70" x2="78" y2="78"/>
+                  <line x1="78" y1="22" x2="70" y2="30"/>
+                  <line x1="22" y1="78" x2="30" y2="70"/>
+                </g>
+                <circle cx="42" cy="46" r="2.5" fill="#6e1f41"/>
+                <circle cx="58" cy="46" r="2.5" fill="#6e1f41"/>
+                <path d="M 40 56 Q 50 64 60 56" fill="none" stroke="#6e1f41" stroke-width="2.5" stroke-linecap="round"/>`,
+
+        tonne: `<rect x="26" y="22" width="48" height="68" rx="4" fill="#90a4ae" stroke="#6e1f41" stroke-width="3"/>
+                <rect x="22" y="18" width="56" height="8" rx="2" fill="#607d8b" stroke="#6e1f41" stroke-width="3"/>
+                <line x1="26" y1="40" x2="74" y2="40" stroke="#6e1f41" stroke-width="2"/>
+                <line x1="26" y1="60" x2="74" y2="60" stroke="#6e1f41" stroke-width="2"/>
+                <line x1="26" y1="80" x2="74" y2="80" stroke="#6e1f41" stroke-width="2"/>`,
+
+        bein: `<rect x="40" y="14" width="20" height="40" rx="6" fill="#ffccbc" stroke="#6e1f41" stroke-width="3"/>
+               <ellipse cx="50" cy="58" rx="14" ry="6" fill="#ffab91" stroke="#6e1f41" stroke-width="3"/>
+               <rect x="36" y="60" width="28" height="20" rx="4" fill="#ffccbc" stroke="#6e1f41" stroke-width="3"/>
+               <ellipse cx="50" cy="84" rx="20" ry="6" fill="#3a1a26"/>`,
+
+        stein: `<polygon points="20,72 30,40 56,32 78,46 82,68 60,84 30,82" fill="#9e9e9e" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+                <polyline points="38,52 48,46 56,52" fill="none" stroke="#6e1f41" stroke-width="2"/>
+                <polyline points="50,66 60,60 70,64" fill="none" stroke="#6e1f41" stroke-width="2"/>`,
+
+        klein: `<text x="50" y="62" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="22" font-weight="bold" fill="#6e1f41">klein</text>
+                <circle cx="50" cy="36" r="8" fill="#f8bbd0" stroke="#6e1f41" stroke-width="3"/>`,
+
+        hose: `<path d="M 22 18 L 78 18 L 76 88 L 56 88 L 50 50 L 44 88 L 24 88 Z" fill="#1976d2" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+               <line x1="50" y1="18" x2="50" y2="46" stroke="#6e1f41" stroke-width="2"/>
+               <circle cx="32" cy="26" r="2" fill="#fff"/>`,
+
+        rose: `<g transform="translate(50 44)">
+                  <circle r="18" fill="#e91e63" stroke="#6e1f41" stroke-width="3"/>
+                  <path d="M -10 -2 Q 0 -12 10 -2 Q 6 6 0 4 Q -6 6 -10 -2" fill="#ad1457"/>
+                  <path d="M -8 4 Q 0 -4 8 4 Q 4 10 0 8 Q -4 10 -8 4" fill="#c2185b"/>
+                </g>
+                <line x1="50" y1="62" x2="50" y2="92" stroke="#388e3c" stroke-width="3"/>
+                <path d="M 50 78 Q 64 72 68 82" fill="#66bb6a" stroke="#388e3c" stroke-width="2"/>`,
+
+        katze: `<ellipse cx="50" cy="68" rx="22" ry="16" fill="#ffb74d" stroke="#6e1f41" stroke-width="3"/>
+                <circle cx="50" cy="44" r="20" fill="#ffb74d" stroke="#6e1f41" stroke-width="3"/>
+                <polygon points="32,30 36,14 44,28" fill="#ffb74d" stroke="#6e1f41" stroke-width="2" stroke-linejoin="round"/>
+                <polygon points="68,30 64,14 56,28" fill="#ffb74d" stroke="#6e1f41" stroke-width="2" stroke-linejoin="round"/>
+                <circle cx="42" cy="44" r="2.5" fill="#3a1a26"/>
+                <circle cx="58" cy="44" r="2.5" fill="#3a1a26"/>
+                <path d="M 46 52 L 50 56 L 54 52" fill="#f8bbd0" stroke="#6e1f41" stroke-width="1.5"/>
+                <path d="M 38 50 L 30 48 M 38 52 L 30 53 M 62 50 L 70 48 M 62 52 L 70 53" stroke="#6e1f41" stroke-width="1"/>`,
+
+        tatze: `<circle cx="50" cy="62" r="22" fill="#ffb74d" stroke="#6e1f41" stroke-width="3"/>
+                <circle cx="30" cy="36" r="8" fill="#ffb74d" stroke="#6e1f41" stroke-width="3"/>
+                <circle cx="50" cy="26" r="9" fill="#ffb74d" stroke="#6e1f41" stroke-width="3"/>
+                <circle cx="70" cy="36" r="8" fill="#ffb74d" stroke="#6e1f41" stroke-width="3"/>
+                <ellipse cx="42" cy="58" rx="4" ry="3" fill="#3a1a26"/>
+                <ellipse cx="58" cy="58" rx="4" ry="3" fill="#3a1a26"/>
+                <ellipse cx="50" cy="68" rx="6" ry="4" fill="#3a1a26"/>`,
+
+        kuh: `<ellipse cx="50" cy="60" rx="32" ry="22" fill="white" stroke="#6e1f41" stroke-width="3"/>
+              <circle cx="50" cy="36" r="16" fill="white" stroke="#6e1f41" stroke-width="3"/>
+              <ellipse cx="50" cy="44" rx="9" ry="6" fill="#f8bbd0" stroke="#6e1f41" stroke-width="2"/>
+              <circle cx="46" cy="44" r="1.5" fill="#3a1a26"/>
+              <circle cx="54" cy="44" r="1.5" fill="#3a1a26"/>
+              <circle cx="44" cy="34" r="2" fill="#3a1a26"/>
+              <circle cx="56" cy="34" r="2" fill="#3a1a26"/>
+              <ellipse cx="32" cy="30" rx="6" ry="4" fill="#3a1a26"/>
+              <ellipse cx="68" cy="30" rx="6" ry="4" fill="#3a1a26"/>
+              <ellipse cx="36" cy="64" rx="6" ry="4" fill="#3a1a26"/>
+              <ellipse cx="64" cy="68" rx="5" ry="3" fill="#3a1a26"/>`,
+
+        schuh: `<path d="M 14 64 L 14 50 Q 14 38 26 38 L 60 38 Q 78 40 82 56 L 86 64 L 86 78 L 14 78 Z" fill="#d32f2f" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+                <line x1="40" y1="44" x2="40" y2="62" stroke="#6e1f41" stroke-width="2"/>
+                <line x1="50" y1="44" x2="50" y2="62" stroke="#6e1f41" stroke-width="2"/>
+                <line x1="60" y1="46" x2="60" y2="62" stroke="#6e1f41" stroke-width="2"/>
+                <rect x="14" y="74" width="72" height="6" fill="#3a1a26"/>`,
+
+        ball: `<circle cx="50" cy="50" r="34" fill="#ef5350" stroke="#6e1f41" stroke-width="3"/>
+               <path d="M 50 16 Q 36 50 50 84" fill="none" stroke="#6e1f41" stroke-width="2.5"/>
+               <path d="M 50 16 Q 64 50 50 84" fill="none" stroke="#6e1f41" stroke-width="2.5"/>
+               <path d="M 16 50 Q 50 36 84 50" fill="none" stroke="#6e1f41" stroke-width="2.5"/>
+               <path d="M 16 50 Q 50 64 84 50" fill="none" stroke="#6e1f41" stroke-width="2.5"/>`,
+
+        stall: `<rect x="16" y="46" width="68" height="44" fill="#a1887f" stroke="#6e1f41" stroke-width="3"/>
+                <polygon points="50,16 10,46 90,46" fill="#8d6e63" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+                <rect x="40" y="58" width="20" height="32" fill="#6e1f41"/>
+                <line x1="34" y1="40" x2="50" y2="22" stroke="#6e1f41" stroke-width="2"/>
+                <line x1="66" y1="40" x2="50" y2="22" stroke="#6e1f41" stroke-width="2"/>
+                <text x="50" y="38" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="14" font-weight="bold" fill="#fff59d">+</text>`,
+
+        baum: `<rect x="44" y="58" width="12" height="32" fill="#795548" stroke="#6e1f41" stroke-width="3"/>
+               <circle cx="50" cy="42" r="26" fill="#66bb6a" stroke="#6e1f41" stroke-width="3"/>
+               <circle cx="32" cy="36" r="14" fill="#66bb6a" stroke="#6e1f41" stroke-width="2.5"/>
+               <circle cx="68" cy="36" r="14" fill="#66bb6a" stroke="#6e1f41" stroke-width="2.5"/>
+               <circle cx="40" cy="48" r="3" fill="#e57373"/>
+               <circle cx="60" cy="38" r="3" fill="#e57373"/>`,
+
+        traum: `<path d="M 18 42 Q 18 28 34 28 Q 38 18 50 18 Q 62 18 66 28 Q 82 28 82 42 Q 82 56 66 56 L 34 56 Q 18 56 18 42 Z" fill="white" stroke="#6e1f41" stroke-width="3"/>
+                <text x="50" y="48" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="20" font-weight="bold" fill="#6e1f41">Z z</text>
+                <circle cx="36" cy="68" r="3" fill="#6e1f41"/>
+                <circle cx="42" cy="76" r="2.5" fill="#6e1f41"/>
+                <circle cx="48" cy="84" r="2" fill="#6e1f41"/>`,
+
+        hand: `<path d="M 30 86 L 30 48 Q 30 42 36 42 Q 42 42 42 48 L 42 36 Q 42 26 48 26 Q 54 26 54 36 L 54 48 Q 54 36 60 36 Q 66 36 66 46 L 66 50 Q 66 42 72 42 Q 78 42 78 50 L 78 86 Z"
+                fill="#ffccbc" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>`,
+
+        sand: `<path d="M 6 80 L 94 80 L 80 60 L 60 70 L 40 50 L 22 64 Z" fill="#fdd835" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+               <circle cx="20" cy="74" r="1.5" fill="#6e1f41"/>
+               <circle cx="34" cy="76" r="1.5" fill="#6e1f41"/>
+               <circle cx="50" cy="74" r="1.5" fill="#6e1f41"/>
+               <circle cx="66" cy="76" r="1.5" fill="#6e1f41"/>
+               <circle cx="80" cy="74" r="1.5" fill="#6e1f41"/>
+               <path d="M 30 50 L 30 38 L 24 32 M 30 38 L 36 32" stroke="#6e1f41" stroke-width="2.5" fill="none"/>`,
+
+        auto: `<rect x="10" y="52" width="80" height="22" rx="6" fill="#42a5f5" stroke="#6e1f41" stroke-width="3"/>
+               <path d="M 22 52 L 30 36 L 70 36 L 78 52 Z" fill="#90caf9" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+               <line x1="50" y1="36" x2="50" y2="52" stroke="#6e1f41" stroke-width="2"/>
+               <circle cx="28" cy="78" r="8" fill="#3a1a26" stroke="#6e1f41" stroke-width="2"/>
+               <circle cx="72" cy="78" r="8" fill="#3a1a26" stroke="#6e1f41" stroke-width="2"/>
+               <circle cx="28" cy="78" r="3" fill="#bdbdbd"/>
+               <circle cx="72" cy="78" r="3" fill="#bdbdbd"/>`,
+
+        apfel: `<circle cx="50" cy="56" r="28" fill="#e53935" stroke="#6e1f41" stroke-width="3"/>
+                <path d="M 50 28 Q 50 18 58 16" fill="none" stroke="#5d4037" stroke-width="3" stroke-linecap="round"/>
+                <ellipse cx="62" cy="20" rx="6" ry="3" fill="#66bb6a" stroke="#6e1f41" stroke-width="2" transform="rotate(-25 62 20)"/>
+                <ellipse cx="42" cy="46" rx="5" ry="3" fill="#fff" opacity="0.55"/>`,
+
+        schule: `<rect x="14" y="34" width="72" height="50" fill="#ffcc80" stroke="#6e1f41" stroke-width="3"/>
+                 <polygon points="10,34 50,12 90,34" fill="#e57373" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+                 <rect x="42" y="58" width="16" height="26" fill="#6e1f41"/>
+                 <rect x="22" y="44" width="14" height="14" fill="#fff59d" stroke="#6e1f41" stroke-width="2"/>
+                 <rect x="64" y="44" width="14" height="14" fill="#fff59d" stroke="#6e1f41" stroke-width="2"/>
+                 <text x="50" y="32" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="10" font-weight="bold" fill="#fff">ABC</text>`,
+
+        glas: `<path d="M 30 18 L 70 18 L 64 84 Q 64 90 50 90 Q 36 90 36 84 Z" fill="#b3e5fc" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round" opacity="0.85"/>
+               <path d="M 36 30 L 64 30" stroke="#6e1f41" stroke-width="2" opacity="0.5"/>
+               <ellipse cx="44" cy="36" rx="3" ry="6" fill="white" opacity="0.7"/>`,
+
+        steg: `<rect x="10" y="60" width="80" height="14" fill="#a1887f" stroke="#6e1f41" stroke-width="3"/>
+               <line x1="20" y1="60" x2="20" y2="74" stroke="#6e1f41" stroke-width="2"/>
+               <line x1="36" y1="60" x2="36" y2="74" stroke="#6e1f41" stroke-width="2"/>
+               <line x1="52" y1="60" x2="52" y2="74" stroke="#6e1f41" stroke-width="2"/>
+               <line x1="68" y1="60" x2="68" y2="74" stroke="#6e1f41" stroke-width="2"/>
+               <line x1="84" y1="60" x2="84" y2="74" stroke="#6e1f41" stroke-width="2"/>
+               <rect x="22" y="74" width="6" height="14" fill="#5d4037"/>
+               <rect x="72" y="74" width="6" height="14" fill="#5d4037"/>
+               <path d="M 6 86 Q 20 90 34 86 Q 50 82 66 86 Q 82 90 96 86 L 96 100 L 6 100 Z" fill="#4fc3f7" opacity="0.7"/>`,
+    };
+
+    // ====================================================
+    //  AUFGABEN-DEFINITION JE STUFE
+    // ====================================================
+    // Stufe 1 "leicht": klare Reim-Paare ODER deutlich verschiedene Distraktoren
+    const TASKS_LEICHT = [
+        { a:'haus',  b:'maus',  rhymes:true  },
+        { a:'hund',  b:'mund',  rhymes:true  },
+        { a:'fisch', b:'tisch', rhymes:true  },
+        { a:'sonne', b:'tonne', rhymes:true  },
+        { a:'hose',  b:'rose',  rhymes:true  },
+        { a:'katze', b:'tatze', rhymes:true  },
+        { a:'kuh',   b:'schuh', rhymes:true  },
+        { a:'bein',  b:'stein', rhymes:true  },
+        { a:'haus',  b:'auto',  rhymes:false },
+        { a:'fisch', b:'apfel', rhymes:false },
+        { a:'sonne', b:'baum',  rhymes:false },
+        { a:'hund',  b:'glas',  rhymes:false },
+        { a:'kuh',   b:'apfel', rhymes:false },
+        { a:'rose',  b:'auto',  rhymes:false },
+        { a:'tisch', b:'schule',rhymes:false },
+        { a:'maus',  b:'apfel', rhymes:false },
+    ];
+
+    // Stufe 2 "knapp": dichtere Distraktoren, feinere Reime
+    const TASKS_KNAPP = [
+        { a:'ball',  b:'stall', rhymes:true  },
+        { a:'baum',  b:'traum', rhymes:true  },
+        { a:'hand',  b:'sand',  rhymes:true  },
+        { a:'stein', b:'klein', rhymes:true  },
+        { a:'haus',  b:'maus',  rhymes:true  },
+        { a:'hose',  b:'rose',  rhymes:true  },
+        { a:'kuh',   b:'schuh', rhymes:true  },
+        { a:'bein',  b:'stein', rhymes:true  },
+        // Dichte Distraktoren - aehnlicher Anfang ODER aehnlicher Vokal aber kein Reim
+        { a:'stein', b:'steg',  rhymes:false },
+        { a:'sand',  b:'sonne', rhymes:false },
+        { a:'hand',  b:'haus',  rhymes:false },
+        { a:'baum',  b:'ball',  rhymes:false },
+        { a:'stall', b:'stein', rhymes:false },
+        { a:'tisch', b:'tatze', rhymes:false },
+        { a:'maus',  b:'mund',  rhymes:false },
+        { a:'rose',  b:'kuh',   rhymes:false },
+    ];
+
+    // Stufe 3 "drei Bilder": Vorgabe + 3 Optionen, eines reimt sich
+    const TASKS_DREI = [
+        { target:'haus',  options:['maus',  'auto',  'apfel'] },
+        { target:'hund',  options:['baum',  'mund',  'glas'  ] },
+        { target:'fisch', options:['apfel', 'auto',  'tisch' ] },
+        { target:'sonne', options:['tonne', 'baum',  'hand'  ] },
+        { target:'kuh',   options:['apfel', 'schuh', 'tisch' ] },
+        { target:'baum',  options:['glas',  'hose',  'traum' ] },
+        { target:'hand',  options:['sand',  'auto',  'rose'  ] },
+        { target:'ball',  options:['stein', 'stall', 'apfel' ] },
+        { target:'bein',  options:['hose',  'auto',  'stein' ] },
+        { target:'hose',  options:['kuh',   'rose',  'mund'  ] },
+        { target:'katze', options:['baum',  'tatze', 'auto'  ] },
+        { target:'maus',  options:['haus',  'apfel', 'baum'  ] },
+        { target:'tisch', options:['hand',  'sonne', 'fisch' ] },
+        { target:'mund',  options:['glas',  'hund',  'auto'  ] },
+    ];
+
+    const STAGES = {
+        leicht: { label: 'Leicht',     tasks: TASKS_LEICHT, kind: 'pair'   },
+        knapp:  { label: 'Knapper',    tasks: TASKS_KNAPP,  kind: 'pair'   },
+        drei:   { label: 'Drei Bilder',tasks: TASKS_DREI,   kind: 'triple' },
+    };
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        speechOn: true,
+        // Aktive Aufgabe
+        current: null,
+        locked: false,
+        // Anti-Wiederholung: kleiner Ringpuffer mit zuletzt gestellten Indizes
+        recentIdx: [],
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'reim-paare-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                stage: state.stage,
+                speechOn: state.speechOn,
+            }));
+        } catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO (Erfolg-Ton)
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudioCtx() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
+        const ctx = ensureAudioCtx();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.08);
+            setTimeout(() => tone(880, 0.22, 'sine', 0.08), 110);
+        },
+    };
+
+    // ====================================================
+    //  SPEECH (TTS) - mit Warmup + Visual-Hint Fallback
+    // ====================================================
+    // Pattern: speechSynthesis braucht eine User-Geste, um initial entsperrt
+    // zu werden. Wir feuern beim ersten Tap einen leeren Utterance ab
+    // ("warmup"). Wenn Speech nicht verfuegbar ist, zeigen wir stattdessen
+    // ein Wort kurz oben am Bildschirm.
+    const speech = {
+        supported: ('speechSynthesis' in window) && ('SpeechSynthesisUtterance' in window),
+        warmedUp: false,
+        voice: null,
+    };
+    function pickGermanVoice() {
+        if (!speech.supported) return null;
+        const voices = window.speechSynthesis.getVoices() || [];
+        // Bevorzugt deutsche Stimme
+        return voices.find(v => /^de(-|_|$)/i.test(v.lang)) ||
+               voices.find(v => /deutsch|german/i.test(v.name)) ||
+               null;
+    }
+    function warmupSpeech() {
+        if (!speech.supported || speech.warmedUp) return;
+        try {
+            const u = new SpeechSynthesisUtterance('');
+            u.volume = 0;
+            u.lang = 'de-DE';
+            window.speechSynthesis.speak(u);
+            speech.warmedUp = true;
+        } catch (e) { /* ignore */ }
+    }
+    function showVisualHint(text) {
+        const el = $('speech-hint');
+        if (!el) return;
+        el.textContent = text;
+        el.classList.add('show');
+        clearTimeout(showVisualHint._t);
+        showVisualHint._t = setTimeout(() => {
+            el.classList.remove('show');
+        }, 1100);
+    }
+    function speakWord(wordKey) {
+        if (!state.speechOn) return;
+        const w = WORDS[wordKey];
+        if (!w) return;
+        // Visual-Hint immer anzeigen (gleichzeitig zur Stimme - ist auch
+        // Untertitel-artig). Das ist auch der Fallback, wenn Speech nicht geht.
+        showVisualHint(w.label);
+        if (!speech.supported) return;
+        try {
+            // Laufende Aussprache stoppen, damit aufeinanderfolgende Taps
+            // nicht in eine Warteschlange laufen.
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(w.label);
+            u.lang = 'de-DE';
+            u.rate = 0.9;
+            u.pitch = 1.0;
+            if (!speech.voice) speech.voice = pickGermanVoice();
+            if (speech.voice) u.voice = speech.voice;
+            window.speechSynthesis.speak(u);
+        } catch (e) { /* fallback ist visualHint */ }
+    }
+    if (speech.supported && typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
+        window.speechSynthesis.onvoiceschanged = () => {
+            speech.voice = pickGermanVoice();
+        };
+    }
+
+    // ====================================================
+    //  SVG-BILD HELPER
+    // ====================================================
+    function svgFor(wordKey) {
+        const inner = ICONS[wordKey];
+        if (!inner) return '';
+        return `<svg class="pic-svg" viewBox="0 0 100 100" aria-hidden="true">${inner}</svg>`;
+    }
+
+    // ====================================================
+    //  AUFGABEN-AUSWAHL (ohne baldige Wiederholung)
+    // ====================================================
+    function pickTaskIndex(tasks) {
+        // Pool ohne kuerzlich gestellte Indizes
+        const recent = state.recentIdx;
+        const candidates = [];
+        for (let i = 0; i < tasks.length; i++) {
+            if (!recent.includes(i)) candidates.push(i);
+        }
+        const pool = candidates.length > 0 ? candidates : tasks.map((_, i) => i);
+        const idx = pick(pool);
+        // Ringpuffer: ca. halbe Pool-Groesse merken
+        const cap = Math.max(2, Math.floor(tasks.length / 2));
+        state.recentIdx.push(idx);
+        if (state.recentIdx.length > cap) state.recentIdx.shift();
+        return idx;
+    }
+
+    // ====================================================
+    //  RENDER: PAAR-MODUS (Stufe 1 + 2)
+    // ====================================================
+    function renderPairTask(task) {
+        const area = $('game-area');
+        area.innerHTML = `
+            <div class="prompt">Reimt sich das?</div>
+            <div class="pictures">
+                <button class="pic-card" data-word="${task.a}" aria-label="${WORDS[task.a].label}">
+                    ${svgFor(task.a)}
+                    <div class="pic-label">${WORDS[task.a].label}</div>
+                </button>
+                <div class="pic-bridge">~</div>
+                <button class="pic-card" data-word="${task.b}" aria-label="${WORDS[task.b].label}">
+                    ${svgFor(task.b)}
+                    <div class="pic-label">${WORDS[task.b].label}</div>
+                </button>
+            </div>
+            <div class="answers">
+                <button class="answer yes" data-ans="yes">
+                    <span class="icon">✓</span><span>Reimt sich</span>
+                </button>
+                <button class="answer no" data-ans="no">
+                    <span class="icon">✗</span><span>Reimt nicht</span>
+                </button>
+            </div>
+        `;
+        // Bilder antippen -> Wort vorlesen
+        area.querySelectorAll('.pic-card').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.remove('flash');
+                void btn.offsetWidth;
+                btn.classList.add('flash');
+                speakWord(btn.dataset.word);
+            });
+        });
+        // Antwort-Buttons
+        area.querySelectorAll('.answer').forEach(btn => {
+            btn.addEventListener('click', () => onPairAnswer(btn, task));
+        });
+    }
+
+    function onPairAnswer(btn, task) {
+        if (state.locked) return;
+        const wantYes = task.rhymes === true;
+        const isYes = btn.dataset.ans === 'yes';
+        const correct = (wantYes === isYes);
+        if (correct) {
+            state.locked = true;
+            btn.classList.add('correct');
+            document.querySelectorAll('.answer').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            sfx.correct();
+            setTimeout(() => nextRound(), 1100);
+        } else {
+            btn.classList.remove('wiggle');
+            void btn.offsetWidth;
+            btn.classList.add('wiggle');
+        }
+    }
+
+    // ====================================================
+    //  RENDER: TRIPLE-MODUS (Stufe 3)
+    // ====================================================
+    function renderTripleTask(task) {
+        const area = $('game-area');
+        const target = task.target;
+        const targetRhyme = WORDS[target].rhyme;
+        // Pruefen welche Option reimt
+        const correctKey = task.options.find(k => WORDS[k].rhyme === targetRhyme);
+        const optionsShuffled = shuffle(task.options);
+
+        area.innerHTML = `
+            <div class="prompt">Was reimt sich auf das obere Bild?</div>
+            <div class="triple-wrap">
+                <button class="triple-target pic-card" data-word="${target}" aria-label="${WORDS[target].label}">
+                    ${svgFor(target)}
+                    <div class="pic-label">${WORDS[target].label}</div>
+                </button>
+                <div class="triple-row" id="triple-row">
+                    ${optionsShuffled.map(k => `
+                        <button class="pic-card" data-word="${k}" data-correct="${k === correctKey ? '1' : '0'}" aria-label="${WORDS[k].label}">
+                            ${svgFor(k)}
+                            <div class="pic-label">${WORDS[k].label}</div>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        // Vorgabe-Bild: nur vorlesen
+        const targetBtn = area.querySelector('.triple-target');
+        targetBtn.addEventListener('click', () => {
+            targetBtn.classList.remove('flash');
+            void targetBtn.offsetWidth;
+            targetBtn.classList.add('flash');
+            speakWord(target);
+        });
+        // Optionen
+        area.querySelectorAll('#triple-row .pic-card').forEach(btn => {
+            btn.addEventListener('click', () => onTripleAnswer(btn));
+        });
+        // Bei Stufe 3 das Ziel-Wort einmal nach kurzer Pause vorlesen
+        if (state.speechOn) {
+            setTimeout(() => speakWord(target), 250);
+        }
+    }
+
+    function onTripleAnswer(btn) {
+        if (state.locked) return;
+        const word = btn.dataset.word;
+        const isCorrect = btn.dataset.correct === '1';
+        if (isCorrect) {
+            state.locked = true;
+            btn.classList.add('correct');
+            document.querySelectorAll('#triple-row .pic-card').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            sfx.correct();
+            speakWord(word);
+            setTimeout(() => nextRound(), 1300);
+        } else {
+            btn.classList.remove('wiggle');
+            void btn.offsetWidth;
+            btn.classList.add('wiggle');
+            speakWord(word);
+        }
+    }
+
+    // ====================================================
+    //  RUNDEN
+    // ====================================================
+    function nextRound() {
+        state.locked = false;
+        const stage = STAGES[state.stage];
+        const idx = pickTaskIndex(stage.tasks);
+        const task = stage.tasks[idx];
+        state.current = task;
+        if (stage.kind === 'pair') renderPairTask(task);
+        else                       renderTripleTask(task);
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        switchScreen('game');
+        state.recentIdx = [];
+        nextRound();
+    }
+
+    function backToStart() {
+        // Sprache abbrechen
+        if (speech.supported) {
+            try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+        }
+        state.locked = false;
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        if (!STAGES[value]) value = 'leicht';
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    function setSpeechOn(on) {
+        state.speechOn = !!on;
+        $('toggle-speech').classList.toggle('on', state.speechOn);
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('toggle-speech').addEventListener('click', () => {
+        setSpeechOn(!state.speechOn);
+        savePrefs();
+    });
+
+    $('btn-start').addEventListener('click', () => {
+        // User-Geste -> Audio + Speech entsperren
+        ensureAudioCtx();
+        warmupSpeech();
+        if (!speech.voice) speech.voice = pickGermanVoice();
+        startGame();
+    });
+    $('btn-back').addEventListener('click', backToStart);
+
+    // Init
+    (function init() {
+        const prefs = loadPrefs();
+        selectStage(prefs.stage || 'leicht');
+        setSpeechOn(prefs.speechOn !== false); // default an
+    })();
+
+    // Service-Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>

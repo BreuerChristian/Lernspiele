@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#1565c0"/>
+  <!-- Weltkugel als Hintergrund-Andeutung -->
+  <circle cx="256" cy="256" r="170" fill="#e3f1fb" stroke="#0d47a1" stroke-width="12"/>
+  <g stroke="#1565c0" stroke-width="6" fill="none" opacity="0.55">
+    <ellipse cx="256" cy="256" rx="170" ry="60"/>
+    <ellipse cx="256" cy="256" rx="60" ry="170"/>
+    <line x1="86" y1="256" x2="426" y2="256"/>
+    <line x1="256" y1="86" x2="256" y2="426"/>
+  </g>
+  <!-- Sprech-Pille mit "Hi!" -->
+  <rect x="146" y="206" width="220" height="120" rx="60" fill="#1565c0"/>
+  <text x="256" y="294" text-anchor="middle" font-family="Verdana,Tahoma,sans-serif" font-size="92" font-weight="bold" fill="white">Hi!</text>
+</svg>

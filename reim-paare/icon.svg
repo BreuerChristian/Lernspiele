@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#ec407a"/>
+  <!-- linkes Bild: Haus -->
+  <g transform="translate(60 170)">
+    <polygon points="80,0 0,70 160,70" fill="#fff8e1" stroke="#ad1457" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="10" y="70" width="140" height="100" fill="#fff8e1" stroke="#ad1457" stroke-width="8"/>
+    <rect x="60" y="110" width="40" height="60" fill="#ad1457"/>
+  </g>
+  <!-- Reim-Symbol -->
+  <g transform="translate(256 256)">
+    <text x="0" y="14" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="78" font-weight="bold" fill="white">≈</text>
+  </g>
+  <!-- rechtes Bild: Maus -->
+  <g transform="translate(310 200)">
+    <ellipse cx="80" cy="60" rx="70" ry="48" fill="#fff8e1" stroke="#ad1457" stroke-width="8"/>
+    <circle cx="30" cy="30" r="22" fill="#fff8e1" stroke="#ad1457" stroke-width="8"/>
+    <circle cx="130" cy="30" r="22" fill="#fff8e1" stroke="#ad1457" stroke-width="8"/>
+    <circle cx="65" cy="55" r="5" fill="#ad1457"/>
+    <circle cx="40" cy="60" r="3" fill="#ad1457"/>
+    <path d="M 145 80 Q 175 90 165 110" fill="none" stroke="#ad1457" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>

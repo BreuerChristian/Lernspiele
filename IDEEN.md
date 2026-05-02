@@ -7,9 +7,9 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 ## Sprache & Lesen
 - [x] **Silben klatschen** — Wort wird gezeigt/gesagt, Kind tippt pro Silbe einmal. Silbenbögen werden visualisiert.
 - [x] **Anlaut-Spiel** — Bild (Apfel), Kind wählt Anfangsbuchstaben aus 3-4 Optionen. Anschluss an Buchstaben-Spiel.
-- [ ] **Reim-Paare** — zwei Bilder, reimt sich oder nicht (Haus/Maus vs. Haus/Auto).
-- [ ] **Wort-Bild-Memory** — kurzes Wort lesen, passendes Bild antippen. Erste echte Lese-Übung.
-- [ ] **Erste englische Wörter** — Bild + Audio + englisches Wort, ohne Test-Druck.
+- [x] **Reim-Paare** — zwei Bilder, reimt sich oder nicht (Haus/Maus vs. Haus/Auto).
+- [x] **Wort-Bild-Memory** — kurzes Wort lesen, passendes Bild antippen. Erste echte Lese-Übung.
+- [x] **Erste englische Wörter** — Bild + Audio + englisches Wort, ohne Test-Druck.
 
 ## Mathe & Zahlen
 - [x] **Mengen erfassen** — Punktwolke kurz zeigen, Anzahl wählen. Trainiert Subitizing (1-5 auf einen Blick).
@@ -19,10 +19,10 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [x] **Münzen** — Beträge mit Euro-Münzen legen.
 
 ## Welt & Sachkunde
-- [ ] **Bundesländer-Spiel** — Pendant zu Hauptstädten, eine Stufe einfacher (Form ziehen → Position finden).
-- [ ] **Länder-Flaggen** — Flagge → Land. Knüpft direkt an Hauptstädte-Spiel an.
+- [x] **Bundesländer-Spiel** — Pendant zu Hauptstädten, eine Stufe einfacher (Form ziehen → Position finden).
+- [x] **Länder-Flaggen** — Flagge → Land. Knüpft direkt an Hauptstädte-Spiel an.
 - [x] **Tier-Geräusche** — Geräusch hören, Tier antippen (4-6 Optionen). Niedrigschwellig, sofort spielbar.
-- [ ] **Planeten der Reihe nach** — Sonnensystem ordnen, mit Größenverhältnissen.
+- [x] **Planeten der Reihe nach** — Sonnensystem ordnen, mit Größenverhältnissen.
 - [x] **Jahreszeiten-Sortieren** — Bilder (Schnee, Blüten, Sonnenblume, Laub) den vier Bäumen zuordnen.
 
 ## Wahrnehmung & Logik
@@ -52,3 +52,9 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [x] **Plus-Türmchen** (`plus-tuermchen/`)
 - [x] **Silben klatschen** (`silben-klatschen/`)
 - [x] **Anlaut-Spiel** (`anlaute/`)
+- [x] **Reim-Paare** (`reim-paare/`)
+- [x] **Wort-Bild-Memory** (`wort-bild/`)
+- [x] **Erste englische Wörter** (`englisch-erste-woerter/`)
+- [x] **Bundesländer-Spiel** (`bundeslaender/`)
+- [x] **Länder-Flaggen** (`flaggen/`)
+- [x] **Planeten der Reihe nach** (`planeten/`)
