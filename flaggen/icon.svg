@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#283593"/>
+  <!-- Drei kleine Flaggen-Kacheln, leicht gestapelt -->
+  <!-- Deutschland (oben links) -->
+  <g transform="translate(96 110)">
+    <rect width="180" height="120" rx="14" fill="#1a1a1a"/>
+    <rect y="40" width="180" height="40" fill="#d62828"/>
+    <rect y="80" width="180" height="40" fill="#f7c948"/>
+    <rect width="180" height="120" rx="14" fill="none" stroke="white" stroke-width="6"/>
+  </g>
+  <!-- Frankreich (rechts unten) -->
+  <g transform="translate(236 230)">
+    <rect width="180" height="120" rx="14" fill="white"/>
+    <rect width="60" height="120" fill="#0055a4"/>
+    <rect x="120" width="60" height="120" fill="#ef4135"/>
+    <rect width="180" height="120" rx="14" fill="none" stroke="white" stroke-width="6"/>
+  </g>
+  <!-- Japan (unten links) -->
+  <g transform="translate(96 350)">
+    <rect width="180" height="100" rx="14" fill="white"/>
+    <circle cx="90" cy="50" r="32" fill="#bc002d"/>
+    <rect width="180" height="100" rx="14" fill="none" stroke="white" stroke-width="6"/>
+  </g>
+</svg>

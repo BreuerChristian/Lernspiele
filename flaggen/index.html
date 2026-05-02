@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Länder-Flaggen</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#283593">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #dde4f4;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #e7ecf7 0%, #aab8e0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #283593;
+            font-size: 2.1rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #5566a8;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #283593;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #e7ecf7;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #d4ddf0; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #283593;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #eef2fa;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #2a3a78;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #dde4f4; }
+        .stage-choice.active {
+            background: #dde4f4;
+            border-color: #283593;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #283593;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #5566a8;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #4858b8, #283593);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(40, 53, 147, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #e7ecf7 0%, #c8d2ec 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #283593;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-progress {
+            color: #283593;
+            font-weight: bold;
+            font-size: 0.95rem;
+            background: white;
+            padding: 6px 14px;
+            border-radius: 999px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #283593;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px 20px;
+            gap: 14px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #2a3a78;
+            font-size: 1.15rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .flag-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            width: 100%;
+        }
+        .flag {
+            width: min(80vw, 56vh, 420px);
+            height: auto;
+            aspect-ratio: 3 / 2;
+            display: block;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 10px 26px rgba(40, 53, 147, 0.28);
+            border: 3px solid white;
+        }
+        .flag svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 480px;
+        }
+        .answer {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 8px;
+            font-family: inherit;
+            font-size: 1.02rem;
+            font-weight: bold;
+            color: #2a3a78;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.1s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+            line-height: 1.2;
+        }
+        .answer:hover { background: #eef2fa; }
+        .answer:active { transform: translateY(1px); }
+        .answer.correct {
+            background: #c4e6b8;
+            border-color: #6cab4e;
+            color: #2f5e1d;
+        }
+        .answer.locked {
+            pointer-events: none;
+            opacity: 0.55;
+        }
+        .answer.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        /* ---------- End-Screen ---------- */
+        #screen-end {
+            background: linear-gradient(135deg, #e7ecf7 0%, #aab8e0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-end .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-end h2 {
+            color: #283593;
+            font-size: 1.7rem;
+            margin-bottom: 8px;
+        }
+        #screen-end p {
+            color: #5566a8;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+        .end-actions {
+            display: grid;
+            gap: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #4858b8, #283593);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(40, 53, 147, 0.3);
+        }
+        .btn-primary:active { transform: translateY(1px); }
+        .btn-secondary {
+            background: white;
+            color: #283593;
+            border: 2px solid #283593;
+            border-radius: 16px;
+            padding: 14px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-secondary:active { transform: translateY(1px); }
+
+        @media (max-width: 380px) {
+            .answer { font-size: 0.92rem; padding: 12px 6px; }
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card, #screen-end .card { padding: 24px 20px; }
+        }
+        @media (max-height: 620px) {
+            .prompt { font-size: 1rem; }
+            .answer { padding: 10px 6px; font-size: 0.95rem; }
+            .game-area { padding: 8px 12px 12px; gap: 10px; }
+            .flag { width: min(70vw, 48vh, 360px); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Länder-Flaggen</h1>
+        <p class="sub">Welche Flagge gehört zu welchem Land?</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="europa">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Bekannt – Europa</span>
+                        <span class="ex">Deutschland, Frankreich, Italien …</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="welt">
+                    <span class="emoji">🌍</span>
+                    <span>
+                        <span class="label">Welt – bekannt</span>
+                        <span class="ex">USA, Japan, Brasilien, China …</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="bunt">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Verschachtelt</span>
+                        <span class="ex">Afrika, Südamerika, Skandinavien …</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <div class="hud-progress" id="hud-progress"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt">Welches Land ist das?</div>
+        <div class="flag-wrap">
+            <div class="flag" id="flag-host" aria-label="Flagge"></div>
+        </div>
+        <div class="answers" id="answers"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     END-SCREEN
+============================================================ -->
+<div id="screen-end" class="screen hidden">
+    <div class="card">
+        <h2 id="end-title">Runde fertig</h2>
+        <p id="end-msg">Schöne Runde!</p>
+        <div class="end-actions">
+            <button class="btn-primary" id="btn-again">Nochmal</button>
+            <button class="btn-secondary" id="btn-other-stage">Andere Stufe</button>
+            <button class="btn-secondary" id="btn-to-start">Zum Start</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  FLAGGEN – Inline-SVGs (vereinfacht, ikonisch)
+    //  viewBox 0 0 300 200 (3:2 typisch fuer Flaggen)
+    // ====================================================
+    const FLAGS = {
+        // ---------- Europa-Stufe ----------
+        deutschland: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#1a1a1a"/>
+                <rect y="66.7" width="300" height="66.7" fill="#d62828"/>
+                <rect y="133.3" width="300" height="66.7" fill="#f7c948"/>
+            </svg>`,
+        frankreich: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="100" height="200" fill="#0055a4"/>
+                <rect x="200" width="100" height="200" fill="#ef4135"/>
+            </svg>`,
+        italien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="100" height="200" fill="#009246"/>
+                <rect x="200" width="100" height="200" fill="#ce2b37"/>
+            </svg>`,
+        spanien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#aa151b"/>
+                <rect y="50" width="300" height="100" fill="#f1bf00"/>
+                <!-- Stilisiertes Wappen-Oval -->
+                <ellipse cx="90" cy="100" rx="22" ry="28" fill="#aa151b" stroke="#7a0f15" stroke-width="2"/>
+                <rect x="80" y="92" width="20" height="16" fill="#f1bf00"/>
+            </svg>`,
+        grossbritannien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#012169"/>
+                <!-- Diagonalen weiss -->
+                <path d="M0,0 L300,200 M300,0 L0,200" stroke="white" stroke-width="40"/>
+                <!-- Diagonalen rot duenner -->
+                <path d="M0,0 L300,200 M300,0 L0,200" stroke="#c8102e" stroke-width="14"/>
+                <!-- Mittelkreuz weiss -->
+                <rect x="125" width="50" height="200" fill="white"/>
+                <rect y="75" width="300" height="50" fill="white"/>
+                <!-- Mittelkreuz rot -->
+                <rect x="135" width="30" height="200" fill="#c8102e"/>
+                <rect y="85" width="300" height="30" fill="#c8102e"/>
+            </svg>`,
+        schweiz: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#d52b1e"/>
+                <!-- Schweizer Kreuz: Inhalt zentriert, etwa 1/3 der Hoehe -->
+                <rect x="135" y="55" width="30" height="90" fill="white"/>
+                <rect x="105" y="85" width="90" height="30" fill="white"/>
+            </svg>`,
+        oesterreich: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#ed2939"/>
+                <rect y="66.7" width="300" height="66.7" fill="white"/>
+            </svg>`,
+        niederlande: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="300" height="66.7" fill="#ae1c28"/>
+                <rect y="133.3" width="300" height="66.7" fill="#21468b"/>
+            </svg>`,
+        belgien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#000000"/>
+                <rect x="100" width="100" height="200" fill="#fdda24"/>
+                <rect x="200" width="100" height="200" fill="#ef3340"/>
+            </svg>`,
+        polen: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect y="100" width="300" height="100" fill="#dc143c"/>
+            </svg>`,
+
+        // ---------- Welt-bekannt-Stufe ----------
+        usa: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <!-- 7 rote Streifen -->
+                <rect y="0"   width="300" height="15.4" fill="#b22234"/>
+                <rect y="30.8" width="300" height="15.4" fill="#b22234"/>
+                <rect y="61.5" width="300" height="15.4" fill="#b22234"/>
+                <rect y="92.3" width="300" height="15.4" fill="#b22234"/>
+                <rect y="123.1" width="300" height="15.4" fill="#b22234"/>
+                <rect y="153.8" width="300" height="15.4" fill="#b22234"/>
+                <rect y="184.6" width="300" height="15.4" fill="#b22234"/>
+                <!-- Blaues Sternenfeld -->
+                <rect width="120" height="107.7" fill="#3c3b6e"/>
+                <!-- Vereinfachte Sterne (5x4 Grid) -->
+                <g fill="white" font-family="Verdana" font-size="14" text-anchor="middle">
+                    <text x="20" y="22">★</text><text x="44" y="22">★</text><text x="68" y="22">★</text><text x="92" y="22">★</text>
+                    <text x="20" y="44">★</text><text x="44" y="44">★</text><text x="68" y="44">★</text><text x="92" y="44">★</text>
+                    <text x="20" y="66">★</text><text x="44" y="66">★</text><text x="68" y="66">★</text><text x="92" y="66">★</text>
+                    <text x="20" y="88">★</text><text x="44" y="88">★</text><text x="68" y="88">★</text><text x="92" y="88">★</text>
+                </g>
+            </svg>`,
+        japan: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <circle cx="150" cy="100" r="50" fill="#bc002d"/>
+            </svg>`,
+        brasilien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#009c3b"/>
+                <polygon points="150,30 270,100 150,170 30,100" fill="#ffdf00"/>
+                <circle cx="150" cy="100" r="32" fill="#002776"/>
+                <path d="M120,98 Q150,82 180,98" stroke="white" stroke-width="2.5" fill="none"/>
+            </svg>`,
+        china: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#ee1c25"/>
+                <g fill="#ffff00" font-family="Verdana" text-anchor="middle">
+                    <text x="55" y="55" font-size="36">★</text>
+                    <text x="105" y="32" font-size="14">★</text>
+                    <text x="125" y="55" font-size="14">★</text>
+                    <text x="125" y="85" font-size="14">★</text>
+                    <text x="105" y="105" font-size="14">★</text>
+                </g>
+            </svg>`,
+        kanada: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="75" height="200" fill="#ff0000"/>
+                <rect x="225" width="75" height="200" fill="#ff0000"/>
+                <!-- Vereinfachtes Ahornblatt: zentrales Polygon -->
+                <polygon points="150,55 158,85 188,82 168,102 178,135 150,118 122,135 132,102 112,82 142,85" fill="#ff0000"/>
+                <polygon points="150,140 145,150 155,150" fill="#ff0000"/>
+            </svg>`,
+        mexiko: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="100" height="200" fill="#006847"/>
+                <rect x="200" width="100" height="200" fill="#ce1126"/>
+                <!-- vereinfachtes Symbol: Adler/Schild als kleiner Kreis -->
+                <circle cx="150" cy="100" r="22" fill="none" stroke="#7a4a14" stroke-width="3"/>
+                <path d="M138,100 Q150,88 162,100 Q150,112 138,100 Z" fill="#7a4a14"/>
+                <rect x="148" y="100" width="4" height="14" fill="#006847"/>
+            </svg>`,
+        tuerkei: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#e30a17"/>
+                <circle cx="115" cy="100" r="35" fill="white"/>
+                <circle cx="125" cy="100" r="28" fill="#e30a17"/>
+                <!-- Stern -->
+                <text x="160" y="111" fill="white" font-family="Verdana" font-size="38" text-anchor="middle">★</text>
+            </svg>`,
+        russland: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect y="66.7" width="300" height="66.7" fill="#0039a6"/>
+                <rect y="133.3" width="300" height="66.7" fill="#d52b1e"/>
+            </svg>`,
+        aegypten: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="300" height="66.7" fill="#ce1126"/>
+                <rect y="133.3" width="300" height="66.7" fill="#000000"/>
+                <!-- vereinfachter Adler als kleines goldenes Symbol -->
+                <circle cx="150" cy="100" r="14" fill="#c09300"/>
+                <path d="M138,100 L162,100 M150,90 L150,110" stroke="#c09300" stroke-width="2"/>
+            </svg>`,
+        australien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#012169"/>
+                <!-- Union Jack im Eck (vereinfacht) -->
+                <g>
+                    <rect width="150" height="100" fill="#012169"/>
+                    <path d="M0,0 L150,100 M150,0 L0,100" stroke="white" stroke-width="20"/>
+                    <path d="M0,0 L150,100 M150,0 L0,100" stroke="#c8102e" stroke-width="7"/>
+                    <rect x="62" width="26" height="100" fill="white"/>
+                    <rect y="37" width="150" height="26" fill="white"/>
+                    <rect x="68" width="14" height="100" fill="#c8102e"/>
+                    <rect y="43" width="150" height="14" fill="#c8102e"/>
+                </g>
+                <!-- Sterne rechts -->
+                <text x="200" y="60" fill="white" font-family="Verdana" font-size="18" text-anchor="middle">★</text>
+                <text x="245" y="50" fill="white" font-family="Verdana" font-size="14" text-anchor="middle">★</text>
+                <text x="270" y="80" fill="white" font-family="Verdana" font-size="14" text-anchor="middle">★</text>
+                <text x="245" y="115" fill="white" font-family="Verdana" font-size="14" text-anchor="middle">★</text>
+                <text x="225" y="155" fill="white" font-family="Verdana" font-size="22" text-anchor="middle">★</text>
+            </svg>`,
+        indien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="300" height="66.7" fill="#ff9933"/>
+                <rect y="133.3" width="300" height="66.7" fill="#138808"/>
+                <!-- Ashoka-Chakra: blauer Kreis -->
+                <circle cx="150" cy="100" r="22" fill="none" stroke="#000088" stroke-width="2.5"/>
+                <g stroke="#000088" stroke-width="1.4">
+                    <line x1="150" y1="80" x2="150" y2="120"/>
+                    <line x1="130" y1="100" x2="170" y2="100"/>
+                    <line x1="136" y1="86" x2="164" y2="114"/>
+                    <line x1="164" y1="86" x2="136" y2="114"/>
+                </g>
+            </svg>`,
+
+        // ---------- Verschachtelt-Stufe ----------
+        argentinien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="300" height="66.7" fill="#74acdf"/>
+                <rect y="133.3" width="300" height="66.7" fill="#74acdf"/>
+                <!-- Sonne vereinfacht -->
+                <circle cx="150" cy="100" r="16" fill="#f6b40e"/>
+                <g stroke="#f6b40e" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="150" y1="78" x2="150" y2="84"/>
+                    <line x1="150" y1="116" x2="150" y2="122"/>
+                    <line x1="128" y1="100" x2="134" y2="100"/>
+                    <line x1="166" y1="100" x2="172" y2="100"/>
+                    <line x1="135" y1="85" x2="139" y2="89"/>
+                    <line x1="161" y1="111" x2="165" y2="115"/>
+                    <line x1="135" y1="115" x2="139" y2="111"/>
+                    <line x1="161" y1="89" x2="165" y2="85"/>
+                </g>
+            </svg>`,
+        suedafrika: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#007a4d"/>
+                <!-- Y-Form vereinfacht -->
+                <polygon points="0,0 300,0 300,40 130,100 300,160 300,200 0,200" fill="#007a4d"/>
+                <polygon points="0,0 90,0 200,80 200,120 90,200 0,200" fill="#000000"/>
+                <polygon points="0,40 75,40 160,100 75,160 0,160" fill="#ffb612"/>
+                <polygon points="0,55 60,55 140,100 60,145 0,145" fill="#000000"/>
+                <rect width="300" height="35" fill="#de3831"/>
+                <rect y="165" width="300" height="35" fill="#002395"/>
+                <polygon points="80,35 300,35 300,55 130,100 300,145 300,165 80,165 175,100" fill="white"/>
+                <polygon points="90,40 300,40 300,55 140,100 300,145 300,160 90,160 165,100" fill="#007a4d"/>
+            </svg>`,
+        marokko: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#c1272d"/>
+                <!-- Gruener Pentagramm-Stern -->
+                <g fill="none" stroke="#006233" stroke-width="3" transform="translate(150 100)">
+                    <polygon points="0,-32 9,-10 32,-10 14,4 21,26 0,13 -21,26 -14,4 -32,-10 -9,-10"/>
+                </g>
+            </svg>`,
+        kenia: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="300" height="60" fill="#000000"/>
+                <rect y="60" width="300" height="6" fill="white"/>
+                <rect y="66" width="300" height="68" fill="#bb0000"/>
+                <rect y="134" width="300" height="6" fill="white"/>
+                <rect y="140" width="300" height="60" fill="#006600"/>
+                <!-- Stilisierter Schild in der Mitte -->
+                <ellipse cx="150" cy="100" rx="22" ry="32" fill="#bb0000" stroke="#000" stroke-width="2"/>
+                <ellipse cx="150" cy="100" rx="14" ry="22" fill="white"/>
+                <ellipse cx="150" cy="100" rx="7" ry="14" fill="#000"/>
+                <!-- Speere -->
+                <line x1="115" y1="65" x2="185" y2="135" stroke="#7a4a14" stroke-width="2.5"/>
+                <line x1="185" y1="65" x2="115" y2="135" stroke="#7a4a14" stroke-width="2.5"/>
+            </svg>`,
+        kolumbien: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#fcd116"/>
+                <rect y="100" width="300" height="50" fill="#003893"/>
+                <rect y="150" width="300" height="50" fill="#ce1126"/>
+            </svg>`,
+        chile: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect y="100" width="300" height="100" fill="#d52b1e"/>
+                <rect width="100" height="100" fill="#0039a6"/>
+                <text x="50" y="68" fill="white" font-family="Verdana" font-size="48" text-anchor="middle">★</text>
+            </svg>`,
+        norwegen: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#ed2939"/>
+                <!-- Weisses Kreuz -->
+                <rect x="80" width="30" height="200" fill="white"/>
+                <rect y="85" width="300" height="30" fill="white"/>
+                <!-- Blaues Kreuz innen -->
+                <rect x="86" width="18" height="200" fill="#002664"/>
+                <rect y="91" width="300" height="18" fill="#002664"/>
+            </svg>`,
+        schweden: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#006aa7"/>
+                <rect x="85" width="25" height="200" fill="#fecc00"/>
+                <rect y="87.5" width="300" height="25" fill="#fecc00"/>
+            </svg>`,
+        finnland: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect x="80" width="30" height="200" fill="#003580"/>
+                <rect y="85" width="300" height="30" fill="#003580"/>
+            </svg>`,
+        daenemark: `
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#c8102e"/>
+                <rect x="80" width="25" height="200" fill="white"/>
+                <rect y="87.5" width="300" height="25" fill="white"/>
+            </svg>`
+    };
+
+    // ====================================================
+    //  STAGES
+    // ====================================================
+    const STAGES = {
+        europa: {
+            label: 'Bekannt – Europa',
+            countries: [
+                { id: 'deutschland',     name: 'Deutschland' },
+                { id: 'frankreich',      name: 'Frankreich' },
+                { id: 'italien',         name: 'Italien' },
+                { id: 'spanien',         name: 'Spanien' },
+                { id: 'grossbritannien', name: 'Großbritannien' },
+                { id: 'schweiz',         name: 'Schweiz' },
+                { id: 'oesterreich',     name: 'Österreich' },
+                { id: 'niederlande',     name: 'Niederlande' },
+                { id: 'belgien',         name: 'Belgien' },
+                { id: 'polen',           name: 'Polen' }
+            ]
+        },
+        welt: {
+            label: 'Welt – bekannt',
+            countries: [
+                { id: 'usa',         name: 'USA' },
+                { id: 'japan',       name: 'Japan' },
+                { id: 'brasilien',   name: 'Brasilien' },
+                { id: 'china',       name: 'China' },
+                { id: 'kanada',      name: 'Kanada' },
+                { id: 'mexiko',      name: 'Mexiko' },
+                { id: 'tuerkei',     name: 'Türkei' },
+                { id: 'russland',    name: 'Russland' },
+                { id: 'aegypten',    name: 'Ägypten' },
+                { id: 'australien',  name: 'Australien' },
+                { id: 'indien',      name: 'Indien' }
+            ]
+        },
+        bunt: {
+            label: 'Verschachtelt',
+            // Erweitert: Stufe 3 enthaelt zusaetzlich Welt-bekannt-Flaggen,
+            // damit Auswahl gemischt wirkt und Distraktoren breiter sind.
+            countries: [
+                { id: 'argentinien',  name: 'Argentinien' },
+                { id: 'suedafrika',   name: 'Südafrika' },
+                { id: 'marokko',      name: 'Marokko' },
+                { id: 'kenia',        name: 'Kenia' },
+                { id: 'kolumbien',    name: 'Kolumbien' },
+                { id: 'chile',        name: 'Chile' },
+                { id: 'norwegen',     name: 'Norwegen' },
+                { id: 'schweden',     name: 'Schweden' },
+                { id: 'finnland',     name: 'Finnland' },
+                { id: 'daenemark',    name: 'Dänemark' },
+                { id: 'brasilien',    name: 'Brasilien' },
+                { id: 'japan',        name: 'Japan' },
+                { id: 'australien',   name: 'Australien' },
+                { id: 'indien',       name: 'Indien' }
+            ]
+        }
+    };
+
+    const ROUND_SIZE = 7;          // Aufgaben pro Runde
+    const ANSWER_OPTIONS = 4;      // Auswahlmoeglichkeiten pro Aufgabe
+    const FEEDBACK_DELAY_MS = 950;
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        queue: [],         // verbleibende Laender dieser Runde
+        index: 0,          // 0..ROUND_SIZE-1
+        total: ROUND_SIZE,
+        last: null,        // letzte Aufgabe
+        locked: false,
+        epoch: 0           // gegen Tap-Race nach Rundenwechsel
+    };
+    let pendingTimer = null;
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'flaggen-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    function cancelPending() {
+        if (pendingTimer !== null) {
+            clearTimeout(pendingTimer);
+            pendingTimer = null;
+        }
+        state.epoch += 1;
+        state.locked = false;
+    }
+
+    // ====================================================
+    //  AUDIO – schlichter, nicht manipulativer Bestaetigungs-Ton
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.07);
+            setTimeout(() => tone(880, 0.20, 'sine', 0.07), 110);
+        }
+    };
+
+    // ====================================================
+    //  RUNDEN-AUFBAU
+    // ====================================================
+    function startRound() {
+        cancelPending();
+        const all = STAGES[state.stage].countries.slice();
+        // De-Dup, falls eine Stufe versehentlich Doubletten enthielte
+        const seen = new Set();
+        const unique = all.filter(c => seen.has(c.id) ? false : (seen.add(c.id), true));
+        state.queue = shuffle(unique).slice(0, ROUND_SIZE);
+        state.total = state.queue.length;
+        state.index = 0;
+        state.last = null;
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        switchScreen('game');
+        nextRound();
+    }
+
+    function nextRound() {
+        if (state.index >= state.total) {
+            showEnd();
+            return;
+        }
+        const correct = state.queue[state.index];
+        state.last = correct;
+
+        // Distraktoren: aus allen Laendern der Stufe, ausser correct.
+        const pool = STAGES[state.stage].countries.filter(c => c.id !== correct.id);
+        // De-Dup
+        const seen = new Set();
+        const uniquePool = pool.filter(c => seen.has(c.id) ? false : (seen.add(c.id), true));
+        const distractors = shuffle(uniquePool).slice(0, ANSWER_OPTIONS - 1);
+        const options = shuffle([correct, ...distractors]);
+
+        renderFlag(correct.id);
+        renderAnswers(options, correct);
+        $('hud-progress').textContent = (state.index + 1) + ' / ' + state.total;
+        state.locked = false;
+    }
+
+    function renderFlag(id) {
+        const host = $('flag-host');
+        host.innerHTML = FLAGS[id] || '';
+    }
+
+    function renderAnswers(options, correct) {
+        const c = $('answers');
+        c.innerHTML = '';
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'answer';
+            btn.type = 'button';
+            btn.textContent = opt.name;
+            btn.addEventListener('click', () => onAnswer(btn, opt, correct));
+            c.appendChild(btn);
+        });
+    }
+
+    function onAnswer(btn, opt, correct) {
+        if (state.locked) return;
+
+        if (opt.id === correct.id) {
+            state.locked = true;
+            btn.classList.add('correct');
+            document.querySelectorAll('.answer').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            sfx.correct();
+            const myEpoch = state.epoch;
+            pendingTimer = setTimeout(() => {
+                pendingTimer = null;
+                if (myEpoch !== state.epoch) return;
+                state.index += 1;
+                nextRound();
+            }, FEEDBACK_DELAY_MS);
+        } else {
+            // Falsch: kein Game-Over, kein "X daneben"-Vermerk. Nur sanftes Wiggle.
+            btn.classList.remove('wiggle');
+            void btn.offsetWidth; // Reflow, damit Animation neu startet
+            btn.classList.add('wiggle');
+        }
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game', 'end'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function showEnd() {
+        cancelPending();
+        $('end-title').textContent = 'Runde fertig';
+        $('end-msg').textContent = 'Schöne Runde! Magst du nochmal?';
+        switchScreen('end');
+    }
+
+    function backToStart() {
+        cancelPending();
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => {
+        if (!state.stage) return;
+        ensureAudio();
+        savePrefs();
+        startRound();
+    });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-again').addEventListener('click', () => {
+        if (!state.stage) { switchScreen('start'); return; }
+        startRound();
+    });
+    $('btn-other-stage').addEventListener('click', () => switchScreen('start'));
+    $('btn-to-start').addEventListener('click', () => switchScreen('start'));
+
+    (function init() {
+        const prefs = loadPrefs();
+        const stage = (prefs.stage && STAGES[prefs.stage]) ? prefs.stage : 'europa';
+        selectStage(stage);
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>
