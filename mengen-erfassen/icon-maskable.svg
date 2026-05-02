@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#00838f"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205, also 51..461) -->
+  <!-- 5 bunte Punkte als Wuerfel-5-Anordnung, etwas naeher zur Mitte -->
+  <circle cx="180" cy="180" r="44" fill="#ffb4a2"/>
+  <circle cx="332" cy="180" r="44" fill="#ffd166"/>
+  <circle cx="256" cy="256" r="44" fill="#a0e7a0"/>
+  <circle cx="180" cy="332" r="44" fill="#b6c4ff"/>
+  <circle cx="332" cy="332" r="44" fill="#e0a3ff"/>
+</svg>

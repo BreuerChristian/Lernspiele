@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Mengen erfassen</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#00838f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #e0f7fa;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #e0f7fa 0%, #80deea 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #00838f;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #00697a;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #00838f;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #b2ebf2;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #80deea; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #00838f;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #e0f7fa;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #00697a;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #b2ebf2; }
+        .stage-choice.active {
+            background: #b2ebf2;
+            border-color: #00838f;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #00838f;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #00697a;
+        }
+
+        .duration-row {
+            display: flex;
+            gap: 10px;
+        }
+        .dur-choice {
+            flex: 1;
+            background: #e0f7fa;
+            border: 3px solid transparent;
+            border-radius: 14px;
+            padding: 12px 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #00697a;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.12s, border-color 0.12s;
+        }
+        .dur-choice:hover { background: #b2ebf2; }
+        .dur-choice.active {
+            background: #b2ebf2;
+            border-color: #00838f;
+            color: #00838f;
+            font-weight: bold;
+        }
+        .dur-choice .dur-sub {
+            display: block;
+            font-size: 0.78rem;
+            margin-top: 2px;
+            opacity: 0.8;
+        }
+
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #26c6da, #00838f);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0, 131, 143, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #e0f7fa 0%, #80deea 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #00838f;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-progress {
+            color: #00697a;
+            font-size: 0.95rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #00838f;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px 20px;
+            gap: 12px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #00697a;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.4em;
+        }
+        .stage-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            width: 100%;
+        }
+        .dot-board {
+            position: relative;
+            width: min(86vw, 56vh, 460px);
+            height: min(86vw, 56vh, 460px);
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0, 131, 143, 0.18);
+            overflow: hidden;
+        }
+        .dot {
+            position: absolute;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset 0 -3px 6px rgba(0,0,0,0.08);
+        }
+        .cover {
+            position: absolute;
+            inset: 0;
+            background: #b2ebf2;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00838f;
+            font-size: 3rem;
+            font-weight: bold;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .dot-board.covered .cover {
+            opacity: 1;
+        }
+        .cover-label {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00697a;
+            letter-spacing: 0.04em;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 460px;
+        }
+        .answers.three { grid-template-columns: repeat(3, 1fr); }
+
+        .answer {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 16px 4px;
+            font-family: inherit;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #00697a;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.1s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+        }
+        .answer:hover { background: #e0f7fa; }
+        .answer:active { transform: translateY(1px); }
+        .answer.correct {
+            background: #c4e6b8;
+            border-color: #6cab4e;
+            color: #2f5e1d;
+        }
+        .answer.locked {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .answer.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        /* ---------- End-Screen ---------- */
+        #screen-end {
+            background: linear-gradient(135deg, #e0f7fa 0%, #80deea 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #screen-end .card {
+            background: white;
+            border-radius: 28px;
+            padding: 36px 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-end h1 {
+            color: #00838f;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+        #screen-end p {
+            color: #00697a;
+            font-size: 1.05rem;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+        .end-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .end-btn {
+            padding: 14px;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.12s;
+        }
+        .end-btn:active { transform: translateY(1px); }
+        .end-btn.primary {
+            background: linear-gradient(145deg, #26c6da, #00838f);
+            color: white;
+            box-shadow: 0 6px 14px rgba(0, 131, 143, 0.3);
+        }
+        .end-btn.secondary {
+            background: #e0f7fa;
+            color: #00838f;
+        }
+
+        @media (max-width: 380px) {
+            .answer { font-size: 1.4rem; padding: 14px 4px; }
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+        }
+        @media (max-height: 600px) {
+            .prompt { font-size: 1rem; }
+            .answer { padding: 12px 4px; font-size: 1.4rem; }
+            .game-area { padding: 8px 12px 12px; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Mengen erfassen</h1>
+        <p class="sub">Punkte schauen — wie viele waren das?</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="bis3">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Bis 3</span>
+                        <span class="ex">1, 2 oder 3 Punkte</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="bis5">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Bis 5</span>
+                        <span class="ex">1 bis 5 Punkte</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="bis8">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Bis 8</span>
+                        <span class="ex">1 bis 8 Punkte — Gruppen helfen</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h2>Wie lange zeigen?</h2>
+            <div class="duration-row" id="dur-list">
+                <button class="dur-choice" data-dur="kurz">
+                    Kurz
+                    <span class="dur-sub">auf einen Blick</span>
+                </button>
+                <button class="dur-choice" data-dur="lang">
+                    Länger
+                    <span class="dur-sub">in Ruhe gucken</span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <div class="hud-progress" id="hud-progress"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt" id="prompt">Schau genau hin ...</div>
+        <div class="stage-area">
+            <div class="dot-board" id="dot-board">
+                <div class="cover" id="cover">
+                    <span class="cover-label">Wie viele waren das?</span>
+                </div>
+            </div>
+        </div>
+        <div class="answers" id="answers"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     END-SCREEN
+============================================================ -->
+<div id="screen-end" class="screen hidden">
+    <div class="card">
+        <h1>Geschafft!</h1>
+        <p id="end-text">Magst du nochmal probieren?</p>
+        <div class="end-actions">
+            <button class="end-btn primary" id="btn-again">Nochmal</button>
+            <button class="end-btn secondary" id="btn-end-back">Zur Übersicht</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  KONFIG
+    // ====================================================
+    const STAGES = {
+        bis3: { min: 1, max: 3, label: 'Bis 3' },
+        bis5: { min: 1, max: 5, label: 'Bis 5' },
+        bis8: { min: 1, max: 8, label: 'Bis 8' },
+    };
+    const DURATIONS = {
+        kurz: 700,
+        lang: 2000,
+    };
+    const TASKS_PER_ROUND = 8;
+    const COVER_FADE_MS = 250; // muss zur CSS-Transition passen
+
+    // Pastell-Palette fuer die Punkte
+    const DOT_COLORS = [
+        '#ff8a8a', // koralle
+        '#ffb86b', // orange-pastell
+        '#ffd166', // gelb
+        '#7ed957', // gruen
+        '#5ec8d6', // tuerkis
+        '#7aa8ff', // blau
+        '#c08bff', // lila
+        '#ff8ad8', // pink
+    ];
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        duration: null,
+        // pro Aufgabe:
+        correctCount: 0,
+        taskIdx: 0,        // 1..TASKS_PER_ROUND
+        // Phase: 'idle' | 'showing' | 'hidden' | 'locked' | 'between'
+        phase: 'idle',
+        // Timer-Handles, sauber clearen!
+        showTimer: null,
+        nextTimer: null,
+        // letzte Anzahl, um sofortige Wiederholung zu vermeiden
+        lastCount: null,
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    function clearTimers() {
+        if (state.showTimer !== null) {
+            clearTimeout(state.showTimer);
+            state.showTimer = null;
+        }
+        if (state.nextTimer !== null) {
+            clearTimeout(state.nextTimer);
+            state.nextTimer = null;
+        }
+    }
+
+    const STORAGE_KEY = 'mengen-erfassen-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                stage: state.stage,
+                duration: state.duration,
+            }));
+        } catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO (sehr zurueckhaltend)
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.13, 'sine', 0.07);
+            setTimeout(() => tone(880, 0.20, 'sine', 0.07), 110);
+        },
+    };
+
+    // ====================================================
+    //  PUNKT-LAYOUT
+    // ====================================================
+    // Wir arbeiten in einem normierten Koordinatensystem 0..1
+    // (entspricht spaeter Prozent-Positionen im Board).
+
+    // Wuerfel-aehnliche feste Anordnungen fuer Stufe "bis3"
+    // sowie schoene Default-Anordnungen fuer 4 und 5 (helfen beim Lernen).
+    const PIP_LAYOUTS = {
+        1: [[0.5, 0.5]],
+        2: [[0.32, 0.32], [0.68, 0.68]],
+        3: [[0.28, 0.28], [0.5, 0.5], [0.72, 0.72]],
+        4: [[0.30, 0.30], [0.70, 0.30], [0.30, 0.70], [0.70, 0.70]],
+        5: [[0.27, 0.27], [0.73, 0.27], [0.5, 0.5], [0.27, 0.73], [0.73, 0.73]],
+    };
+
+    // Mindestabstand (in normierten Einheiten) abhaengig von der Anzahl,
+    // damit sich Punkte bei vielen Punkten nicht ueberlappen.
+    function dotRadiusNorm(n) {
+        // Punkte werden mit ~12% Boardbreite gezeichnet -> Radius ~6%
+        if (n <= 3) return 0.10;
+        if (n <= 5) return 0.085;
+        return 0.075;
+    }
+
+    function distSq(a, b) {
+        const dx = a[0] - b[0], dy = a[1] - b[1];
+        return dx * dx + dy * dy;
+    }
+
+    // Rejection-Sampling: zufaellige Positionen mit Mindestabstand
+    function randomLayout(n) {
+        const r = dotRadiusNorm(n);
+        const minDist = r * 2.2;        // Mittelpunkt-Abstand
+        const margin = r + 0.02;        // Rand-Abstand
+        const minDistSq = minDist * minDist;
+        const out = [];
+        let attempts = 0;
+        const maxAttempts = 4000;
+        while (out.length < n && attempts < maxAttempts) {
+            attempts++;
+            const x = margin + Math.random() * (1 - 2 * margin);
+            const y = margin + Math.random() * (1 - 2 * margin);
+            let ok = true;
+            for (const p of out) {
+                if (distSq([x, y], p) < minDistSq) { ok = false; break; }
+            }
+            if (ok) out.push([x, y]);
+        }
+        // Fallback: wenn das Sampling zu schwer wurde, Grid mit Jitter
+        if (out.length < n) {
+            return gridLayout(n);
+        }
+        return out;
+    }
+
+    function gridLayout(n) {
+        const cols = Math.ceil(Math.sqrt(n));
+        const rows = Math.ceil(n / cols);
+        const out = [];
+        const padX = 0.5 / cols, padY = 0.5 / rows;
+        const jitter = 0.04;
+        for (let i = 0; i < n; i++) {
+            const c = i % cols, r = Math.floor(i / cols);
+            const x = (c + 0.5) / cols + (Math.random() - 0.5) * jitter;
+            const y = (r + 0.5) / rows + (Math.random() - 0.5) * jitter;
+            // in [margin, 1-margin] klemmen
+            const m = 0.1;
+            out.push([
+                Math.max(m, Math.min(1 - m, x)),
+                Math.max(m, Math.min(1 - m, y)),
+            ]);
+        }
+        // padX/padY verworfen, war nur als Idee da
+        void padX; void padY;
+        return out;
+    }
+
+    function layoutFor(n, stage) {
+        // Stufe "bis3": feste, wuerfel-aehnliche Verteilung -> hilft Subitizing
+        if (stage === 'bis3' && PIP_LAYOUTS[n]) {
+            return PIP_LAYOUTS[n];
+        }
+        // Bei 1-2 Punkten in jeder Stufe sieht eine fixe Position freundlicher aus
+        if (n <= 2 && PIP_LAYOUTS[n]) {
+            return PIP_LAYOUTS[n];
+        }
+        return randomLayout(n);
+    }
+
+    function renderDots(n, stage) {
+        const board = $('dot-board');
+        // Alle Dots entfernen, Cover-Layer behalten
+        board.querySelectorAll('.dot').forEach(d => d.remove());
+        const positions = layoutFor(n, stage);
+        const r = dotRadiusNorm(n);
+        const dotSizePct = (r * 2 * 100).toFixed(2) + '%';
+        // Farben mischen, damit nicht immer die gleichen vorne sind
+        const colors = shuffle(DOT_COLORS);
+        positions.forEach((p, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot';
+            d.style.left = (p[0] * 100).toFixed(2) + '%';
+            d.style.top = (p[1] * 100).toFixed(2) + '%';
+            d.style.width = dotSizePct;
+            d.style.height = dotSizePct;
+            d.style.background = colors[i % colors.length];
+            board.appendChild(d);
+        });
+    }
+
+    // ====================================================
+    //  DISTRAKTOREN / OPTIONEN
+    // ====================================================
+    function buildOptions(correct, stage) {
+        const { min, max } = STAGES[stage];
+        const range = max - min + 1;
+        const numOptions = Math.min(4, range);
+
+        // Kandidaten: erst nahe Werte (+-1, +-2), dann weiter weg
+        const candidates = [];
+        const nears = [-1, 1, -2, 2, -3, 3];
+        for (const d of nears) {
+            const v = correct + d;
+            if (v >= min && v <= max) candidates.push(v);
+        }
+        // Falls noch zu wenige (wahrscheinlich bei kleinem Range): alle anderen ergaenzen
+        for (let v = min; v <= max; v++) {
+            if (v !== correct && !candidates.includes(v)) candidates.push(v);
+        }
+        const distractors = candidates.slice(0, numOptions - 1);
+        return shuffle([correct, ...distractors]);
+    }
+
+    // ====================================================
+    //  RENDERING ANTWORTEN
+    // ====================================================
+    function renderAnswers(options, correct) {
+        const c = $('answers');
+        c.innerHTML = '';
+        c.classList.toggle('three', options.length === 3);
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'answer';
+            btn.textContent = String(opt);
+            btn.addEventListener('click', () => onAnswer(btn, opt, correct));
+            c.appendChild(btn);
+        });
+    }
+
+    function onAnswer(btn, opt, correct) {
+        // Tap-Race-Schutz: Phase pruefen+setzen VOR State-Mutation
+        if (state.phase !== 'hidden') return;
+        if (opt === correct) {
+            state.phase = 'locked';
+            btn.classList.add('correct');
+            document.querySelectorAll('.answer').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            sfx.correct();
+            // naechste Aufgabe oder Ende
+            state.nextTimer = setTimeout(() => {
+                state.nextTimer = null;
+                if (state.taskIdx >= TASKS_PER_ROUND) {
+                    showEnd();
+                } else {
+                    nextTask();
+                }
+            }, 900);
+        } else {
+            // weicher Wiggle, kein "falsch" anzeigen
+            btn.classList.remove('wiggle');
+            void btn.offsetWidth;
+            btn.classList.add('wiggle');
+        }
+    }
+
+    // ====================================================
+    //  AUFGABEN-ABLAUF
+    // ====================================================
+    function nextTask() {
+        clearTimers();
+        state.taskIdx += 1;
+        $('hud-progress').textContent = 'Aufgabe ' + state.taskIdx + ' von ' + TASKS_PER_ROUND;
+
+        const cfg = STAGES[state.stage];
+        // Anzahl bestimmen, nicht gleich wie letzte
+        let n;
+        do { n = randInt(cfg.min, cfg.max); }
+        while (n === state.lastCount && (cfg.max - cfg.min) > 0);
+        state.lastCount = n;
+        state.correctCount = n;
+
+        // Punkte rendern (noch unsichtbar -> erst Cover weg)
+        renderDots(n, state.stage);
+
+        // Antworten schon vorbereiten, aber keine Reaktion bis Cover wieder da
+        const options = buildOptions(n, state.stage);
+        renderAnswers(options, n);
+
+        // Cover sichtbar lassen waehrend Vorbereitung, dann Cover ausblenden
+        const board = $('dot-board');
+        board.classList.add('covered');
+        $('prompt').textContent = 'Schau genau hin ...';
+        state.phase = 'between';
+
+        // Erst Cover-Fade ausblenden, dann Anzeige-Dauer, dann wieder verdecken
+        // (Cover-Fade-Dauer in CSS = 250ms)
+        state.showTimer = setTimeout(() => {
+            state.showTimer = null;
+            board.classList.remove('covered');
+            state.phase = 'showing';
+            // Anzeige-Dauer
+            state.showTimer = setTimeout(() => {
+                state.showTimer = null;
+                board.classList.add('covered');
+                state.phase = 'hidden';
+                $('prompt').textContent = 'Wie viele waren das?';
+            }, DURATIONS[state.duration]);
+        }, 350);
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game', 'end'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage || !state.duration) return;
+        savePrefs();
+        clearTimers();
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        switchScreen('game');
+        state.taskIdx = 0;
+        state.lastCount = null;
+        state.phase = 'between';
+        // Direkt erste Aufgabe
+        nextTask();
+    }
+
+    function showEnd() {
+        clearTimers();
+        state.phase = 'idle';
+        switchScreen('end');
+    }
+
+    function backToStart() {
+        clearTimers();
+        state.phase = 'idle';
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+    function selectDuration(value) {
+        $('dur-list').querySelectorAll('.dur-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.dur === value);
+        });
+        state.duration = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+    document.querySelectorAll('#dur-list .dur-choice').forEach(b => {
+        b.addEventListener('click', () => selectDuration(b.dataset.dur));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-again').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-end-back').addEventListener('click', backToStart);
+
+    // Tab/Browser-Tab versteckt -> laufende Timer aufraeumen, damit
+    // beim Zurueckkommen kein halber Zustand uebrig ist.
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && state.phase !== 'idle') {
+            clearTimers();
+            // Cover sichtbar lassen, Phase auf hidden -> Kind kann beim Zurueckkommen
+            // einfach raten; oder zur Uebersicht. Sicherheitshalber: beim erneuten
+            // Sichtbarwerden bleibt der Stand, kein Auto-Restart.
+        }
+    });
+
+    (function init() {
+        const prefs = loadPrefs();
+        selectStage(prefs.stage || 'bis3');
+        selectDuration(prefs.duration || 'kurz');
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>
