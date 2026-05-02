@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Hauptstädte lernen</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#2c5f8d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #dfeaf3;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .screen.hidden { display: none; }
+
+        #screen-start {
+            background: linear-gradient(135deg, #dfeaf3 0%, #2c5f8d 100%);
+        }
+
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c5f8d;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            color: #2c5f8d;
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+        }
+
+        .sub {
+            color: #555;
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: white;
+            color: #2c5f8d;
+            border: none;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 0.95rem;
+            padding: 10px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .back-btn:active { transform: translateY(1px); }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #2c5f8d;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #f0f0f0;
+        }
+
+        .progress-pill {
+            background: white;
+            color: #2c5f8d;
+            font-weight: bold;
+            font-size: 0.95rem;
+            padding: 10px 16px;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        button.primary {
+            background: #2c5f8d;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        button.primary:active { transform: translateY(2px); }
+
+        button.secondary {
+            background: white;
+            color: #2c5f8d;
+            border: 2px solid #2c5f8d;
+            border-radius: 999px;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        button.secondary:active { transform: translateY(1px); }
+
+        .level-grid {
+            display: grid;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .level-btn {
+            background: linear-gradient(145deg, #3a7cb8, #2c5f8d);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 22px 18px;
+            font-family: inherit;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: left;
+            box-shadow: 0 8px 18px rgba(44, 95, 141, 0.28);
+        }
+        .level-btn:active { transform: translateY(2px); }
+        .level-btn .lvl-desc {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: normal;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        #screen-game {
+            background: #dfeaf3;
+        }
+
+        .question {
+            font-size: 1.05rem;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .question-land {
+            color: #2c5f8d;
+            font-size: 1.9rem;
+            font-weight: bold;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .answers {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer-btn {
+            background: white;
+            color: #2c5f8d;
+            border: 2px solid #c5d6e3;
+            border-radius: 18px;
+            padding: 16px 18px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        }
+        .answer-btn:active { transform: translateY(1px); }
+        .answer-btn.correct {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            color: #1b5e20;
+        }
+        .answer-btn.wrong {
+            background: #ffcdd2;
+            border-color: #e57373;
+            color: #b71c1c;
+        }
+        .answer-btn[disabled] { cursor: default; opacity: 0.85; }
+
+        .result-emoji {
+            font-size: 3.6rem;
+            line-height: 1;
+            margin: 4px 0 8px;
+        }
+        .result-msg {
+            color: #555;
+            font-size: 1.05rem;
+            margin-bottom: 18px;
+            line-height: 1.45;
+        }
+        .result-recap {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 22px;
+            text-align: left;
+            display: grid;
+            gap: 8px;
+            max-height: 45vh;
+            overflow-y: auto;
+        }
+        .result-recap li {
+            background: #eef4f9;
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #2c5f8d;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .result-recap li .land {
+            font-weight: bold;
+        }
+        .result-recap li .stadt {
+            color: #4a7aa8;
+        }
+        .result-recap.empty { display: none; }
+        .result-actions {
+            display: grid;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Start-Screen -->
+    <div id="screen-start" class="screen">
+        <div class="card">
+            <a href="../" class="back-link">← Zurück</a>
+            <h1>Hauptstädte lernen</h1>
+            <p class="sub">In drei Stufen: deutsche Bundesländer, Europa, weltweit · 6-12 Jahre</p>
+            <button class="primary" onclick="goToLevels()">Los geht's!</button>
+        </div>
+    </div>
+
+    <!-- Stufenauswahl -->
+    <div id="screen-levels" class="screen hidden">
+        <div class="top-bar">
+            <button class="back-btn" onclick="goToStart()">← Zurück</button>
+            <span></span>
+        </div>
+        <div class="card">
+            <h2>Welche Stufe?</h2>
+            <div class="level-grid">
+                <button class="level-btn" onclick="startRound('bundeslaender')">
+                    Deutsche Bundesländer
+                    <span class="lvl-desc">16 Bundesländer und ihre Hauptstädte</span>
+                </button>
+                <button class="level-btn" onclick="startRound('europa')">
+                    Europa
+                    <span class="lvl-desc">Länder Europas und ihre Hauptstädte</span>
+                </button>
+                <button class="level-btn" onclick="startRound('weltweit')">
+                    Weltweit
+                    <span class="lvl-desc">Länder der ganzen Welt</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spiel-Screen -->
+    <div id="screen-game" class="screen hidden">
+        <div class="top-bar">
+            <button class="back-btn" onclick="goToLevels()">← Zurück</button>
+            <span class="progress-pill" id="progress">1 / 10</span>
+        </div>
+        <div class="card">
+            <p class="question">Was ist die Hauptstadt von</p>
+            <p class="question-land" id="question-land">…</p>
+            <div class="answers" id="answers"></div>
+        </div>
+    </div>
+
+    <!-- Ergebnis-Screen -->
+    <div id="screen-result" class="screen hidden">
+        <div class="card">
+            <div class="result-emoji" id="result-emoji">🌟</div>
+            <h2 id="result-title">Runde fertig</h2>
+            <p id="result-msg" class="result-msg"></p>
+            <ul id="result-recap" class="result-recap"></ul>
+            <div class="result-actions">
+                <button class="primary" onclick="repeatRound()">Nochmal</button>
+                <button class="secondary" onclick="goToLevels()">Andere Stufe</button>
+                <button class="secondary" onclick="goToStart()">Zum Start</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (() => {
+        'use strict';
+
+        const POOLS = {
+            bundeslaender: {
+                name: 'Bundesländer',
+                items: [
+                    { land: 'Baden-Württemberg', stadt: 'Stuttgart' },
+                    { land: 'Bayern', stadt: 'München' },
+                    { land: 'Berlin', stadt: 'Berlin' },
+                    { land: 'Brandenburg', stadt: 'Potsdam' },
+                    { land: 'Bremen', stadt: 'Bremen' },
+                    { land: 'Hamburg', stadt: 'Hamburg' },
+                    { land: 'Hessen', stadt: 'Wiesbaden' },
+                    { land: 'Mecklenburg-Vorpommern', stadt: 'Schwerin' },
+                    { land: 'Niedersachsen', stadt: 'Hannover' },
+                    { land: 'Nordrhein-Westfalen', stadt: 'Düsseldorf' },
+                    { land: 'Rheinland-Pfalz', stadt: 'Mainz' },
+                    { land: 'Saarland', stadt: 'Saarbrücken' },
+                    { land: 'Sachsen', stadt: 'Dresden' },
+                    { land: 'Sachsen-Anhalt', stadt: 'Magdeburg' },
+                    { land: 'Schleswig-Holstein', stadt: 'Kiel' },
+                    { land: 'Thüringen', stadt: 'Erfurt' }
+                ]
+            },
+            europa: {
+                name: 'Europa',
+                items: [
+                    { land: 'Albanien', stadt: 'Tirana' },
+                    { land: 'Andorra', stadt: 'Andorra la Vella' },
+                    { land: 'Belgien', stadt: 'Brüssel' },
+                    { land: 'Bosnien-Herzegowina', stadt: 'Sarajevo' },
+                    { land: 'Bulgarien', stadt: 'Sofia' },
+                    { land: 'Dänemark', stadt: 'Kopenhagen' },
+                    { land: 'Deutschland', stadt: 'Berlin' },
+                    { land: 'Estland', stadt: 'Tallinn' },
+                    { land: 'Finnland', stadt: 'Helsinki' },
+                    { land: 'Frankreich', stadt: 'Paris' },
+                    { land: 'Griechenland', stadt: 'Athen' },
+                    { land: 'Irland', stadt: 'Dublin' },
+                    { land: 'Island', stadt: 'Reykjavík' },
+                    { land: 'Italien', stadt: 'Rom' },
+                    { land: 'Kosovo', stadt: 'Pristina' },
+                    { land: 'Kroatien', stadt: 'Zagreb' },
+                    { land: 'Lettland', stadt: 'Riga' },
+                    { land: 'Liechtenstein', stadt: 'Vaduz' },
+                    { land: 'Litauen', stadt: 'Vilnius' },
+                    { land: 'Luxemburg', stadt: 'Luxemburg' },
+                    { land: 'Malta', stadt: 'Valletta' },
+                    { land: 'Moldau', stadt: 'Chișinău' },
+                    { land: 'Monaco', stadt: 'Monaco' },
+                    { land: 'Montenegro', stadt: 'Podgorica' },
+                    { land: 'Niederlande', stadt: 'Amsterdam' },
+                    { land: 'Nordmazedonien', stadt: 'Skopje' },
+                    { land: 'Norwegen', stadt: 'Oslo' },
+                    { land: 'Österreich', stadt: 'Wien' },
+                    { land: 'Polen', stadt: 'Warschau' },
+                    { land: 'Portugal', stadt: 'Lissabon' },
+                    { land: 'Rumänien', stadt: 'Bukarest' },
+                    { land: 'Russland', stadt: 'Moskau' },
+                    { land: 'San Marino', stadt: 'San Marino' },
+                    { land: 'Schweden', stadt: 'Stockholm' },
+                    { land: 'Schweiz', stadt: 'Bern' },
+                    { land: 'Serbien', stadt: 'Belgrad' },
+                    { land: 'Slowakei', stadt: 'Bratislava' },
+                    { land: 'Slowenien', stadt: 'Ljubljana' },
+                    { land: 'Spanien', stadt: 'Madrid' },
+                    { land: 'Tschechien', stadt: 'Prag' },
+                    { land: 'Türkei', stadt: 'Ankara' },
+                    { land: 'Ukraine', stadt: 'Kiew' },
+                    { land: 'Ungarn', stadt: 'Budapest' },
+                    { land: 'Vatikanstadt', stadt: 'Vatikanstadt' },
+                    { land: 'Vereinigtes Königreich', stadt: 'London' },
+                    { land: 'Weißrussland', stadt: 'Minsk' }
+                ]
+            },
+            weltweit: {
+                name: 'Weltweit',
+                items: [
+                    // Asien
+                    { land: 'Afghanistan', stadt: 'Kabul' },
+                    { land: 'Bangladesch', stadt: 'Dhaka' },
+                    { land: 'China', stadt: 'Peking' },
+                    { land: 'Indien', stadt: 'Neu-Delhi' },
+                    { land: 'Indonesien', stadt: 'Jakarta' },
+                    { land: 'Irak', stadt: 'Bagdad' },
+                    { land: 'Iran', stadt: 'Teheran' },
+                    { land: 'Japan', stadt: 'Tokio' },
+                    { land: 'Jordanien', stadt: 'Amman' },
+                    { land: 'Kasachstan', stadt: 'Astana' },
+                    { land: 'Kambodscha', stadt: 'Phnom Penh' },
+                    { land: 'Libanon', stadt: 'Beirut' },
+                    { land: 'Malaysia', stadt: 'Kuala Lumpur' },
+                    { land: 'Mongolei', stadt: 'Ulaanbaatar' },
+                    { land: 'Myanmar', stadt: 'Naypyidaw' },
+                    { land: 'Nepal', stadt: 'Kathmandu' },
+                    { land: 'Nordkorea', stadt: 'Pjöngjang' },
+                    { land: 'Pakistan', stadt: 'Islamabad' },
+                    { land: 'Philippinen', stadt: 'Manila' },
+                    { land: 'Saudi-Arabien', stadt: 'Riad' },
+                    { land: 'Singapur', stadt: 'Singapur' },
+                    { land: 'Sri Lanka', stadt: 'Colombo' },
+                    { land: 'Südkorea', stadt: 'Seoul' },
+                    { land: 'Syrien', stadt: 'Damaskus' },
+                    { land: 'Taiwan', stadt: 'Taipeh' },
+                    { land: 'Thailand', stadt: 'Bangkok' },
+                    { land: 'Vereinigte Arabische Emirate', stadt: 'Abu Dhabi' },
+                    { land: 'Vietnam', stadt: 'Hanoi' },
+                    // Afrika
+                    { land: 'Ägypten', stadt: 'Kairo' },
+                    { land: 'Algerien', stadt: 'Algier' },
+                    { land: 'Angola', stadt: 'Luanda' },
+                    { land: 'Äthiopien', stadt: 'Addis Abeba' },
+                    { land: 'Ghana', stadt: 'Accra' },
+                    { land: 'Kamerun', stadt: 'Jaunde' },
+                    { land: 'Kenia', stadt: 'Nairobi' },
+                    { land: 'Libyen', stadt: 'Tripolis' },
+                    { land: 'Madagaskar', stadt: 'Antananarivo' },
+                    { land: 'Marokko', stadt: 'Rabat' },
+                    { land: 'Mosambik', stadt: 'Maputo' },
+                    { land: 'Namibia', stadt: 'Windhuk' },
+                    { land: 'Nigeria', stadt: 'Abuja' },
+                    { land: 'Senegal', stadt: 'Dakar' },
+                    { land: 'Simbabwe', stadt: 'Harare' },
+                    { land: 'Somalia', stadt: 'Mogadischu' },
+                    { land: 'Südafrika', stadt: 'Pretoria' },
+                    { land: 'Sudan', stadt: 'Khartum' },
+                    { land: 'Tansania', stadt: 'Dodoma' },
+                    { land: 'Tunesien', stadt: 'Tunis' },
+                    { land: 'Uganda', stadt: 'Kampala' },
+                    // Nord-/Mittelamerika
+                    { land: 'Costa Rica', stadt: 'San José' },
+                    { land: 'Dominikanische Republik', stadt: 'Santo Domingo' },
+                    { land: 'Guatemala', stadt: 'Guatemala-Stadt' },
+                    { land: 'Haiti', stadt: 'Port-au-Prince' },
+                    { land: 'Jamaika', stadt: 'Kingston' },
+                    { land: 'Kanada', stadt: 'Ottawa' },
+                    { land: 'Kuba', stadt: 'Havanna' },
+                    { land: 'Mexiko', stadt: 'Mexiko-Stadt' },
+                    { land: 'Panama', stadt: 'Panama-Stadt' },
+                    { land: 'USA', stadt: 'Washington' },
+                    // Südamerika
+                    { land: 'Argentinien', stadt: 'Buenos Aires' },
+                    { land: 'Bolivien', stadt: 'La Paz' },
+                    { land: 'Brasilien', stadt: 'Brasília' },
+                    { land: 'Chile', stadt: 'Santiago de Chile' },
+                    { land: 'Ecuador', stadt: 'Quito' },
+                    { land: 'Kolumbien', stadt: 'Bogotá' },
+                    { land: 'Paraguay', stadt: 'Asunción' },
+                    { land: 'Peru', stadt: 'Lima' },
+                    { land: 'Uruguay', stadt: 'Montevideo' },
+                    { land: 'Venezuela', stadt: 'Caracas' },
+                    // Ozeanien
+                    { land: 'Australien', stadt: 'Canberra' },
+                    { land: 'Neuseeland', stadt: 'Wellington' },
+                    { land: 'Fidschi', stadt: 'Suva' },
+                    { land: 'Papua-Neuguinea', stadt: 'Port Moresby' }
+                    // Europa: separater Pool (siehe oben), nicht doppelt aufnehmen
+                ]
+            }
+        };
+
+        const QUESTIONS_PER_ROUND = 10;
+        const FEEDBACK_DELAY_MS = 1100;
+
+        const state = {
+            poolKey: null,
+            questions: [],
+            current: 0,
+            wrongItems: [],
+            locked: false,
+            epoch: 0
+        };
+        let pendingTimer = null;
+
+        const $ = (id) => document.getElementById(id);
+
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function cancelPending() {
+            if (pendingTimer !== null) {
+                clearTimeout(pendingTimer);
+                pendingTimer = null;
+            }
+            state.epoch += 1;
+            state.locked = false;
+        }
+
+        function showOnly(screenId) {
+            ['screen-start', 'screen-levels', 'screen-game', 'screen-result'].forEach((id) => {
+                const el = $(id);
+                if (el) el.classList.toggle('hidden', id !== screenId);
+            });
+        }
+
+        function goToStart() { cancelPending(); showOnly('screen-start'); }
+        function goToLevels() { cancelPending(); showOnly('screen-levels'); }
+
+        function startRound(poolKey) {
+            cancelPending();
+            state.poolKey = poolKey;
+            const items = POOLS[poolKey].items;
+            const count = Math.min(QUESTIONS_PER_ROUND, items.length);
+            state.questions = shuffle(items).slice(0, count);
+            state.current = 0;
+            state.wrongItems = [];
+            showOnly('screen-game');
+            renderQuestion();
+        }
+
+        function repeatRound() {
+            if (state.poolKey) startRound(state.poolKey);
+        }
+
+        function renderQuestion() {
+            const q = state.questions[state.current];
+            const pool = POOLS[state.poolKey].items;
+            $('progress').textContent = (state.current + 1) + ' / ' + state.questions.length;
+            $('question-land').textContent = q.land;
+
+            // Distraktoren: 3 zufällige andere Städte aus dem Pool, die sich von q.stadt unterscheiden
+            const distractors = shuffle(
+                pool.filter((it) => it.stadt !== q.stadt)
+            ).slice(0, 3).map((it) => it.stadt);
+
+            const options = shuffle([q.stadt, ...distractors]);
+
+            const answersEl = $('answers');
+            answersEl.innerHTML = '';
+            options.forEach((stadt) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.type = 'button';
+                btn.textContent = stadt;
+                btn.addEventListener('click', () => onAnswer(btn, stadt, q.stadt));
+                answersEl.appendChild(btn);
+            });
+
+            state.locked = false;
+        }
+
+        function onAnswer(btn, picked, correct) {
+            if (state.locked) return;
+            state.locked = true;
+
+            const buttons = document.querySelectorAll('#answers .answer-btn');
+            buttons.forEach((b) => { b.disabled = true; });
+
+            if (picked === correct) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                buttons.forEach((b) => {
+                    if (b.textContent === correct) b.classList.add('correct');
+                });
+                const q = state.questions[state.current];
+                state.wrongItems.push({ land: q.land, stadt: q.stadt });
+            }
+
+            const myEpoch = state.epoch;
+            pendingTimer = setTimeout(() => {
+                pendingTimer = null;
+                if (myEpoch !== state.epoch) return;
+                state.current += 1;
+                if (state.current >= state.questions.length) {
+                    showResult();
+                } else {
+                    renderQuestion();
+                }
+            }, FEEDBACK_DELAY_MS);
+        }
+
+        function showResult() {
+            const wrong = state.wrongItems;
+            const recap = $('result-recap');
+            recap.innerHTML = '';
+            if (wrong.length === 0) {
+                $('result-emoji').textContent = '🌟';
+                $('result-title').textContent = 'Alle gewusst!';
+                $('result-msg').textContent = 'Schöne Runde.';
+                recap.classList.add('empty');
+            } else {
+                $('result-emoji').textContent = '📖';
+                $('result-title').textContent = 'Runde fertig';
+                $('result-msg').textContent = 'Diese Hauptstädte kannst du dir nochmal anschauen:';
+                wrong.forEach((it) => {
+                    const li = document.createElement('li');
+                    const land = document.createElement('span');
+                    land.className = 'land';
+                    land.textContent = it.land;
+                    const stadt = document.createElement('span');
+                    stadt.className = 'stadt';
+                    stadt.textContent = it.stadt;
+                    li.appendChild(land);
+                    li.appendChild(stadt);
+                    recap.appendChild(li);
+                });
+                recap.classList.remove('empty');
+            }
+            showOnly('screen-result');
+        }
+
+        // Globaler Zugriff für onclick-Attribute
+        window.goToStart = goToStart;
+        window.goToLevels = goToLevels;
+        window.startRound = startRound;
+        window.repeatRound = repeatRound;
+
+        // Service Worker registrieren
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').catch(() => {});
+            });
+        }
+    })();
+    </script>
+</body>
+</html>

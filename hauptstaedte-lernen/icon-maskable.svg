@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflächiger Hintergrund (kein border-radius — wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#2c5f8d"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205) -->
+  <text x="256" y="296" font-family="Arial, sans-serif" font-size="220" font-weight="bold"
+        fill="white" text-anchor="middle" dominant-baseline="middle">H</text>
+</svg>
