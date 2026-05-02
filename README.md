@@ -78,3 +78,7 @@ Detaillierte Checkliste in [CLAUDE.md](CLAUDE.md). Kurzfassung:
 ## Mitwirken
 
 Issues und Pull Requests willkommen — neue Spielideen, Bugfixes, Übersetzungen, alles. Bitte die Werte oben einhalten: kein Tracking, keine externen Dependencies, keine Engagement-Loops.
+
+## Lizenz
+
+[MIT](LICENSE) — frei zu nutzen, forken, anpassen.
