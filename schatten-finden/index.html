@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Schatten finden</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#5c6bc0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #e8eaf6;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #e8eaf6 0%, #5c6bc0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #3949ab;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #5c6bc0;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #3949ab;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #e8eaf6;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #c5cae9; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #3949ab;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #f3f4fa;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #303f9f;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #e8eaf6; }
+        .stage-choice.active {
+            background: #e8eaf6;
+            border-color: #5c6bc0;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #3949ab;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #5c6bc0;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #5c6bc0, #3949ab);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(57, 73, 171, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #e8eaf6 0%, #c5cae9 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #3949ab;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #3949ab;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px 20px;
+            gap: 10px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #303f9f;
+            font-size: 1.15rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .target-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 0;
+        }
+        .target {
+            background: white;
+            border-radius: 22px;
+            padding: 12px;
+            box-shadow: 0 8px 18px rgba(57, 73, 171, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .target svg {
+            width: min(32vw, 26vh, 180px);
+            height: min(32vw, 26vh, 180px);
+            display: block;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            width: 100%;
+            max-width: 520px;
+        }
+        .options.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .options.cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .options.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+        .option {
+            background: white;
+            border: 4px solid transparent;
+            border-radius: 18px;
+            padding: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.12s, border-color 0.18s, background 0.2s, box-shadow 0.18s;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .option:hover { background: #f3f4fa; }
+        .option:active { transform: translateY(1px); }
+        .option svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .option.correct {
+            background: #d8efc6;
+            border-color: #6cab4e;
+        }
+        .option.locked {
+            pointer-events: none;
+            opacity: 0.55;
+        }
+        .option.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .options { gap: 8px; }
+            .option { padding: 6px; border-width: 3px; }
+        }
+        @media (max-height: 620px) {
+            .prompt { font-size: 1rem; }
+            .game-area { padding: 8px 12px 12px; gap: 8px; }
+            .target svg { width: min(28vw, 22vh, 150px); height: min(28vw, 22vh, 150px); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Schatten finden</h1>
+        <p class="sub">Welcher Schatten passt zum Tier?</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="leicht">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Leicht</span>
+                        <span class="ex">3 Schatten, sehr verschiedene Tiere</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="mittel">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Mittel</span>
+                        <span class="ex">4 Schatten, ähnliche Größen</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="schwer">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Schwer</span>
+                        <span class="ex">4 Schatten aus einer Tierfamilie</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt">Welcher Schatten passt?</div>
+        <div class="target-wrap">
+            <div class="target" id="target"></div>
+        </div>
+        <div class="options" id="options"></div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  TIER-DEFINITIONEN
+    // ====================================================
+    // Jedes Tier ist eine Liste von Pfaden mit einer Farbe.
+    // In der Silhouette wird die Farbe ignoriert und alles in #2c3e50 gerendert.
+    // viewBox aller Tiere: 0 0 200 200.
+    //
+    // group: 'gross' (Elefant, Giraffe, Kuh, Pferd, Bär), 'klein' (Hund, Katze,
+    //        Hase, Schaf, Schwein, Affe, Frosch), 'vogel' (Eule, Hahn, Ente, Spatz),
+    //        'wasser' (Fisch).
+    // Stufe-2 ('mittel') zieht mehrere Tiere aus 'klein'.
+    // Stufe-3 ('schwer') zieht aus 'vogel' (Familien-Mode).
+
+    const ANIMALS = {
+        // ====== KLEIN ======
+        hund: {
+            name: 'Hund',
+            group: 'klein',
+            paths: [
+                // Schwanz
+                { d: 'M 50 95 Q 40 80 45 70 Q 50 78 55 92 Z', fill: '#a87047' },
+                // Hinterbein hinten
+                { d: 'M 65 130 L 60 165 L 72 165 L 75 130 Z', fill: '#a87047' },
+                // Vorderbein hinten
+                { d: 'M 110 130 L 108 165 L 120 165 L 120 130 Z', fill: '#a87047' },
+                // Koerper
+                { d: 'M 55 100 Q 60 80 90 78 L 130 80 Q 145 82 145 105 L 145 130 Q 130 138 90 138 Q 60 138 55 125 Z', fill: '#c08660' },
+                // Hinterbein vorne
+                { d: 'M 75 130 L 70 168 L 84 168 L 88 130 Z', fill: '#c08660' },
+                // Vorderbein vorne
+                { d: 'M 120 130 L 118 168 L 132 168 L 134 130 Z', fill: '#c08660' },
+                // Kopf
+                { d: 'M 130 70 Q 165 65 168 95 Q 168 115 145 118 Q 130 118 128 105 Z', fill: '#c08660' },
+                // Schnauze
+                { d: 'M 152 100 Q 178 100 178 112 Q 178 122 158 122 Q 148 122 148 110 Z', fill: '#a87047' },
+                // Ohr
+                { d: 'M 130 65 Q 122 50 130 45 Q 145 50 148 78 Z', fill: '#8b5a37' },
+                // Nase
+                { d: 'M 172 108 a 4 4 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        katze: {
+            name: 'Katze',
+            group: 'klein',
+            paths: [
+                // Schwanz hochgestellt
+                { d: 'M 50 110 Q 35 85 38 60 Q 48 60 52 88 Q 56 105 62 115 Z', fill: '#8a8a8a' },
+                // Hinterbeine
+                { d: 'M 70 130 L 66 165 L 80 165 L 82 130 Z', fill: '#8a8a8a' },
+                { d: 'M 130 130 L 128 165 L 142 165 L 142 130 Z', fill: '#8a8a8a' },
+                // Koerper
+                { d: 'M 60 105 Q 65 85 95 82 L 135 85 Q 150 88 150 110 L 150 130 Q 135 138 95 138 Q 65 138 60 125 Z', fill: '#a8a8a8' },
+                // Kopf rund
+                { d: 'M 145 78 Q 178 78 180 102 Q 180 122 158 124 Q 138 124 136 102 Q 138 80 145 78 Z', fill: '#a8a8a8' },
+                // Ohren spitz
+                { d: 'M 142 80 L 138 60 L 152 75 Z', fill: '#a8a8a8' },
+                { d: 'M 175 80 L 178 60 L 168 76 Z', fill: '#a8a8a8' },
+                // Augen
+                { d: 'M 153 100 a 2 3 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                { d: 'M 168 100 a 2 3 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Nase
+                { d: 'M 158 110 L 163 110 L 160.5 114 Z', fill: '#2c3e50' },
+            ],
+        },
+        hase: {
+            name: 'Hase',
+            group: 'klein',
+            paths: [
+                // Schwanz
+                { d: 'M 55 110 a 8 8 0 1 0 0.1 0 Z', fill: '#f0f0f0' },
+                // Hinterbein gross
+                { d: 'M 70 130 Q 60 130 58 145 Q 58 165 75 165 L 95 165 L 95 145 Q 95 130 80 130 Z', fill: '#cccccc' },
+                // Vorderbein
+                { d: 'M 125 135 L 122 165 L 134 165 L 137 135 Z', fill: '#cccccc' },
+                { d: 'M 110 135 L 108 165 L 118 165 L 120 135 Z', fill: '#cccccc' },
+                // Koerper rundlich
+                { d: 'M 60 105 Q 70 80 105 80 Q 140 80 145 110 L 145 135 Q 130 142 100 142 Q 70 142 60 128 Z', fill: '#dddddd' },
+                // Kopf
+                { d: 'M 130 70 Q 160 65 165 95 Q 165 115 145 118 Q 128 118 126 100 Z', fill: '#dddddd' },
+                // Lange Ohren
+                { d: 'M 138 60 Q 132 25 145 22 Q 152 35 150 65 Z', fill: '#dddddd' },
+                { d: 'M 153 60 Q 152 25 162 22 Q 168 35 162 65 Z', fill: '#dddddd' },
+                // Auge
+                { d: 'M 150 95 a 2.5 2.5 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Nase
+                { d: 'M 162 102 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        schwein: {
+            name: 'Schwein',
+            group: 'klein',
+            paths: [
+                // Schwanz Ringel
+                { d: 'M 50 95 Q 38 90 40 80 Q 50 80 50 88 Q 45 92 50 95 Z', fill: '#e89999' },
+                // Beine
+                { d: 'M 65 130 L 62 162 L 76 162 L 78 130 Z', fill: '#e89999' },
+                { d: 'M 88 130 L 86 162 L 100 162 L 102 130 Z', fill: '#e89999' },
+                { d: 'M 120 130 L 118 162 L 132 162 L 132 130 Z', fill: '#e89999' },
+                // Koerper rundlich
+                { d: 'M 55 105 Q 60 82 95 80 Q 130 80 142 102 Q 148 115 145 130 Q 130 140 95 140 Q 60 140 55 125 Z', fill: '#f5b8b8' },
+                // Kopf
+                { d: 'M 138 90 Q 168 85 172 110 Q 172 128 152 130 Q 138 130 134 115 Z', fill: '#f5b8b8' },
+                // Ruessel
+                { d: 'M 165 105 Q 182 108 180 120 Q 178 130 165 128 Z', fill: '#e89999' },
+                // Naselöcher
+                { d: 'M 172 113 a 1.5 1.5 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                { d: 'M 172 122 a 1.5 1.5 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Ohr dreieckig
+                { d: 'M 142 86 L 138 70 L 152 80 Z', fill: '#e89999' },
+            ],
+        },
+        affe: {
+            name: 'Affe',
+            group: 'klein',
+            paths: [
+                // Schwanz lang gerollt
+                { d: 'M 55 120 Q 30 110 30 80 Q 30 55 55 55 Q 70 55 70 75 Q 70 85 60 85 Q 52 85 52 78 Q 55 70 60 72 L 62 78 Q 58 80 58 75', fill: 'none', stroke: '#7a4a2a', 'stroke-width': '6', 'stroke-linecap': 'round' },
+                // Beine
+                { d: 'M 80 135 L 75 165 L 88 165 L 92 135 Z', fill: '#8b5a37' },
+                { d: 'M 110 135 L 108 165 L 122 165 L 122 135 Z', fill: '#8b5a37' },
+                // Koerper
+                { d: 'M 65 110 Q 70 88 100 85 Q 130 85 138 108 L 138 135 Q 125 142 100 142 Q 72 142 65 130 Z', fill: '#a06640' },
+                // Arme
+                { d: 'M 70 105 Q 55 130 70 145 L 78 142 Q 70 130 80 110 Z', fill: '#8b5a37' },
+                { d: 'M 132 105 Q 150 100 152 115 Q 150 128 138 130 Z', fill: '#8b5a37' },
+                // Kopf
+                { d: 'M 100 50 Q 138 50 142 85 Q 142 110 110 112 Q 80 112 78 88 Q 80 50 100 50 Z', fill: '#a06640' },
+                // Gesicht
+                { d: 'M 95 75 Q 122 75 125 95 Q 122 108 110 108 Q 92 108 90 92 Q 92 75 95 75 Z', fill: '#e8c19e' },
+                // Augen
+                { d: 'M 102 88 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                { d: 'M 116 88 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Ohren
+                { d: 'M 78 80 a 6 7 0 1 0 0.1 0 Z', fill: '#8b5a37' },
+                { d: 'M 138 80 a 6 7 0 1 0 0.1 0 Z', fill: '#8b5a37' },
+            ],
+        },
+        frosch: {
+            name: 'Frosch',
+            group: 'klein',
+            paths: [
+                // Hinterbeine breit
+                { d: 'M 35 130 Q 25 145 35 160 L 70 158 Q 70 145 60 138 Z', fill: '#5a9a3a' },
+                { d: 'M 165 130 Q 175 145 165 160 L 130 158 Q 130 145 140 138 Z', fill: '#5a9a3a' },
+                // Vorderbeine
+                { d: 'M 70 130 L 65 155 Q 65 162 75 162 L 80 155 Z', fill: '#5a9a3a' },
+                { d: 'M 130 130 L 135 155 Q 135 162 125 162 L 120 155 Z', fill: '#5a9a3a' },
+                // Koerper / Kopf
+                { d: 'M 50 105 Q 50 70 100 70 Q 150 70 150 105 Q 150 135 100 135 Q 50 135 50 105 Z', fill: '#7ec062' },
+                // Augenwölbungen
+                { d: 'M 75 65 a 14 14 0 1 0 0.1 0 Z', fill: '#7ec062' },
+                { d: 'M 125 65 a 14 14 0 1 0 0.1 0 Z', fill: '#7ec062' },
+                // Augen weiß
+                { d: 'M 75 65 a 8 8 0 1 0 0.1 0 Z', fill: '#ffffff' },
+                { d: 'M 125 65 a 8 8 0 1 0 0.1 0 Z', fill: '#ffffff' },
+                // Pupillen
+                { d: 'M 75 67 a 4 4 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                { d: 'M 125 67 a 4 4 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Mund
+                { d: 'M 70 110 Q 100 130 130 110', fill: 'none', stroke: '#3a6a25', 'stroke-width': '3', 'stroke-linecap': 'round' },
+            ],
+        },
+        // ====== GROSS ======
+        elefant: {
+            name: 'Elefant',
+            group: 'gross',
+            paths: [
+                // Schwanz
+                { d: 'M 40 100 Q 30 105 30 120 L 35 120 Q 38 110 42 105 Z', fill: '#9090a0' },
+                // Beine
+                { d: 'M 50 135 L 48 170 L 72 170 L 72 135 Z', fill: '#9090a0' },
+                { d: 'M 78 135 L 78 170 L 100 170 L 100 135 Z', fill: '#9090a0' },
+                { d: 'M 110 135 L 110 170 L 132 170 L 132 135 Z', fill: '#9090a0' },
+                { d: 'M 138 135 L 138 170 L 160 170 L 160 135 Z', fill: '#9090a0' },
+                // Koerper massiv
+                { d: 'M 42 100 Q 50 65 100 60 Q 150 60 165 95 Q 170 115 165 140 Q 130 145 100 145 Q 60 145 45 135 Q 38 120 42 100 Z', fill: '#a8a8b8' },
+                // Kopf groß
+                { d: 'M 145 75 Q 178 70 182 105 Q 182 130 160 132 Q 145 130 142 110 Z', fill: '#a8a8b8' },
+                // Ruessel
+                { d: 'M 162 110 Q 178 130 175 155 Q 170 170 158 168 Q 160 150 156 130 Z', fill: '#a8a8b8' },
+                // Großes Ohr
+                { d: 'M 140 75 Q 110 70 115 110 Q 125 130 145 125 Z', fill: '#9090a0' },
+                // Stoßzahn
+                { d: 'M 165 130 Q 168 140 170 148 L 168 148 Q 164 140 162 132 Z', fill: '#f5f0d8' },
+                // Auge
+                { d: 'M 165 100 a 2.5 2.5 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        giraffe: {
+            name: 'Giraffe',
+            group: 'gross',
+            paths: [
+                // Beine lang
+                { d: 'M 60 130 L 58 175 L 70 175 L 72 130 Z', fill: '#d8a043' },
+                { d: 'M 78 130 L 78 175 L 90 175 L 92 130 Z', fill: '#d8a043' },
+                { d: 'M 110 130 L 110 175 L 122 175 L 122 130 Z', fill: '#d8a043' },
+                { d: 'M 128 130 L 128 175 L 140 175 L 142 130 Z', fill: '#d8a043' },
+                // Schwanz
+                { d: 'M 60 110 Q 50 105 48 95 Q 55 100 62 110 Z', fill: '#d8a043' },
+                // Koerper
+                { d: 'M 55 105 Q 60 90 95 88 L 145 90 Q 152 100 152 130 L 55 130 Z', fill: '#f0bd5c' },
+                // Hals lang
+                { d: 'M 130 90 Q 128 60 145 30 L 165 30 Q 162 60 162 92 Z', fill: '#f0bd5c' },
+                // Kopf
+                { d: 'M 142 25 Q 175 20 178 38 Q 178 50 162 52 Q 145 52 142 42 Z', fill: '#f0bd5c' },
+                // Hörnchen
+                { d: 'M 152 18 L 154 28 L 158 28 L 156 18 Z', fill: '#8b5a2a' },
+                { d: 'M 168 18 L 170 28 L 174 28 L 172 18 Z', fill: '#8b5a2a' },
+                // Mähne
+                { d: 'M 145 38 Q 138 50 138 80 L 132 80 Q 130 50 138 35 Z', fill: '#a8732a' },
+                // Flecken
+                { d: 'M 75 102 a 6 5 0 1 0 0.1 0 Z', fill: '#a8732a' },
+                { d: 'M 100 110 a 5 5 0 1 0 0.1 0 Z', fill: '#a8732a' },
+                { d: 'M 125 105 a 5 5 0 1 0 0.1 0 Z', fill: '#a8732a' },
+                { d: 'M 145 75 a 4 4 0 1 0 0.1 0 Z', fill: '#a8732a' },
+                { d: 'M 152 50 a 3 3 0 1 0 0.1 0 Z', fill: '#a8732a' },
+                // Auge
+                { d: 'M 162 38 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        kuh: {
+            name: 'Kuh',
+            group: 'gross',
+            paths: [
+                // Schwanz
+                { d: 'M 50 100 Q 38 90 40 75 L 45 75 Q 48 90 55 105 Z', fill: '#d8d8d8' },
+                // Beine
+                { d: 'M 60 130 L 58 168 L 72 168 L 74 130 Z', fill: '#3a3a3a' },
+                { d: 'M 82 130 L 82 168 L 94 168 L 94 130 Z', fill: '#3a3a3a' },
+                { d: 'M 112 130 L 112 168 L 124 168 L 124 130 Z', fill: '#3a3a3a' },
+                { d: 'M 132 130 L 132 168 L 144 168 L 144 130 Z', fill: '#3a3a3a' },
+                // Koerper
+                { d: 'M 50 100 Q 55 80 92 78 L 138 80 Q 152 82 154 105 L 154 132 Q 138 138 90 138 Q 55 138 50 122 Z', fill: '#f0f0f0' },
+                // Flecken
+                { d: 'M 70 92 Q 80 88 90 92 Q 92 102 82 105 Q 70 105 68 100 Z', fill: '#2c3e50' },
+                { d: 'M 110 100 Q 130 95 140 110 Q 140 125 125 128 Q 105 125 105 115 Z', fill: '#2c3e50' },
+                // Kopf
+                { d: 'M 145 78 Q 175 75 178 100 Q 178 120 158 122 Q 142 120 140 102 Z', fill: '#f0f0f0' },
+                // Schnauze
+                { d: 'M 156 105 Q 178 108 178 120 Q 175 128 158 126 Z', fill: '#e0c0b0' },
+                // Hörner
+                { d: 'M 148 75 Q 142 65 138 68 Q 142 75 148 80 Z', fill: '#e8d8b0' },
+                { d: 'M 175 75 Q 180 65 184 68 Q 180 75 174 80 Z', fill: '#e8d8b0' },
+                // Auge
+                { d: 'M 152 100 a 2.5 2.5 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Nasenloch
+                { d: 'M 168 115 a 1.5 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        pferd: {
+            name: 'Pferd',
+            group: 'gross',
+            paths: [
+                // Schwanz lang
+                { d: 'M 45 100 Q 30 110 28 145 L 35 148 Q 42 130 50 110 Z', fill: '#5a3a1a' },
+                // Beine schlank
+                { d: 'M 58 128 L 56 172 L 66 172 L 68 128 Z', fill: '#8b5a2a' },
+                { d: 'M 75 128 L 75 172 L 85 172 L 87 128 Z', fill: '#8b5a2a' },
+                { d: 'M 110 128 L 110 172 L 120 172 L 122 128 Z', fill: '#8b5a2a' },
+                { d: 'M 128 128 L 128 172 L 138 172 L 140 128 Z', fill: '#8b5a2a' },
+                // Koerper schlank
+                { d: 'M 50 100 Q 55 78 92 76 L 130 78 Q 145 82 145 105 L 145 130 Q 130 138 90 138 Q 55 138 50 122 Z', fill: '#a8742e' },
+                // Hals
+                { d: 'M 132 78 Q 140 50 158 38 L 175 45 Q 158 65 152 88 Z', fill: '#a8742e' },
+                // Kopf länglich
+                { d: 'M 158 30 Q 188 28 188 55 Q 188 70 175 72 Q 165 72 162 60 Z', fill: '#a8742e' },
+                // Mähne
+                { d: 'M 158 35 Q 150 30 145 45 Q 142 65 148 80 L 158 78 Q 156 60 162 42 Z', fill: '#5a3a1a' },
+                // Ohr
+                { d: 'M 168 28 L 172 18 L 178 28 Z', fill: '#a8742e' },
+                // Auge
+                { d: 'M 175 50 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Nüstern
+                { d: 'M 184 62 a 2 2.5 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        baer: {
+            name: 'Bär',
+            group: 'gross',
+            paths: [
+                // Beine
+                { d: 'M 55 128 L 52 165 L 75 165 L 78 128 Z', fill: '#5a3a1a' },
+                { d: 'M 90 128 L 88 165 L 110 165 L 110 128 Z', fill: '#5a3a1a' },
+                { d: 'M 125 128 L 125 165 L 145 165 L 145 128 Z', fill: '#5a3a1a' },
+                // Koerper kompakt
+                { d: 'M 45 100 Q 50 70 95 68 Q 140 68 152 95 Q 158 115 152 135 Q 130 142 95 142 Q 55 142 45 130 Z', fill: '#7a4a1a' },
+                // Kopf rund
+                { d: 'M 130 70 Q 168 65 172 100 Q 172 122 148 124 Q 128 122 125 100 Z', fill: '#7a4a1a' },
+                // Ohren rund
+                { d: 'M 132 60 a 9 9 0 1 0 0.1 0 Z', fill: '#7a4a1a' },
+                { d: 'M 165 60 a 9 9 0 1 0 0.1 0 Z', fill: '#7a4a1a' },
+                // Schnauze hell
+                { d: 'M 150 100 Q 172 102 172 115 Q 168 124 152 122 Z', fill: '#c89060' },
+                // Augen
+                { d: 'M 142 90 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                { d: 'M 158 90 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Nase
+                { d: 'M 168 108 a 3 3 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        schaf: {
+            name: 'Schaf',
+            group: 'klein',
+            paths: [
+                // Beine
+                { d: 'M 60 130 L 58 165 L 70 165 L 72 130 Z', fill: '#3a3a3a' },
+                { d: 'M 82 130 L 82 165 L 94 165 L 94 130 Z', fill: '#3a3a3a' },
+                { d: 'M 110 130 L 110 165 L 122 165 L 122 130 Z', fill: '#3a3a3a' },
+                { d: 'M 128 130 L 128 165 L 140 165 L 140 130 Z', fill: '#3a3a3a' },
+                // Wolliger Körper (Wolken-Form)
+                { d: 'M 50 110 Q 45 95 60 90 Q 55 75 75 75 Q 80 65 95 70 Q 105 60 120 70 Q 135 65 142 78 Q 158 78 155 95 Q 165 105 152 118 Q 152 135 130 138 Q 95 142 65 138 Q 45 135 45 122 Q 38 115 50 110 Z', fill: '#f0f0f0' },
+                // Kopf dunkel
+                { d: 'M 138 90 Q 168 88 170 110 Q 170 128 150 130 Q 134 128 132 110 Z', fill: '#3a3a3a' },
+                // Ohren
+                { d: 'M 138 92 Q 130 86 132 100 Z', fill: '#3a3a3a' },
+                { d: 'M 168 92 Q 178 88 174 100 Z', fill: '#3a3a3a' },
+                // Auge
+                { d: 'M 152 105 a 2 2 0 1 0 0.1 0 Z', fill: '#ffffff' },
+            ],
+        },
+        // ====== VOEGEL ======
+        eule: {
+            name: 'Eule',
+            group: 'vogel',
+            paths: [
+                // Körper rund
+                { d: 'M 60 90 Q 55 50 100 50 Q 145 50 140 90 Q 145 130 130 155 Q 100 168 70 155 Q 55 130 60 90 Z', fill: '#8b6a3a' },
+                // Bauch heller
+                { d: 'M 75 100 Q 80 130 100 145 Q 120 130 125 100 Q 110 120 100 120 Q 90 120 75 100 Z', fill: '#d8b878' },
+                // Augen-Ringe groß
+                { d: 'M 80 75 a 18 18 0 1 0 0.1 0 Z', fill: '#f0e0c0' },
+                { d: 'M 120 75 a 18 18 0 1 0 0.1 0 Z', fill: '#f0e0c0' },
+                // Pupillen groß
+                { d: 'M 80 75 a 9 9 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                { d: 'M 120 75 a 9 9 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Schnabel klein dreieckig
+                { d: 'M 95 92 L 105 92 L 100 102 Z', fill: '#d8a040' },
+                // Federohren
+                { d: 'M 65 50 L 70 30 L 80 48 Z', fill: '#8b6a3a' },
+                { d: 'M 135 50 L 130 30 L 120 48 Z', fill: '#8b6a3a' },
+                // Füße
+                { d: 'M 88 160 L 88 172 M 84 168 L 92 168 M 92 168 L 88 172', fill: 'none', stroke: '#d8a040', 'stroke-width': '3', 'stroke-linecap': 'round' },
+                { d: 'M 112 160 L 112 172 M 108 168 L 116 168 M 116 168 L 112 172', fill: 'none', stroke: '#d8a040', 'stroke-width': '3', 'stroke-linecap': 'round' },
+            ],
+        },
+        hahn: {
+            name: 'Hahn',
+            group: 'vogel',
+            paths: [
+                // Beine
+                { d: 'M 90 140 L 88 170 M 82 170 L 94 170 M 94 170 L 88 170 L 88 175', fill: 'none', stroke: '#d8a040', 'stroke-width': '4', 'stroke-linecap': 'round' },
+                { d: 'M 110 140 L 112 170 M 106 170 L 118 170', fill: 'none', stroke: '#d8a040', 'stroke-width': '4', 'stroke-linecap': 'round' },
+                // Schwanzfedern groß
+                { d: 'M 50 110 Q 25 95 25 65 Q 40 65 55 90 Z', fill: '#3a7a3a' },
+                { d: 'M 45 115 Q 20 110 18 85 Q 35 85 50 105 Z', fill: '#5a9a5a' },
+                { d: 'M 48 125 Q 25 130 22 110 Q 38 105 55 120 Z', fill: '#a83a3a' },
+                // Körper
+                { d: 'M 60 110 Q 65 80 100 78 Q 130 78 138 105 Q 142 130 125 142 Q 95 148 70 142 Q 55 130 60 110 Z', fill: '#c83a3a' },
+                // Brust heller
+                { d: 'M 95 120 Q 110 120 118 135 Q 110 145 95 145 Q 85 138 90 125 Z', fill: '#e85a5a' },
+                // Kopf
+                { d: 'M 115 60 Q 145 55 148 80 Q 148 100 130 102 Q 115 100 112 85 Z', fill: '#c83a3a' },
+                // Kamm gezackt
+                { d: 'M 118 55 L 122 40 L 128 52 L 134 40 L 138 52 L 144 42 L 148 58 Z', fill: '#a02828' },
+                // Kehllappen
+                { d: 'M 128 95 Q 128 108 122 110 Q 118 108 122 95 Z', fill: '#a02828' },
+                // Schnabel
+                { d: 'M 145 80 L 158 82 L 145 88 Z', fill: '#d8a040' },
+                // Auge
+                { d: 'M 132 75 a 2.5 2.5 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        ente: {
+            name: 'Ente',
+            group: 'vogel',
+            paths: [
+                // Wasser-Wellen unter der Ente
+                { d: 'M 30 158 Q 50 152 70 158 Q 90 164 110 158 Q 130 152 150 158 Q 170 164 175 160 L 175 168 L 30 168 Z', fill: '#88b4d8' },
+                // Körper
+                { d: 'M 45 130 Q 35 100 75 95 Q 130 92 150 110 Q 158 130 145 150 Q 100 158 65 152 Q 42 145 45 130 Z', fill: '#f0e070' },
+                // Flügel
+                { d: 'M 75 110 Q 90 105 115 115 Q 125 130 110 138 Q 88 140 75 130 Z', fill: '#d8c050' },
+                // Hals/Kopf
+                { d: 'M 135 95 Q 138 70 158 65 Q 175 65 175 85 Q 172 100 158 102 Q 145 102 142 95 Z', fill: '#f0e070' },
+                // Schnabel breit
+                { d: 'M 168 80 Q 188 78 188 92 Q 185 100 170 98 Z', fill: '#e88a30' },
+                // Auge
+                { d: 'M 165 80 a 2.5 2.5 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        spatz: {
+            name: 'Spatz',
+            group: 'vogel',
+            paths: [
+                // Beine
+                { d: 'M 90 145 L 88 165 M 82 165 L 94 165', fill: 'none', stroke: '#8b5a2a', 'stroke-width': '3', 'stroke-linecap': 'round' },
+                { d: 'M 110 145 L 112 165 M 106 165 L 118 165', fill: 'none', stroke: '#8b5a2a', 'stroke-width': '3', 'stroke-linecap': 'round' },
+                // Körper rundlich klein
+                { d: 'M 60 110 Q 60 80 100 78 Q 135 78 140 105 Q 138 135 120 145 Q 90 148 70 140 Q 55 130 60 110 Z', fill: '#a87850' },
+                // Bauch heller
+                { d: 'M 80 115 Q 85 135 100 142 Q 115 135 118 115 Q 100 125 80 115 Z', fill: '#e0c89a' },
+                // Flügel mit Strich
+                { d: 'M 70 105 Q 90 100 110 108 Q 115 122 100 128 Q 80 128 70 120 Z', fill: '#7a5230' },
+                // Schwanz kurz
+                { d: 'M 50 115 L 35 110 L 35 125 L 50 125 Z', fill: '#7a5230' },
+                // Kopf integriert
+                { d: 'M 115 80 Q 142 80 145 95 Q 142 105 130 105 Q 118 105 115 95 Z', fill: '#7a5230' },
+                // Schnabel
+                { d: 'M 142 92 L 152 95 L 142 100 Z', fill: '#3a3a3a' },
+                // Auge
+                { d: 'M 130 90 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+            ],
+        },
+        // ====== WASSER ======
+        fisch: {
+            name: 'Fisch',
+            group: 'wasser',
+            paths: [
+                // Schwanzflosse
+                { d: 'M 30 100 L 10 70 L 20 100 L 10 130 Z', fill: '#e88a30' },
+                // Körper
+                { d: 'M 30 100 Q 60 60 130 70 Q 175 80 180 100 Q 175 120 130 130 Q 60 140 30 100 Z', fill: '#f0a850' },
+                // Bauch heller
+                { d: 'M 60 110 Q 100 130 150 115 Q 130 125 90 128 Q 70 125 60 110 Z', fill: '#f8d088' },
+                // Rückenflosse
+                { d: 'M 80 70 Q 90 50 110 55 Q 105 70 100 80 Z', fill: '#e88a30' },
+                // Bauchflosse
+                { d: 'M 90 125 Q 100 140 115 132 Q 110 128 95 125 Z', fill: '#e88a30' },
+                // Kiemen-Linie
+                { d: 'M 145 80 Q 142 100 145 120', fill: 'none', stroke: '#a86018', 'stroke-width': '2.5' },
+                // Auge
+                { d: 'M 162 92 a 4 4 0 1 0 0.1 0 Z', fill: '#ffffff' },
+                { d: 'M 162 92 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Mund
+                { d: 'M 178 100 Q 184 100 184 105 Q 180 108 175 105 Z', fill: '#a86018' },
+            ],
+        },
+        // Eine zusätzliche Vogel-Variante (Vogel allgemein) für 'leicht'
+        vogel: {
+            name: 'Vogel',
+            group: 'klein',
+            paths: [
+                // Schwanz
+                { d: 'M 40 110 L 20 105 L 25 125 L 45 122 Z', fill: '#3a6aa8' },
+                // Körper
+                { d: 'M 50 105 Q 55 75 95 72 Q 130 75 140 100 Q 138 130 115 138 Q 80 142 60 132 Q 48 122 50 105 Z', fill: '#5a8ad8' },
+                // Bauch
+                { d: 'M 75 115 Q 90 135 110 132 Q 118 122 105 118 Q 88 122 75 115 Z', fill: '#e0e8f5' },
+                // Flügel
+                { d: 'M 70 90 Q 95 85 115 95 Q 118 115 100 120 Q 80 118 70 105 Z', fill: '#3a6aa8' },
+                // Kopf
+                { d: 'M 120 80 Q 145 78 148 92 Q 145 105 132 105 Q 118 100 118 90 Z', fill: '#5a8ad8' },
+                // Schnabel
+                { d: 'M 144 88 L 158 92 L 144 95 Z', fill: '#e8a040' },
+                // Auge
+                { d: 'M 132 88 a 2 2 0 1 0 0.1 0 Z', fill: '#2c3e50' },
+                // Beine
+                { d: 'M 90 140 L 88 158 M 110 140 L 112 158', fill: 'none', stroke: '#e8a040', 'stroke-width': '2.5', 'stroke-linecap': 'round' },
+            ],
+        },
+    };
+
+    // ====================================================
+    //  STAGES
+    // ====================================================
+    const STAGES = {
+        leicht: {
+            label: 'Leicht',
+            count: 3,
+            // Sehr verschiedene Tiere - aus unterschiedlichen Gruppen
+            pool: ['elefant', 'fisch', 'vogel', 'giraffe', 'hund', 'frosch', 'eule', 'pferd'],
+            // Auswahl quer über Gruppen erzwingen
+            crossGroup: true,
+        },
+        mittel: {
+            label: 'Mittel',
+            count: 4,
+            // Ähnliche Größen / kleine Tiere
+            pool: ['hund', 'katze', 'hase', 'schwein', 'schaf', 'affe', 'frosch'],
+            crossGroup: false,
+        },
+        schwer: {
+            label: 'Schwer',
+            count: 4,
+            // Vögel-Familie - feinste Formunterschiede
+            pool: ['eule', 'hahn', 'ente', 'spatz', 'vogel'],
+            crossGroup: false,
+        },
+    };
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        lastCorrect: null,    // letzter Tier-Key (gegen Wiederholung)
+        locked: false,
+        gameGen: 0,           // wird bei Spielwechsel erhoeht; verhindert dass
+                              // ein altes setTimeout das neue Spiel neu rendert
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'schatten-finden-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.08);
+            setTimeout(() => tone(880, 0.22, 'sine', 0.08), 110);
+        },
+    };
+
+    // ====================================================
+    //  SVG-RENDERING
+    // ====================================================
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const SILHOUETTE_COLOR = '#2c3e50';
+
+    function renderAnimal(animalKey, silhouette) {
+        const animal = ANIMALS[animalKey];
+        const svg = document.createElementNS(SVG_NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 200 200');
+        svg.setAttribute('aria-label', silhouette ? 'Schatten' : animal.name);
+
+        animal.paths.forEach(p => {
+            const el = document.createElementNS(SVG_NS, 'path');
+            el.setAttribute('d', p.d);
+
+            // fill
+            if (p.fill === 'none') {
+                el.setAttribute('fill', 'none');
+            } else if (silhouette) {
+                el.setAttribute('fill', SILHOUETTE_COLOR);
+            } else {
+                el.setAttribute('fill', p.fill);
+            }
+
+            // stroke (nur fuer Linien, z.B. Affenschwanz, Frosch-Mund, Vogelbeine)
+            if (p.stroke) {
+                el.setAttribute('stroke', silhouette ? SILHOUETTE_COLOR : p.stroke);
+                if (p['stroke-width']) el.setAttribute('stroke-width', p['stroke-width']);
+                if (p['stroke-linecap']) el.setAttribute('stroke-linecap', p['stroke-linecap']);
+            }
+
+            svg.appendChild(el);
+        });
+
+        return svg;
+    }
+
+    // ====================================================
+    //  RUNDEN-GENERIERUNG
+    // ====================================================
+    function generateRound() {
+        const stageDef = STAGES[state.stage];
+        const pool = stageDef.pool.slice();
+
+        // Korrekte Antwort: nicht das gleiche Tier wie zuletzt (wenn Pool groß genug)
+        const candidatesForCorrect = pool.filter(k => k !== state.lastCorrect);
+        const correct = pick(candidatesForCorrect.length ? candidatesForCorrect : pool);
+        state.lastCorrect = correct;
+
+        // Distraktoren: aus dem Pool, ohne correct
+        const others = pool.filter(k => k !== correct);
+        const distractors = shuffle(others).slice(0, stageDef.count - 1);
+        const options = shuffle([correct, ...distractors]);
+
+        return { correct, options };
+    }
+
+    // ====================================================
+    //  RENDERING DER RUNDE
+    // ====================================================
+    function renderRound() {
+        const { correct, options } = generateRound();
+
+        // Target (oben, in Farbe)
+        const target = $('target');
+        target.innerHTML = '';
+        target.appendChild(renderAnimal(correct, false));
+
+        // Optionen (unten, als Silhouetten)
+        const optionsEl = $('options');
+        optionsEl.innerHTML = '';
+        const stageDef = STAGES[state.stage];
+        optionsEl.classList.remove('cols-3', 'cols-4', 'cols-5');
+        optionsEl.classList.add('cols-' + stageDef.count);
+
+        options.forEach(animalKey => {
+            const btn = document.createElement('button');
+            btn.className = 'option';
+            btn.setAttribute('aria-label', 'Schatten');
+            btn.appendChild(renderAnimal(animalKey, true));
+            btn.addEventListener('click', () => onAnswer(btn, animalKey, correct));
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function onAnswer(btn, animalKey, correctKey) {
+        if (state.locked) return;
+        if (animalKey === correctKey) {
+            // Richtig: locken, kurz feiern, naechste Runde
+            state.locked = true;
+            btn.classList.add('correct');
+            document.querySelectorAll('.option').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            sfx.correct();
+            const gen = state.gameGen;
+            setTimeout(() => {
+                // Wenn der Spieler waehrenddessen "Zurueck" gedrueckt hat,
+                // nicht mehr ins alte Game rendern.
+                if (gen !== state.gameGen) return;
+                state.locked = false;
+                renderRound();
+            }, 1100);
+        } else {
+            // Daneben: kein Spielende, freundlicher Wackler
+            btn.classList.remove('wiggle');
+            void btn.offsetWidth; // reflow erzwingen
+            btn.classList.add('wiggle');
+        }
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        switchScreen('game');
+        state.lastCorrect = null;
+        state.locked = false;
+        state.gameGen++;
+        renderRound();
+    }
+
+    function backToStart() {
+        state.gameGen++;          // pending setTimeouts invalidieren
+        state.locked = false;
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+
+    (function init() {
+        const prefs = loadPrefs();
+        const initial = (prefs.stage && STAGES[prefs.stage]) ? prefs.stage : 'leicht';
+        selectStage(initial);
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>

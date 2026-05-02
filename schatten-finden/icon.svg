@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#5c6bc0"/>
+  <!-- Boden -->
+  <ellipse cx="256" cy="430" rx="180" ry="22" fill="#3949ab" opacity="0.4"/>
+  <!-- Farbiger Hase links -->
+  <g transform="translate(80 130) scale(1.45)">
+    <path d="M 138 60 Q 132 25 145 22 Q 152 35 150 65 Z" fill="#dddddd"/>
+    <path d="M 153 60 Q 152 25 162 22 Q 168 35 162 65 Z" fill="#dddddd"/>
+    <path d="M 60 105 Q 70 80 105 80 Q 140 80 145 110 L 145 135 Q 130 142 100 142 Q 70 142 60 128 Z" fill="#dddddd"/>
+    <path d="M 130 70 Q 160 65 165 95 Q 165 115 145 118 Q 128 118 126 100 Z" fill="#dddddd"/>
+    <path d="M 70 130 Q 60 130 58 145 Q 58 165 75 165 L 95 165 L 95 145 Q 95 130 80 130 Z" fill="#cccccc"/>
+    <path d="M 125 135 L 122 165 L 134 165 L 137 135 Z" fill="#cccccc"/>
+    <path d="M 110 135 L 108 165 L 118 165 L 120 135 Z" fill="#cccccc"/>
+    <circle cx="55" cy="110" r="8" fill="#f0f0f0"/>
+    <circle cx="150" cy="95" r="2.5" fill="#2c3e50"/>
+    <circle cx="162" cy="102" r="2" fill="#2c3e50"/>
+  </g>
+  <!-- Pfeil -->
+  <g fill="#fff">
+    <path d="M 245 256 L 270 240 L 270 250 L 295 250 L 295 262 L 270 262 L 270 272 Z"/>
+  </g>
+  <!-- Schatten-Hase rechts -->
+  <g transform="translate(280 130) scale(1.45)">
+    <path d="M 138 60 Q 132 25 145 22 Q 152 35 150 65 Z" fill="#1a237e"/>
+    <path d="M 153 60 Q 152 25 162 22 Q 168 35 162 65 Z" fill="#1a237e"/>
+    <path d="M 60 105 Q 70 80 105 80 Q 140 80 145 110 L 145 135 Q 130 142 100 142 Q 70 142 60 128 Z" fill="#1a237e"/>
+    <path d="M 130 70 Q 160 65 165 95 Q 165 115 145 118 Q 128 118 126 100 Z" fill="#1a237e"/>
+    <path d="M 70 130 Q 60 130 58 145 Q 58 165 75 165 L 95 165 L 95 145 Q 95 130 80 130 Z" fill="#1a237e"/>
+    <path d="M 125 135 L 122 165 L 134 165 L 137 135 Z" fill="#1a237e"/>
+    <path d="M 110 135 L 108 165 L 118 165 L 120 135 Z" fill="#1a237e"/>
+    <circle cx="55" cy="110" r="8" fill="#1a237e"/>
+  </g>
+</svg>
