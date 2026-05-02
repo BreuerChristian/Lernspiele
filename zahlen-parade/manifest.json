@@ -1,0 +1,26 @@
+{
+  "name": "Zahlen-Parade",
+  "short_name": "Zahlen",
+  "description": "Werbefreies Rechen-Lernspiel fuer Kinder",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#a8e6a8",
+  "theme_color": "#5fa867",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

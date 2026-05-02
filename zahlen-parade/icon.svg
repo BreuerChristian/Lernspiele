@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87ceeb"/>
+      <stop offset="55%" stop-color="#87ceeb"/>
+      <stop offset="55%" stop-color="#a8e6a8"/>
+      <stop offset="100%" stop-color="#6cc070"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- Tor links (orange, +2) -->
+  <path d="M 110 230 Q 110 170 165 170 Q 220 170 220 230 L 220 340 L 110 340 Z"
+        fill="#e07b2c" stroke="#fff" stroke-width="6"/>
+  <text x="165" y="270" font-family="Arial, sans-serif" font-size="58" font-weight="bold"
+        fill="white" text-anchor="middle" dominant-baseline="central">+2</text>
+  <!-- Tor rechts (blau, ×3) -->
+  <path d="M 290 230 Q 290 170 345 170 Q 400 170 400 230 L 400 340 L 290 340 Z"
+        fill="#3d6cb0" stroke="#fff" stroke-width="6"/>
+  <text x="345" y="270" font-family="Arial, sans-serif" font-size="58" font-weight="bold"
+        fill="white" text-anchor="middle" dominant-baseline="central">×3</text>
+  <!-- Boden -->
+  <rect x="0" y="340" width="512" height="172" fill="#6cc070"/>
+  <!-- Strichmännchen -->
+  <g stroke="#3a3a3a" stroke-width="6" stroke-linecap="round" fill="none">
+    <circle cx="180" cy="395" r="12" fill="#fdd6a8"/>
+    <line x1="180" y1="407" x2="180" y2="445"/>
+    <line x1="180" y1="418" x2="166" y2="430"/>
+    <line x1="180" y1="418" x2="194" y2="430"/>
+    <line x1="180" y1="445" x2="170" y2="468"/>
+    <line x1="180" y1="445" x2="190" y2="468"/>
+  </g>
+  <g stroke="#3a3a3a" stroke-width="6" stroke-linecap="round" fill="none">
+    <circle cx="225" cy="395" r="12" fill="#fdd6a8"/>
+    <line x1="225" y1="407" x2="225" y2="445"/>
+    <line x1="225" y1="418" x2="211" y2="430"/>
+    <line x1="225" y1="418" x2="239" y2="430"/>
+    <line x1="225" y1="445" x2="215" y2="468"/>
+    <line x1="225" y1="445" x2="235" y2="468"/>
+  </g>
+  <g stroke="#3a3a3a" stroke-width="6" stroke-linecap="round" fill="none">
+    <circle cx="270" cy="395" r="12" fill="#fdd6a8"/>
+    <line x1="270" y1="407" x2="270" y2="445"/>
+    <line x1="270" y1="418" x2="256" y2="430"/>
+    <line x1="270" y1="418" x2="284" y2="430"/>
+    <line x1="270" y1="445" x2="260" y2="468"/>
+    <line x1="270" y1="445" x2="280" y2="468"/>
+  </g>
+</svg>

@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Zahlen-Parade</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#5fa867">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            background: #87ceeb;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #87ceeb 0%, #a8e6a8 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #4a8a52;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #6b8e6f;
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #4a8a52;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .choice-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .choice-row.three { grid-template-columns: 1fr 1fr 1fr; }
+        .choice {
+            background: #f0f5f0;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #4a8a52;
+            cursor: pointer;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .choice .small {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: normal;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+        .choice:hover { background: #e3ede3; }
+        .choice.active {
+            background: #d4ead4;
+            border-color: #5fa867;
+        }
+        .choice .emoji { display: block; font-size: 1.6rem; margin-bottom: 2px; }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #5fa867, #4a8a52);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(74, 138, 82, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #6dc1eb 0%, #a4dceb 60%, #c8e8d4 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #4a8a52;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hud-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.2;
+            color: #4a8a52;
+            font-weight: bold;
+        }
+        .hud-info .count { font-size: 1.4rem; }
+        .hud-info .target { font-size: 0.95rem; color: #d97706; }
+        .hud-info .target.hidden { display: none; }
+
+        .field {
+            position: relative;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* --- Hintergrund-Welt --- */
+        .world {
+            position: absolute;
+            inset: 0;
+        }
+        .sky {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(180deg, #6dc1eb 0%, #b4dff0 100%);
+        }
+        .horizon {
+            position: absolute;
+            top: 38%; left: 0; width: 100%; height: 12%;
+            background: linear-gradient(180deg, transparent 0%, rgba(168, 230, 168, 0.5) 100%);
+        }
+        .ground-bg {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(180deg, #8fcc8c 0%, #6cc070 100%);
+        }
+        .clouds-bg {
+            position: absolute;
+            top: 6%; left: 0; width: 100%; height: 20%;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+        .cloud {
+            position: absolute;
+            color: white;
+            font-size: 2.4rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+            animation: drift 50s linear infinite;
+        }
+        .cloud:nth-child(2) { animation-duration: 70s; font-size: 3rem; }
+        .cloud:nth-child(3) { animation-duration: 60s; font-size: 2rem; }
+        .cloud:nth-child(4) { animation-duration: 80s; font-size: 2.6rem; }
+        @keyframes drift {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-110vw); }
+        }
+        .trees-bg {
+            position: absolute;
+            top: 42%; left: 0; width: 100%; pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5%;
+        }
+        .trees-bg span {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));
+        }
+
+        /* --- Strecke (Pseudo-3D-Trapez) --- */
+        .track-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        /* --- Tore (werden per JS positioniert + skaliert) --- */
+        .gates-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .gate {
+            position: absolute;
+            transform-origin: center bottom;
+            transform: translate3d(-50%, 0, 0) scale(1);
+            display: flex;
+            gap: 6px;
+            pointer-events: auto;
+        }
+        .gate-arch {
+            width: 95px;
+            height: 130px;
+            border-radius: 50px 50px 8px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: white;
+            font-family: 'Comic Sans MS', cursive;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.22);
+            border: 4px solid rgba(255,255,255,0.65);
+            text-shadow: 1px 2px 0 rgba(0,0,0,0.22);
+            transition: box-shadow 0.15s, opacity 0.3s;
+            background-clip: padding-box;
+        }
+        .gate-arch.color-a { background: linear-gradient(160deg, #f49f4f, #d76420); }
+        .gate-arch.color-b { background: linear-gradient(160deg, #6b9ee2, #2f5ea3); }
+        .gate-arch.tappable { animation: pulse 1.4s ease-in-out infinite; }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 8px 16px rgba(0,0,0,0.22); }
+            50%      { box-shadow: 0 10px 28px rgba(255,235,150,0.7); }
+        }
+        .gate-arch.disabled { opacity: 0.25; pointer-events: none; }
+        .gate-arch.chosen {
+            box-shadow: 0 6px 30px rgba(255, 230, 130, 0.95);
+            border-color: #fff8c4;
+        }
+
+        /* --- Pulk + Figuren --- */
+        .figures {
+            position: absolute;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            height: 110px;
+            pointer-events: none;
+            transition: transform 0.5s cubic-bezier(.4,1.4,.5,1);
+        }
+        .figures.lane-left { transform: translateX(-50%) translateX(-90px); }
+        .figures.lane-right { transform: translateX(-50%) translateX(90px); }
+
+        .figure {
+            position: absolute;
+            bottom: 0;
+            width: 30px;
+            height: 60px;
+            transform: translateX(-50%);
+            transition: opacity 0.4s;
+        }
+        .figure svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            animation: bob 0.32s ease-in-out infinite alternate;
+            transform-origin: center bottom;
+        }
+        @keyframes bob {
+            from { transform: translateY(0) rotate(-1.5deg); }
+            to   { transform: translateY(-3px) rotate(1.5deg); }
+        }
+        .figure .leg-l, .figure .leg-r {
+            transform-origin: 15px 38px;
+            transform-box: fill-box;
+        }
+        .figure .leg-l {
+            animation: legL 0.32s ease-in-out infinite alternate;
+        }
+        .figure .leg-r {
+            animation: legR 0.32s ease-in-out infinite alternate;
+        }
+        .figure .arm-l {
+            transform-origin: 15px 22px;
+            transform-box: fill-box;
+            animation: legR 0.32s ease-in-out infinite alternate;
+        }
+        .figure .arm-r {
+            transform-origin: 15px 22px;
+            transform-box: fill-box;
+            animation: legL 0.32s ease-in-out infinite alternate;
+        }
+        @keyframes legL {
+            from { transform: rotate(-22deg); }
+            to   { transform: rotate(22deg); }
+        }
+        @keyframes legR {
+            from { transform: rotate(22deg); }
+            to   { transform: rotate(-22deg); }
+        }
+        .figure.fade { opacity: 0; }
+
+        /* Stop-State: Beine still */
+        .figures.stopped .figure svg,
+        .figures.stopped .figure .leg-l,
+        .figures.stopped .figure .leg-r,
+        .figures.stopped .figure .arm-l,
+        .figures.stopped .figure .arm-r {
+            animation-play-state: paused;
+        }
+
+        /* --- Spielplatz (Ziel) --- */
+        .goal {
+            position: absolute;
+            left: 50%;
+            transform: translate3d(-50%, 0, 0) scale(0.2);
+            opacity: 0;
+            pointer-events: none;
+            text-align: center;
+            transition: opacity 0.4s;
+        }
+        .goal-emoji {
+            font-size: 7rem;
+            line-height: 1;
+            filter: drop-shadow(0 6px 10px rgba(0,0,0,0.18));
+        }
+        .goal-emoji-row {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+        .goal-emoji-row span {
+            font-size: 4.5rem;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+        }
+
+        /* --- Toast --- */
+        .toast {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.97);
+            color: #4a8a52;
+            padding: 12px 22px;
+            border-radius: 16px;
+            font-weight: bold;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            font-size: 1.2rem;
+            z-index: 25;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(8px); }
+
+        /* --- Pause --- */
+        .pause-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.45);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 40;
+        }
+        .pause-overlay.visible { display: flex; }
+        .pause-overlay .panel {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+        .pause-overlay h2 {
+            color: #4a8a52;
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+        }
+        .pause-overlay button {
+            background: #5fa867;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 24px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ---------- End-Screen ---------- */
+        #screen-end {
+            background: linear-gradient(135deg, #a8e6a8 0%, #87ceeb 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #screen-end .card {
+            background: white;
+            border-radius: 28px;
+            padding: 38px 30px;
+            max-width: 460px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+        }
+        #end-emoji {
+            font-size: 4.5rem;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        #end-title {
+            color: #4a8a52;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        #end-message {
+            color: #6b8e6f;
+            margin-bottom: 24px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+        .end-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .end-buttons button {
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #btn-again {
+            background: linear-gradient(145deg, #5fa867, #4a8a52);
+            color: white;
+            box-shadow: 0 6px 14px rgba(74,138,82,0.3);
+        }
+        #btn-back-end {
+            background: #f0f5f0;
+            color: #4a8a52;
+        }
+
+        @media (max-width: 480px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .gate-arch { width: 78px; height: 110px; font-size: 1.8rem; border-radius: 42px 42px 6px 6px; }
+            .figure { width: 26px; height: 52px; }
+            .figures { width: 240px; height: 100px; }
+            .figures.lane-left  { transform: translateX(-50%) translateX(-72px); }
+            .figures.lane-right { transform: translateX(-50%) translateX( 72px); }
+        }
+        @media (max-height: 520px) {
+            .gate-arch { height: 100px; font-size: 1.6rem; }
+            .figure { width: 24px; height: 48px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <h1>Zahlen-Parade</h1>
+        <p class="sub">Begleite die Kinder durch die Tore.</p>
+
+        <div class="group">
+            <h2>Was möchtest du spielen?</h2>
+            <div class="choice-row" id="mode-row">
+                <button class="choice" data-mode="frei">
+                    <span class="emoji">🌻</span>
+                    Frei
+                    <span class="small">einfach loslaufen</span>
+                </button>
+                <button class="choice" data-mode="ziel">
+                    <span class="emoji">🎯</span>
+                    Ziel
+                    <span class="small">eine bestimmte Zahl</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="choice-row three" id="level-row">
+                <button class="choice" data-level="klein">
+                    <span class="emoji">🌱</span>
+                    Klein
+                    <span class="small">+ und −</span>
+                </button>
+                <button class="choice" data-level="mittel">
+                    <span class="emoji">🌿</span>
+                    Mittel
+                    <span class="small">+ − ×</span>
+                </button>
+                <button class="choice" data-level="gross">
+                    <span class="emoji">🌳</span>
+                    Groß
+                    <span class="small">alle vier</span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <button class="hud-btn" id="btn-pause" aria-label="Pause">II</button>
+        <div class="hud-info">
+            <div class="count" id="hud-count">0</div>
+            <div class="target hidden" id="hud-target">Ziel: 0</div>
+        </div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="field" id="field">
+        <div class="world">
+            <div class="sky"></div>
+            <div class="horizon"></div>
+            <div class="ground-bg"></div>
+            <div class="clouds-bg" id="clouds">
+                <span class="cloud" style="top: 10%; left: 10%;">☁</span>
+                <span class="cloud" style="top: 25%; left: 35%;">☁</span>
+                <span class="cloud" style="top: 5%;  left: 60%;">☁</span>
+                <span class="cloud" style="top: 32%; left: 82%;">☁</span>
+            </div>
+            <div class="trees-bg" id="trees">
+                <span>🌲</span><span>🌳</span><span>🌲</span><span>🌳</span><span>🌲</span>
+            </div>
+            <svg class="track-svg" id="track-svg" preserveAspectRatio="none" viewBox="0 0 1000 1000">
+                <defs>
+                    <linearGradient id="trackGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"  stop-color="#d8c89a"/>
+                        <stop offset="100%" stop-color="#bda06a"/>
+                    </linearGradient>
+                </defs>
+                <polygon id="track-poly" points="350,400 650,400 1100,1000 -100,1000" fill="url(#trackGrad)" stroke="#a88a52" stroke-width="3"/>
+                <g id="track-marks"></g>
+            </svg>
+        </div>
+
+        <div class="gates-layer" id="gates-layer"></div>
+
+        <div class="figures" id="figures"></div>
+
+        <div class="goal" id="goal">
+            <div class="goal-emoji">🏡</div>
+            <div class="goal-emoji-row">
+                <span>🌳</span><span>🛝</span><span>🌳</span>
+            </div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+
+        <div class="pause-overlay" id="pause-overlay">
+            <div class="panel">
+                <h2>Pause</h2>
+                <button id="btn-resume">Weiter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     END-SCREEN
+============================================================ -->
+<div id="screen-end" class="screen hidden">
+    <div class="card">
+        <div id="end-emoji">🎉</div>
+        <h1 id="end-title">Angekommen!</h1>
+        <p id="end-message"></p>
+        <div class="end-buttons">
+            <button id="btn-again">Nochmal</button>
+            <button id="btn-back-end">Andere Aufgabe</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  KONFIGURATION
+    // ====================================================
+    const CAP = 30;
+    const STEPS = 4;
+    const GATE_TRAVEL_SEC = 2.6;   // Sekunden vom Vanishing Point bis vor den Pulk
+    const POST_TAP_SEC = 0.7;      // Verzögerung nach Tor-Tipp
+    const GOAL_TRAVEL_SEC = 2.4;   // Spielplatz-Anfahrt
+
+    const LEVELS = {
+        klein: {
+            ops: ['+', '−'],
+            ranges: { '+': [1,3], '−': [1,3] },
+            startRange: [3, 6],
+        },
+        mittel: {
+            ops: ['+', '−', '×'],
+            ranges: { '+': [1,4], '−': [1,3], '×': [2,3] },
+            startRange: [2, 5],
+        },
+        gross: {
+            ops: ['+', '−', '×', '÷'],
+            ranges: { '+': [1,5], '−': [1,4], '×': [2,3], '÷': [2,3] },
+            startRange: [4, 8],
+        },
+    };
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        mode: null,
+        level: null,
+        count: 0,
+        target: null,
+        startCount: 0,
+        gates: [],
+        nextGateIdx: 0,
+        running: false,
+        paused: false,
+        atGate: false,
+        finished: false,
+        currentProgress: 0,   // 0..1 für aktuelles Tor
+        goalProgress: 0,      // 0..1 für Spielplatz-Anfahrt
+        showingGoal: false,
+        lastFrame: 0,
+        figures: [],
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'zahlen-parade-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                mode: state.mode, level: state.level
+            }));
+        } catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.12, type = 'sine', vol = 0.08) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        gateTap: () => tone(560, 0.12, 'triangle', 0.10),
+        change:  () => { tone(440, 0.10, 'sine', 0.08); setTimeout(() => tone(660, 0.14, 'sine', 0.08), 90); },
+        arrive:  () => {
+            tone(523, 0.18, 'sine', 0.08);
+            setTimeout(() => tone(659, 0.18, 'sine', 0.08), 160);
+            setTimeout(() => tone(784, 0.28, 'sine', 0.09), 320);
+        },
+        empty:   () => tone(220, 0.4, 'sine', 0.07),
+    };
+
+    // ====================================================
+    //  OPERATIONEN
+    // ====================================================
+    function applyOp(count, op, val) {
+        let r;
+        switch (op) {
+            case '+': r = count + val; break;
+            case '−': r = count - val; break;
+            case '×': r = count * val; break;
+            case '÷': r = Math.floor(count / val); break;
+        }
+        if (r < 0) r = 0;
+        if (r > CAP) r = CAP;
+        return r;
+    }
+
+    function makeOp(level, count, excludeResult = null) {
+        const cfg = LEVELS[level];
+        const candidates = [];
+        for (const op of cfg.ops) {
+            const [lo, hi] = cfg.ranges[op];
+            for (let v = lo; v <= hi; v++) {
+                if (op === '÷' && (count === 0 || count % v !== 0)) continue;
+                if (op === '−' && v > count) continue;
+                if (op === '×' && count * v > CAP) continue;
+                if (op === '+' && count + v > CAP) continue;
+                const r = applyOp(count, op, v);
+                if (r === count) continue;
+                if (excludeResult !== null && r === excludeResult) continue;
+                candidates.push({ op, val: v, result: r });
+            }
+        }
+        if (candidates.length === 0) {
+            if (count + 1 <= CAP) return { op: '+', val: 1, result: count + 1 };
+            if (count - 1 >= 0)   return { op: '−', val: 1, result: count - 1 };
+            return { op: '+', val: 0, result: count };
+        }
+        return pick(candidates);
+    }
+
+    function generateGame() {
+        const cfg = LEVELS[state.level];
+        state.startCount = randInt(cfg.startRange[0], cfg.startRange[1]);
+        state.count = state.startCount;
+        state.gates = [];
+        state.nextGateIdx = 0;
+        state.currentProgress = 0;
+        state.goalProgress = 0;
+        state.showingGoal = false;
+        state.finished = false;
+        state.atGate = false;
+
+        if (state.mode === 'ziel') {
+            let cur = state.startCount;
+            for (let i = 0; i < STEPS; i++) {
+                let correct = makeOp(state.level, cur);
+                // Ziel-Pfad darf zwischendurch nicht auf 0 fallen — sonst stünde der Pulk leer
+                let safety = 0;
+                while (correct.result === 0 && safety < 8) {
+                    correct = makeOp(state.level, cur);
+                    safety++;
+                }
+                if (correct.result === 0) correct = { op: '+', val: 1, result: cur + 1 };
+                const wrong = makeOp(state.level, cur, correct.result);
+                state.gates.push({
+                    options: shuffle([correct, wrong]),
+                    correctResult: correct.result,
+                    passed: false,
+                    chosen: null,
+                });
+                cur = correct.result;
+            }
+            state.target = cur;
+        } else {
+            let cur = state.startCount;
+            for (let i = 0; i < STEPS; i++) {
+                const a = makeOp(state.level, cur);
+                const b = makeOp(state.level, cur, a.result);
+                state.gates.push({
+                    options: shuffle([a, b]),
+                    passed: false,
+                    chosen: null,
+                });
+                cur = pick([a.result, b.result]);
+            }
+            state.target = null;
+        }
+    }
+
+    // ====================================================
+    //  PSEUDO-3D-PROJEKTION
+    // ====================================================
+    // Strecken-Geometrie (in Bildschirm-Koordinaten):
+    //   Vanishing Point: (cx, vy)
+    //   Boden (vorne):   (cx ± laneSpread, gy)
+    function projection() {
+        const f = $('field');
+        const W = f.clientWidth;
+        const H = f.clientHeight;
+        return {
+            W, H,
+            cx: W / 2,
+            vy: H * 0.42,                  // Vanishing-Y (Horizont)
+            gy: H * 0.92,                  // Boden-Y (vor dem Pulk)
+            laneSpreadFar: W * 0.018,      // Halbe Strecken-Breite oben
+            laneSpreadNear: W * 0.32,      // Halbe Strecken-Breite unten (vor Pulk)
+        };
+    }
+
+    // progress 0 = ganz hinten, 1 = direkt vorm Pulk
+    // Perspektive: nicht linear, sondern hyperbolisch
+    function depthCurve(p) {
+        // Smoother, "perspektivischer" Verlauf
+        return p * p * (3 - 2 * p) * 0.7 + p * 0.3;  // mix linear + smoothstep
+    }
+
+    function projectGate(p, lane /* -1 = links, 0 = mitte, +1 = rechts */) {
+        const proj = projection();
+        const t = depthCurve(p);
+        const y = proj.vy + (proj.gy - proj.vy) * t;
+        const spread = proj.laneSpreadFar + (proj.laneSpreadNear - proj.laneSpreadFar) * t;
+        const x = proj.cx + lane * spread * 0.55;
+        const scale = 0.18 + 0.82 * t;
+        return { x, y, scale };
+    }
+
+    function projectGoal(p) {
+        const proj = projection();
+        const t = depthCurve(p);
+        const y = proj.vy + (proj.gy - proj.vy * 0.85) * t * 0.85;
+        const scale = 0.15 + 0.85 * t;
+        return { x: proj.cx, y, scale };
+    }
+
+    // ====================================================
+    //  RENDERING
+    // ====================================================
+    function setupTrackSvg() {
+        // Aktualisiere Track-Polygon basierend auf Projektion
+        const proj = projection();
+        const vbW = 1000, vbH = 1000;
+        const sx = vbW / proj.W;
+        const sy = vbH / proj.H;
+        const topY = proj.vy * sy;
+        const botY = proj.gy * sy;
+        const cx = proj.cx * sx;
+        const farHalf = proj.laneSpreadFar * sx * 1.3;
+        const nearHalf = proj.laneSpreadNear * sx * 1.3;
+        const poly = $('track-poly');
+        if (poly) {
+            poly.setAttribute('points',
+                `${cx - farHalf},${topY} ${cx + farHalf},${topY} ${cx + nearHalf + 100},${botY + 50} ${cx - nearHalf - 100},${botY + 50}`);
+        }
+        // Boden-Linien für Bewegungs-Eindruck
+        const marks = $('track-marks');
+        if (marks) {
+            marks.innerHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                const t = i / 6;
+                const y = topY + (botY - topY) * (t*t*0.7 + t*0.3);
+                const half = farHalf + (nearHalf - farHalf) * (t*t*0.7 + t*0.3);
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', cx - half * 0.95);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', cx + half * 0.95);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', 'rgba(255,255,255,0.35)');
+                line.setAttribute('stroke-width', 2 + i * 0.6);
+                line.setAttribute('stroke-dasharray', '14 14');
+                marks.appendChild(line);
+            }
+        }
+    }
+
+    function buildGates() {
+        const layer = $('gates-layer');
+        layer.innerHTML = '';
+        state.gates.forEach((gate, idx) => {
+            const wrap = document.createElement('div');
+            wrap.className = 'gate';
+            wrap.style.display = 'none';
+            wrap.dataset.idx = idx;
+
+            gate.options.forEach((opt, optIdx) => {
+                const arch = document.createElement('button');
+                arch.className = 'gate-arch ' + (optIdx === 0 ? 'color-a' : 'color-b');
+                arch.textContent = opt.op + opt.val;
+                arch.dataset.gate = idx;
+                arch.dataset.opt = optIdx;
+                arch.addEventListener('click', onGateTap);
+                wrap.appendChild(arch);
+            });
+
+            layer.appendChild(wrap);
+            gate.el = wrap;
+            gate.archEls = wrap.querySelectorAll('.gate-arch');
+        });
+    }
+
+    function positionCurrentGate() {
+        const gate = state.gates[state.nextGateIdx];
+        if (!gate) return;
+        const p = state.currentProgress;
+        const pos = projectGate(p, 0);
+        gate.el.style.display = 'flex';
+        gate.el.style.left = pos.x + 'px';
+        gate.el.style.top  = (pos.y - 130 * pos.scale) + 'px';
+        gate.el.style.transform = `translate3d(-50%, 0, 0) scale(${pos.scale})`;
+        // Andere Tore verstecken — aber das vorherige nicht (es fade-t gerade aus)
+        state.gates.forEach((g, i) => {
+            if (i === state.nextGateIdx) return;
+            if (i === state.nextGateIdx - 1) return;
+            g.el.style.display = 'none';
+        });
+    }
+
+    function positionGoal() {
+        const goal = $('goal');
+        if (!state.showingGoal) {
+            goal.style.opacity = '0';
+            return;
+        }
+        const pos = projectGoal(state.goalProgress);
+        goal.style.left = pos.x + 'px';
+        goal.style.top  = (pos.y - 200 * pos.scale) + 'px';
+        goal.style.transform = `translate3d(-50%, 0, 0) scale(${pos.scale})`;
+        goal.style.opacity = String(0.4 + 0.6 * state.goalProgress);
+    }
+
+    const FIGURE_SVG = `
+      <svg viewBox="0 0 30 60" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+        <circle cx="15" cy="9" r="6.5" fill="#fdd6a8" stroke="#7a4f2c" stroke-width="1.4"/>
+        <line x1="15" y1="16" x2="15" y2="38" stroke="#3a3a3a" stroke-width="3" stroke-linecap="round"/>
+        <line class="arm-l" x1="15" y1="22" x2="6"  y2="32" stroke="#3a3a3a" stroke-width="2.4" stroke-linecap="round"/>
+        <line class="arm-r" x1="15" y1="22" x2="24" y2="32" stroke="#3a3a3a" stroke-width="2.4" stroke-linecap="round"/>
+        <line class="leg-l" x1="15" y1="38" x2="9"  y2="56" stroke="#3a3a3a" stroke-width="2.8" stroke-linecap="round"/>
+        <line class="leg-r" x1="15" y1="38" x2="21" y2="56" stroke="#3a3a3a" stroke-width="2.8" stroke-linecap="round"/>
+      </svg>`;
+
+    // Vordefinierte Pulk-Positionen (gestaffelt, perspektivisch leicht skaliert)
+    const PULK_LAYOUT = [
+        // {x, y, s} — x relativ zur Pulk-Mitte (in px), y nach oben (px), s scale
+        {x:   0, y:  0, s: 1.00},
+        {x: -28, y:  4, s: 0.95},
+        {x:  28, y:  4, s: 0.95},
+        {x: -56, y:  8, s: 0.90},
+        {x:  56, y:  8, s: 0.90},
+        {x: -14, y: 18, s: 0.86},
+        {x:  14, y: 18, s: 0.86},
+        {x: -42, y: 22, s: 0.82},
+        {x:  42, y: 22, s: 0.82},
+        {x: -70, y: 26, s: 0.78},
+        {x:  70, y: 26, s: 0.78},
+        {x:   0, y: 36, s: 0.74},
+        {x: -28, y: 40, s: 0.72},
+        {x:  28, y: 40, s: 0.72},
+        {x: -56, y: 44, s: 0.68},
+        {x:  56, y: 44, s: 0.68},
+        {x: -14, y: 54, s: 0.64},
+        {x:  14, y: 54, s: 0.64},
+        {x: -42, y: 58, s: 0.62},
+        {x:  42, y: 58, s: 0.62},
+        {x:   0, y: 70, s: 0.58},
+        {x: -28, y: 74, s: 0.56},
+        {x:  28, y: 74, s: 0.56},
+        {x: -56, y: 78, s: 0.54},
+        {x:  56, y: 78, s: 0.54},
+        {x:   0, y: 88, s: 0.52},
+        {x: -42, y: 92, s: 0.50},
+        {x:  42, y: 92, s: 0.50},
+        {x: -14, y: 100, s: 0.48},
+        {x:  14, y: 100, s: 0.48},
+    ];
+
+    function makeFigure(idx) {
+        const layout = PULK_LAYOUT[idx % PULK_LAYOUT.length];
+        const fig = document.createElement('div');
+        fig.className = 'figure';
+        fig.innerHTML = FIGURE_SVG;
+        fig.style.left = `calc(50% + ${layout.x}px)`;
+        fig.style.bottom = layout.y + 'px';
+        fig.style.transform = `translateX(-50%) scale(${layout.s})`;
+        // animation-delay variiert für lebendigen Pulk
+        const svg = fig.querySelector('svg');
+        const delay = (Math.random() * 0.32) + 's';
+        svg.style.animationDelay = delay;
+        fig.querySelectorAll('.leg-l, .leg-r, .arm-l, .arm-r').forEach(el => {
+            el.style.animationDelay = delay;
+        });
+        return fig;
+    }
+
+    function renderFiguresInitial() {
+        const cont = $('figures');
+        cont.innerHTML = '';
+        cont.classList.remove('lane-left', 'lane-right', 'stopped');
+        state.figures = [];
+        for (let i = 0; i < state.count; i++) {
+            const fig = makeFigure(i);
+            cont.appendChild(fig);
+            state.figures.push(fig);
+        }
+    }
+
+    function updateFigureCount(newCount) {
+        const cur = state.figures.length;
+        if (newCount === cur) return;
+        if (newCount > cur) {
+            const cont = $('figures');
+            for (let i = cur; i < newCount; i++) {
+                const fig = makeFigure(i);
+                fig.style.opacity = '0';
+                cont.appendChild(fig);
+                state.figures.push(fig);
+                requestAnimationFrame(() => fig.style.opacity = '1');
+            }
+        } else {
+            const removed = state.figures.splice(newCount);
+            removed.forEach(fig => {
+                fig.classList.add('fade');
+                setTimeout(() => fig.remove(), 450);
+            });
+        }
+    }
+
+    function setLane(lane /* -1 | 0 | +1 */) {
+        const f = $('figures');
+        f.classList.remove('lane-left', 'lane-right');
+        if (lane < 0) f.classList.add('lane-left');
+        if (lane > 0) f.classList.add('lane-right');
+    }
+
+    function setFiguresAnimating(animating) {
+        const f = $('figures');
+        f.classList.toggle('stopped', !animating);
+    }
+
+    function updateHud() {
+        $('hud-count').textContent = state.count + ' ' + (state.count === 1 ? 'Kind' : 'Kinder');
+        const t = $('hud-target');
+        if (state.target !== null) {
+            t.textContent = 'Ziel: ' + state.target;
+            t.classList.remove('hidden');
+        } else {
+            t.classList.add('hidden');
+        }
+    }
+
+    function showToast(text, ms = 1600) {
+        const toast = $('toast');
+        toast.textContent = text;
+        toast.classList.add('show');
+        clearTimeout(showToast.t);
+        showToast.t = setTimeout(() => toast.classList.remove('show'), ms);
+    }
+
+    // ====================================================
+    //  GAME LOOP
+    // ====================================================
+    let loopHandle = 0;
+
+    function startLoop() {
+        state.running = true;
+        state.paused = false;
+        state.atGate = false;
+        state.finished = false;
+        state.lastFrame = performance.now();
+        setFiguresAnimating(true);
+        cancelAnimationFrame(loopHandle);
+        loopHandle = requestAnimationFrame(loop);
+    }
+
+    function stopLoop() {
+        state.running = false;
+        cancelAnimationFrame(loopHandle);
+        loopHandle = 0;
+    }
+
+    function loop(now) {
+        if (!state.running) return;
+        const dt = Math.min(0.05, (now - state.lastFrame) / 1000);
+        state.lastFrame = now;
+
+        if (!state.paused && !state.finished && state.count > 0) {
+            if (!state.showingGoal) {
+                // Aktuelles Tor anrücken lassen
+                if (!state.atGate && state.nextGateIdx < state.gates.length) {
+                    state.currentProgress += dt / GATE_TRAVEL_SEC;
+                    if (state.currentProgress >= 1) {
+                        state.currentProgress = 1;
+                        state.atGate = true;
+                        highlightCurrentGate();
+                    }
+                    positionCurrentGate();
+                }
+                // Alle Tore durch?
+                if (state.nextGateIdx >= state.gates.length && !state.showingGoal) {
+                    state.showingGoal = true;
+                    state.goalProgress = 0;
+                }
+            } else {
+                // Spielplatz nähert sich
+                state.goalProgress += dt / GOAL_TRAVEL_SEC;
+                if (state.goalProgress >= 1) {
+                    state.goalProgress = 1;
+                    state.finished = true;
+                    onArriveAtGoal();
+                }
+                positionGoal();
+            }
+        }
+
+        if (state.count === 0 && !state.finished) {
+            state.finished = true;
+            setFiguresAnimating(false);
+            onEmpty();
+        }
+
+        if (state.running) loopHandle = requestAnimationFrame(loop);
+    }
+
+    function highlightCurrentGate() {
+        const gate = state.gates[state.nextGateIdx];
+        if (!gate) return;
+        gate.archEls.forEach(el => el.classList.add('tappable'));
+    }
+
+    function onGateTap(e) {
+        const gateIdx = parseInt(e.currentTarget.dataset.gate, 10);
+        const optIdx = parseInt(e.currentTarget.dataset.opt, 10);
+        if (gateIdx !== state.nextGateIdx || !state.atGate || state.paused) return;
+
+        const gate = state.gates[gateIdx];
+        if (gate.passed) return;
+        gate.passed = true;
+        const opt = gate.options[optIdx];
+
+        const newCount = applyOp(state.count, opt.op, opt.val);
+
+        gate.chosen = optIdx;
+
+        // Visual: Pulk biegt zur gewählten Seite
+        setLane(optIdx === 0 ? -1 : +1);
+
+        gate.archEls[optIdx].classList.add('chosen');
+        gate.archEls.forEach((el, i) => {
+            el.classList.remove('tappable');
+            if (i !== optIdx) el.classList.add('disabled');
+        });
+
+        sfx.gateTap();
+        setTimeout(() => sfx.change(), 120);
+
+        showToast(`${state.count} ${opt.op} ${opt.val} = ${newCount}`, 1700);
+
+        state.count = newCount;
+        updateFigureCount(state.count);
+        updateHud();
+
+        // Pulk zurück zur Mitte und nächstes Tor starten
+        setTimeout(() => {
+            setLane(0);
+            // Aktuelles Tor "vorbeiziehen" lassen, dann nächstes
+            const fadeStart = performance.now();
+            const fadeMs = 350;
+            const fadeStep = (t) => {
+                const k = clamp((t - fadeStart) / fadeMs, 0, 1);
+                if (gate.el) gate.el.style.opacity = String(1 - k);
+                if (k < 1) requestAnimationFrame(fadeStep);
+                else if (gate.el) gate.el.style.display = 'none';
+            };
+            requestAnimationFrame(fadeStep);
+
+            state.nextGateIdx++;
+            state.currentProgress = 0;
+            state.atGate = false;
+        }, POST_TAP_SEC * 1000);
+    }
+
+    // ====================================================
+    //  ENDE
+    // ====================================================
+    function onArriveAtGoal() {
+        sfx.arrive();
+        setFiguresAnimating(false);
+        setTimeout(() => showEndScreen(), 1100);
+    }
+
+    function onEmpty() {
+        sfx.empty();
+        setTimeout(() => showEndScreen(), 900);
+    }
+
+    function showEndScreen() {
+        stopLoop();
+        const emoji = $('end-emoji');
+        const title = $('end-title');
+        const msg   = $('end-message');
+
+        if (state.count === 0) {
+            emoji.textContent = '🌾';
+            title.textContent = 'Niemand ist mehr da.';
+            msg.textContent = 'Magst du es nochmal probieren?';
+        } else if (state.mode === 'ziel') {
+            if (state.count === state.target) {
+                emoji.textContent = '🎉';
+                title.textContent = `Genau ${state.count}!`;
+                msg.textContent = 'Du hast die richtige Zahl getroffen.';
+            } else {
+                emoji.textContent = '🌼';
+                const diff = Math.abs(state.count - state.target);
+                title.textContent = `${state.count} sind angekommen.`;
+                msg.textContent = `Das Ziel war ${state.target}. ${diff === 1 ? 'Eines daneben' : diff + ' daneben'} — magst du nochmal probieren?`;
+            }
+        } else {
+            emoji.textContent = '🌻';
+            title.textContent = `${state.count} ${state.count === 1 ? 'Kind ist' : 'Kinder sind'} angekommen!`;
+            msg.textContent = 'Schöne Parade.';
+        }
+
+        switchScreen('end');
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start','game','end'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function launchGame() {
+        generateGame();
+        switchScreen('game');
+        renderFiguresInitial();
+        updateHud();
+        requestAnimationFrame(() => {
+            setupTrackSvg();
+            buildGates();
+            positionCurrentGate();
+            startLoop();
+        });
+    }
+
+    function startGame() {
+        if (!state.mode || !state.level) return;
+        savePrefs();
+        launchGame();
+    }
+
+    function backToStart() {
+        stopLoop();
+        state.paused = false;
+        $('pause-overlay').classList.remove('visible');
+        switchScreen('start');
+    }
+
+    function againSameMode() {
+        launchGame();
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectChoice(group, value) {
+        const row = $(group + '-row');
+        row.querySelectorAll('.choice').forEach(b => {
+            b.classList.toggle('active', b.dataset[group] === value);
+        });
+        state[group] = value;
+    }
+
+    document.querySelectorAll('#mode-row .choice').forEach(b => {
+        b.addEventListener('click', () => selectChoice('mode', b.dataset.mode));
+    });
+    document.querySelectorAll('#level-row .choice').forEach(b => {
+        b.addEventListener('click', () => selectChoice('level', b.dataset.level));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-pause').addEventListener('click', () => {
+        state.paused = true;
+        setFiguresAnimating(false);
+        $('pause-overlay').classList.add('visible');
+    });
+    $('btn-resume').addEventListener('click', () => {
+        state.paused = false;
+        setFiguresAnimating(true);
+        state.lastFrame = performance.now();
+        $('pause-overlay').classList.remove('visible');
+    });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-again').addEventListener('click', againSameMode);
+    $('btn-back-end').addEventListener('click', backToStart);
+
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (state.running) {
+                setupTrackSvg();
+                positionCurrentGate();
+                if (state.showingGoal) positionGoal();
+            }
+        }, 100);
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && state.running && !state.paused) {
+            state.paused = true;
+            setFiguresAnimating(false);
+            $('pause-overlay').classList.add('visible');
+        }
+    });
+
+    (function init() {
+        const prefs = loadPrefs();
+        selectChoice('mode', prefs.mode || 'frei');
+        selectChoice('level', prefs.level || 'klein');
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>
