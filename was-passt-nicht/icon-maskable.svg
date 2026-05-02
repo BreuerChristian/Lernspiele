@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#16a085"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205, also 51..461) -->
+  <!-- 4 Felder im sicheren Bereich -->
+  <!-- oben links: Apfel -->
+  <circle cx="186" cy="196" r="44" fill="#e74c3c"/>
+  <rect x="181" y="142" width="10" height="16" fill="#7f5a32"/>
+  <ellipse cx="202" cy="148" rx="12" ry="7" fill="#27ae60"/>
+  <!-- oben rechts: Apfel -->
+  <circle cx="326" cy="196" r="44" fill="#e74c3c"/>
+  <rect x="321" y="142" width="10" height="16" fill="#7f5a32"/>
+  <ellipse cx="342" cy="148" rx="12" ry="7" fill="#27ae60"/>
+  <!-- unten links: Apfel -->
+  <circle cx="186" cy="336" r="44" fill="#e74c3c"/>
+  <rect x="181" y="282" width="10" height="16" fill="#7f5a32"/>
+  <ellipse cx="202" cy="288" rx="12" ry="7" fill="#27ae60"/>
+  <!-- unten rechts: kleines Auto -->
+  <rect x="278" y="316" width="96" height="38" rx="8" fill="#3498db"/>
+  <rect x="288" y="294" width="64" height="26" rx="6" fill="#3498db"/>
+  <rect x="296" y="299" width="22" height="16" fill="#bde0fe"/>
+  <rect x="324" y="299" width="22" height="16" fill="#bde0fe"/>
+  <circle cx="298" cy="360" r="12" fill="#2c3e50"/>
+  <circle cx="354" cy="360" r="12" fill="#2c3e50"/>
+  <!-- Markierungs-Ring um den Aussenseiter -->
+  <circle cx="326" cy="336" r="62" fill="none" stroke="#fff7d6" stroke-width="7" stroke-dasharray="5 7"/>
+</svg>

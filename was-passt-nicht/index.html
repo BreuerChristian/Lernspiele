@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Was passt nicht?</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#16a085">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #e6f7f4;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #e6f7f4 0%, #9fdcd0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #0f7561;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #1d8473;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #0f7561;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #d2efe7;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #b6e4d8; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #0f7561;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #e6f7f4;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #1a4d44;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #cfeae3; }
+        .stage-choice.active {
+            background: #cfeae3;
+            border-color: #16a085;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #0f7561;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #357366;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #16a085, #0f7561);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(15, 117, 97, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #e6f7f4 0%, #9fdcd0 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #0f7561;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #0f7561;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 16px 20px;
+            gap: 14px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #0f7561;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 14px;
+            width: 100%;
+            max-width: 540px;
+            flex: 1;
+            min-height: 0;
+        }
+        .tile {
+            background: white;
+            border: 4px solid transparent;
+            border-radius: 22px;
+            padding: 8px;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s, border-color 0.18s, background 0.2s, box-shadow 0.18s;
+            font-family: inherit;
+            min-height: 0;
+            min-width: 0;
+        }
+        .tile svg {
+            width: 100%;
+            height: 100%;
+            max-width: 220px;
+            max-height: 220px;
+            display: block;
+        }
+        .tile:hover { background: #f3fbf9; }
+        .tile:active { transform: translateY(1px); }
+        .tile.correct {
+            background: #d2f0c5;
+            border-color: #6cab4e;
+        }
+        .tile.locked {
+            pointer-events: none;
+        }
+        .tile.dim {
+            opacity: 0.5;
+        }
+        .tile.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+            border-color: #f0c674;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+        .hint {
+            min-height: 1.4em;
+            color: #1d8473;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+        .hint.show { opacity: 1; }
+
+        /* ---------- End-Screen ---------- */
+        #screen-end {
+            background: linear-gradient(135deg, #e6f7f4 0%, #9fdcd0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #screen-end .card {
+            background: white;
+            border-radius: 28px;
+            padding: 36px 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-end h2 {
+            color: #0f7561;
+            font-size: 1.7rem;
+            margin-bottom: 10px;
+        }
+        #screen-end p {
+            color: #1d8473;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .end-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .end-btn {
+            padding: 14px 16px;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.12s, background 0.15s;
+        }
+        .end-btn.primary {
+            background: linear-gradient(145deg, #16a085, #0f7561);
+            color: white;
+            box-shadow: 0 6px 14px rgba(15, 117, 97, 0.30);
+        }
+        .end-btn.secondary {
+            background: #d2efe7;
+            color: #0f7561;
+        }
+        .end-btn:active { transform: translateY(2px); }
+
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .prompt { font-size: 1.1rem; }
+            .grid { gap: 10px; }
+            .tile { border-radius: 18px; padding: 6px; }
+        }
+        @media (max-height: 600px) {
+            .prompt { font-size: 1.05rem; }
+            .game-area { padding: 8px 12px 12px; gap: 10px; }
+            .grid { gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Was passt nicht?</h1>
+        <p class="sub">Drei gehören zusammen — eines fällt aus der Reihe.</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="1">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Ganz unterschiedlich</span>
+                        <span class="ex">3 Tiere und 1 Auto, 3 Früchte und 1 Schuh ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="2">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Genauer hinschauen</span>
+                        <span class="ex">4 Tiere — eines lebt im Wasser ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="3">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Gut überlegen</span>
+                        <span class="ex">3 fliegen und 1 nicht, 3 sind rund und 1 nicht ...</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt">Was passt nicht?</div>
+        <div class="grid" id="grid"></div>
+        <div class="hint" id="hint"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     END-SCREEN
+============================================================ -->
+<div id="screen-end" class="screen hidden">
+    <div class="card">
+        <h2>Geschafft!</h2>
+        <p>Magst du noch eine Runde?</p>
+        <div class="end-buttons">
+            <button class="end-btn primary" id="btn-again">Noch eine Runde</button>
+            <button class="end-btn secondary" id="btn-home">Zur Übersicht</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  SVG-BIBLIOTHEK
+    //  Schlichte, klar erkennbare Inline-SVGs (viewBox 0 0 100 100)
+    //  Jedes Item ist eine Funktion, damit IDs / Pfade nicht doppeln.
+    // ====================================================
+    const SVG = {
+        // --- Tiere ---
+        hund: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Hund">
+                <ellipse cx="50" cy="68" rx="28" ry="20" fill="#c08552"/>
+                <circle cx="50" cy="42" r="20" fill="#c08552"/>
+                <ellipse cx="35" cy="30" rx="7" ry="11" fill="#8a5a30" transform="rotate(-20 35 30)"/>
+                <ellipse cx="65" cy="30" rx="7" ry="11" fill="#8a5a30" transform="rotate(20 65 30)"/>
+                <circle cx="44" cy="42" r="2.5" fill="#1a1a1a"/>
+                <circle cx="56" cy="42" r="2.5" fill="#1a1a1a"/>
+                <ellipse cx="50" cy="50" rx="3.5" ry="2.5" fill="#1a1a1a"/>
+                <path d="M 46 53 Q 50 57 54 53" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <rect x="46" y="84" width="4" height="6" fill="#8a5a30"/>
+                <rect x="50" y="84" width="4" height="6" fill="#8a5a30"/>
+            </svg>`,
+        katze: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Katze">
+                <ellipse cx="50" cy="68" rx="26" ry="20" fill="#9a9a9a"/>
+                <circle cx="50" cy="42" r="20" fill="#9a9a9a"/>
+                <polygon points="33,28 30,12 44,24" fill="#9a9a9a"/>
+                <polygon points="67,28 70,12 56,24" fill="#9a9a9a"/>
+                <polygon points="35,26 33,17 41,23" fill="#f1b6c8"/>
+                <polygon points="65,26 67,17 59,23" fill="#f1b6c8"/>
+                <ellipse cx="44" cy="42" rx="2" ry="3" fill="#1a1a1a"/>
+                <ellipse cx="56" cy="42" rx="2" ry="3" fill="#1a1a1a"/>
+                <polygon points="50,49 47,52 53,52" fill="#f1b6c8"/>
+                <line x1="40" y1="52" x2="30" y2="50" stroke="#1a1a1a" stroke-width="0.7"/>
+                <line x1="40" y1="54" x2="30" y2="54" stroke="#1a1a1a" stroke-width="0.7"/>
+                <line x1="60" y1="52" x2="70" y2="50" stroke="#1a1a1a" stroke-width="0.7"/>
+                <line x1="60" y1="54" x2="70" y2="54" stroke="#1a1a1a" stroke-width="0.7"/>
+            </svg>`,
+        kuh: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Kuh">
+                <ellipse cx="50" cy="62" rx="32" ry="22" fill="white" stroke="#222" stroke-width="1.5"/>
+                <ellipse cx="35" cy="55" rx="9" ry="7" fill="#222"/>
+                <ellipse cx="65" cy="68" rx="11" ry="8" fill="#222"/>
+                <ellipse cx="58" cy="50" rx="5" ry="4" fill="#222"/>
+                <ellipse cx="50" cy="36" rx="14" ry="11" fill="white" stroke="#222" stroke-width="1.5"/>
+                <ellipse cx="50" cy="42" rx="9" ry="6" fill="#f1b6c8"/>
+                <circle cx="46" cy="42" r="1.5" fill="#222"/>
+                <circle cx="54" cy="42" r="1.5" fill="#222"/>
+                <circle cx="44" cy="32" r="1.8" fill="#222"/>
+                <circle cx="56" cy="32" r="1.8" fill="#222"/>
+                <path d="M 38 28 Q 32 18 38 18" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M 62 28 Q 68 18 62 18" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <rect x="42" y="82" width="4" height="8" fill="#222"/>
+                <rect x="54" y="82" width="4" height="8" fill="#222"/>
+            </svg>`,
+        schwein: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Schwein">
+                <ellipse cx="50" cy="62" rx="30" ry="22" fill="#f1b6c8"/>
+                <circle cx="50" cy="42" r="18" fill="#f1b6c8"/>
+                <polygon points="36,30 38,18 46,26" fill="#f1b6c8"/>
+                <polygon points="64,30 62,18 54,26" fill="#f1b6c8"/>
+                <ellipse cx="50" cy="48" rx="9" ry="6" fill="#e090a8"/>
+                <circle cx="46" cy="48" r="1.5" fill="#222"/>
+                <circle cx="54" cy="48" r="1.5" fill="#222"/>
+                <circle cx="44" cy="40" r="1.8" fill="#222"/>
+                <circle cx="56" cy="40" r="1.8" fill="#222"/>
+                <rect x="42" y="82" width="4" height="6" fill="#e090a8"/>
+                <rect x="54" y="82" width="4" height="6" fill="#e090a8"/>
+                <path d="M 78 56 Q 86 56 84 64 Q 82 70 76 66" stroke="#e090a8" stroke-width="3" fill="none" stroke-linecap="round"/>
+            </svg>`,
+        fisch: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Fisch">
+                <path d="M 20 50 Q 50 22 75 50 Q 50 78 20 50 Z" fill="#5dade2"/>
+                <polygon points="75,50 92,32 92,68" fill="#5dade2"/>
+                <path d="M 30 50 Q 50 38 70 50 Q 50 62 30 50" fill="#85c5e6" opacity="0.6"/>
+                <circle cx="35" cy="48" r="3" fill="white"/>
+                <circle cx="35" cy="48" r="1.6" fill="#1a1a1a"/>
+                <path d="M 50 70 Q 53 75 56 70" stroke="#2b6a96" stroke-width="1.2" fill="none"/>
+            </svg>`,
+        vogel: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Vogel">
+                <ellipse cx="50" cy="55" rx="22" ry="18" fill="#f5b941"/>
+                <circle cx="68" cy="45" r="13" fill="#f5b941"/>
+                <polygon points="80,45 92,42 80,50" fill="#e07a3a"/>
+                <circle cx="71" cy="42" r="2.2" fill="#1a1a1a"/>
+                <path d="M 38 48 Q 28 56 32 66 Q 42 64 44 56 Z" fill="#e09a2a"/>
+                <line x1="45" y1="73" x2="42" y2="84" stroke="#e07a3a" stroke-width="2" stroke-linecap="round"/>
+                <line x1="55" y1="73" x2="58" y2="84" stroke="#e07a3a" stroke-width="2" stroke-linecap="round"/>
+            </svg>`,
+        biene: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Biene">
+                <ellipse cx="50" cy="55" rx="24" ry="18" fill="#f1c232"/>
+                <rect x="36" y="43" width="6" height="24" fill="#1a1a1a"/>
+                <rect x="48" y="40" width="6" height="30" fill="#1a1a1a"/>
+                <rect x="60" y="43" width="6" height="24" fill="#1a1a1a"/>
+                <ellipse cx="32" cy="44" rx="10" ry="8" fill="white" opacity="0.8" stroke="#888" stroke-width="0.7"/>
+                <ellipse cx="68" cy="44" rx="10" ry="8" fill="white" opacity="0.8" stroke="#888" stroke-width="0.7"/>
+                <circle cx="78" cy="56" r="2.5" fill="#1a1a1a"/>
+                <path d="M 78 56 Q 84 50 86 54" stroke="#1a1a1a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            </svg>`,
+        schmetterling: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Schmetterling">
+                <rect x="48" y="35" width="4" height="32" rx="2" fill="#5d4a2e"/>
+                <circle cx="50" cy="35" r="3" fill="#5d4a2e"/>
+                <ellipse cx="32" cy="40" rx="16" ry="12" fill="#e76f51"/>
+                <ellipse cx="68" cy="40" rx="16" ry="12" fill="#e76f51"/>
+                <ellipse cx="32" cy="62" rx="13" ry="10" fill="#f4a261"/>
+                <ellipse cx="68" cy="62" rx="13" ry="10" fill="#f4a261"/>
+                <circle cx="32" cy="40" r="3" fill="#fff5d6"/>
+                <circle cx="68" cy="40" r="3" fill="#fff5d6"/>
+                <circle cx="32" cy="62" r="2" fill="#fff5d6"/>
+                <circle cx="68" cy="62" r="2" fill="#fff5d6"/>
+            </svg>`,
+        ente: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Ente">
+                <ellipse cx="46" cy="62" rx="24" ry="18" fill="#f5d142"/>
+                <circle cx="68" cy="46" r="13" fill="#f5d142"/>
+                <polygon points="80,46 92,44 92,52 80,54" fill="#e8851b"/>
+                <circle cx="70" cy="42" r="2" fill="#1a1a1a"/>
+                <path d="M 24 70 Q 14 66 16 62" stroke="#f5d142" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <line x1="42" y1="80" x2="40" y2="90" stroke="#e8851b" stroke-width="3" stroke-linecap="round"/>
+                <line x1="52" y1="80" x2="54" y2="90" stroke="#e8851b" stroke-width="3" stroke-linecap="round"/>
+            </svg>`,
+        frosch: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Frosch">
+                <ellipse cx="50" cy="60" rx="30" ry="22" fill="#7cbd5b"/>
+                <circle cx="36" cy="38" r="10" fill="#7cbd5b"/>
+                <circle cx="64" cy="38" r="10" fill="#7cbd5b"/>
+                <circle cx="36" cy="38" r="5" fill="white"/>
+                <circle cx="64" cy="38" r="5" fill="white"/>
+                <circle cx="36" cy="39" r="2.5" fill="#1a1a1a"/>
+                <circle cx="64" cy="39" r="2.5" fill="#1a1a1a"/>
+                <path d="M 38 62 Q 50 70 62 62" stroke="#1a1a1a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                <path d="M 22 70 Q 18 80 26 82" stroke="#7cbd5b" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <path d="M 78 70 Q 82 80 74 82" stroke="#7cbd5b" stroke-width="6" fill="none" stroke-linecap="round"/>
+            </svg>`,
+        elefant: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Elefant">
+                <ellipse cx="55" cy="60" rx="28" ry="20" fill="#9aa3ad"/>
+                <circle cx="38" cy="48" r="14" fill="#9aa3ad"/>
+                <ellipse cx="28" cy="44" rx="8" ry="10" fill="#9aa3ad"/>
+                <path d="M 32 56 Q 22 72 28 84 Q 34 80 32 70" fill="#9aa3ad"/>
+                <circle cx="40" cy="46" r="2" fill="#1a1a1a"/>
+                <rect x="44" y="80" width="5" height="10" fill="#7e8690"/>
+                <rect x="62" y="80" width="5" height="10" fill="#7e8690"/>
+            </svg>`,
+        // --- Fahrzeuge ---
+        auto: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Auto">
+                <rect x="10" y="55" width="80" height="22" rx="6" fill="#3498db"/>
+                <path d="M 22 55 L 30 38 L 70 38 L 80 55 Z" fill="#3498db"/>
+                <rect x="32" y="42" width="14" height="12" fill="#bde0fe"/>
+                <rect x="54" y="42" width="14" height="12" fill="#bde0fe"/>
+                <circle cx="28" cy="80" r="8" fill="#1a1a1a"/>
+                <circle cx="28" cy="80" r="3" fill="#7a7a7a"/>
+                <circle cx="72" cy="80" r="8" fill="#1a1a1a"/>
+                <circle cx="72" cy="80" r="3" fill="#7a7a7a"/>
+            </svg>`,
+        bus: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Bus">
+                <rect x="10" y="30" width="80" height="48" rx="6" fill="#e8a233"/>
+                <rect x="16" y="38" width="14" height="14" fill="#bde0fe"/>
+                <rect x="34" y="38" width="14" height="14" fill="#bde0fe"/>
+                <rect x="52" y="38" width="14" height="14" fill="#bde0fe"/>
+                <rect x="70" y="38" width="14" height="14" fill="#bde0fe"/>
+                <rect x="16" y="58" width="68" height="3" fill="#a76e0d"/>
+                <circle cx="28" cy="82" r="7" fill="#1a1a1a"/>
+                <circle cx="72" cy="82" r="7" fill="#1a1a1a"/>
+            </svg>`,
+        flugzeug: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Flugzeug">
+                <path d="M 10 50 L 70 42 L 88 50 L 70 58 Z" fill="#dadfe1"/>
+                <path d="M 38 42 L 28 22 L 36 22 L 50 42 Z" fill="#bcc1c5"/>
+                <path d="M 38 58 L 28 78 L 36 78 L 50 58 Z" fill="#bcc1c5"/>
+                <path d="M 72 46 L 70 36 L 78 36 L 80 46 Z" fill="#bcc1c5"/>
+                <circle cx="78" cy="50" r="2" fill="#3498db"/>
+                <circle cx="68" cy="50" r="2" fill="#3498db"/>
+                <circle cx="58" cy="50" r="2" fill="#3498db"/>
+            </svg>`,
+        schiff: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Schiff">
+                <path d="M 12 60 L 88 60 L 80 78 L 20 78 Z" fill="#b94f4f"/>
+                <rect x="36" y="42" width="38" height="18" fill="#f4f1ec"/>
+                <rect x="40" y="46" width="6" height="6" fill="#5dade2"/>
+                <rect x="50" y="46" width="6" height="6" fill="#5dade2"/>
+                <rect x="60" y="46" width="6" height="6" fill="#5dade2"/>
+                <rect x="50" y="22" width="3" height="22" fill="#5d4a2e"/>
+                <polygon points="53,22 53,38 68,30" fill="#f1c232"/>
+                <path d="M 6 82 Q 14 78 22 82 T 38 82 T 54 82 T 70 82 T 86 82 T 96 82" stroke="#5dade2" stroke-width="2" fill="none"/>
+            </svg>`,
+        fahrrad: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Fahrrad">
+                <circle cx="26" cy="68" r="18" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+                <circle cx="74" cy="68" r="18" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+                <circle cx="26" cy="68" r="2.5" fill="#1a1a1a"/>
+                <circle cx="74" cy="68" r="2.5" fill="#1a1a1a"/>
+                <line x1="26" y1="68" x2="50" y2="68" stroke="#e63946" stroke-width="3"/>
+                <line x1="50" y1="68" x2="74" y2="68" stroke="#e63946" stroke-width="3"/>
+                <line x1="50" y1="68" x2="58" y2="40" stroke="#e63946" stroke-width="3"/>
+                <line x1="58" y1="40" x2="74" y2="68" stroke="#e63946" stroke-width="3"/>
+                <line x1="58" y1="40" x2="64" y2="32" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+                <line x1="22" y1="40" x2="32" y2="40" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+                <line x1="26" y1="68" x2="26" y2="42" stroke="#1a1a1a" stroke-width="3"/>
+                <line x1="26" y1="42" x2="32" y2="40" stroke="#1a1a1a" stroke-width="3"/>
+            </svg>`,
+        zug: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Zug">
+                <rect x="14" y="30" width="72" height="42" rx="5" fill="#3a8d6e"/>
+                <rect x="20" y="36" width="14" height="14" fill="#bde0fe"/>
+                <rect x="38" y="36" width="14" height="14" fill="#bde0fe"/>
+                <rect x="56" y="36" width="14" height="14" fill="#bde0fe"/>
+                <rect x="74" y="40" width="8" height="20" fill="#256648"/>
+                <rect x="10" y="72" width="80" height="6" fill="#5d4a2e"/>
+                <circle cx="28" cy="82" r="6" fill="#1a1a1a"/>
+                <circle cx="50" cy="82" r="6" fill="#1a1a1a"/>
+                <circle cx="72" cy="82" r="6" fill="#1a1a1a"/>
+                <rect x="58" y="20" width="6" height="10" fill="#256648"/>
+            </svg>`,
+        // --- Obst / Lebensmittel ---
+        apfel: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Apfel">
+                <path d="M 50 28 Q 30 28 26 50 Q 22 78 50 84 Q 78 78 74 50 Q 70 28 50 28 Z" fill="#e74c3c"/>
+                <path d="M 48 28 Q 50 22 54 22 Q 56 26 52 30" fill="#7f5a32"/>
+                <ellipse cx="60" cy="22" rx="8" ry="4" fill="#27ae60" transform="rotate(20 60 22)"/>
+                <ellipse cx="40" cy="44" rx="6" ry="10" fill="#fff" opacity="0.25"/>
+            </svg>`,
+        banane: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Banane">
+                <path d="M 18 30 Q 24 78 80 78 Q 84 78 86 70 Q 60 70 32 30 Z" fill="#f1c232"/>
+                <path d="M 18 30 Q 22 28 28 30 Q 30 36 26 38 Z" fill="#8a6913"/>
+                <path d="M 80 78 Q 86 78 84 72 Q 80 72 78 76 Z" fill="#8a6913"/>
+            </svg>`,
+        kirsche: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Kirschen">
+                <path d="M 38 28 Q 60 32 64 56" stroke="#5b8c3e" stroke-width="2.5" fill="none"/>
+                <path d="M 38 28 Q 50 36 36 60" stroke="#5b8c3e" stroke-width="2.5" fill="none"/>
+                <path d="M 28 26 Q 38 22 46 28" stroke="#5b8c3e" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <ellipse cx="48" cy="20" rx="10" ry="4" fill="#7cbd5b" transform="rotate(-10 48 20)"/>
+                <circle cx="36" cy="68" r="14" fill="#c0182e"/>
+                <circle cx="64" cy="64" r="14" fill="#c0182e"/>
+                <ellipse cx="32" cy="64" rx="3" ry="4" fill="#fff" opacity="0.45"/>
+                <ellipse cx="60" cy="60" rx="3" ry="4" fill="#fff" opacity="0.45"/>
+            </svg>`,
+        traube: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Trauben">
+                <path d="M 50 18 Q 54 24 50 30" stroke="#5b8c3e" stroke-width="2.5" fill="none"/>
+                <ellipse cx="42" cy="26" rx="10" ry="5" fill="#7cbd5b"/>
+                <g fill="#8e44ad">
+                    <circle cx="42" cy="38" r="8"/>
+                    <circle cx="58" cy="38" r="8"/>
+                    <circle cx="34" cy="50" r="8"/>
+                    <circle cx="50" cy="50" r="8"/>
+                    <circle cx="66" cy="50" r="8"/>
+                    <circle cx="42" cy="62" r="8"/>
+                    <circle cx="58" cy="62" r="8"/>
+                    <circle cx="50" cy="74" r="8"/>
+                </g>
+            </svg>`,
+        birne: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Birne">
+                <path d="M 50 32 Q 36 32 34 48 Q 30 72 50 84 Q 70 72 66 48 Q 64 32 50 32 Z" fill="#d4d04e"/>
+                <rect x="48" y="22" width="4" height="12" fill="#7f5a32"/>
+                <ellipse cx="56" cy="22" rx="6" ry="3" fill="#27ae60" transform="rotate(20 56 22)"/>
+                <ellipse cx="40" cy="50" rx="4" ry="8" fill="#fff" opacity="0.25"/>
+            </svg>`,
+        karotte: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Karotte">
+                <path d="M 50 36 L 30 80 L 70 80 Z" fill="#e87a1d"/>
+                <line x1="40" y1="56" x2="44" y2="56" stroke="#a04e0d" stroke-width="2"/>
+                <line x1="48" y1="68" x2="52" y2="68" stroke="#a04e0d" stroke-width="2"/>
+                <line x1="56" y1="56" x2="60" y2="56" stroke="#a04e0d" stroke-width="2"/>
+                <path d="M 40 36 Q 36 18 44 24 Q 50 14 56 24 Q 64 18 60 36 Z" fill="#5b8c3e"/>
+            </svg>`,
+        brot: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Brot">
+                <ellipse cx="50" cy="58" rx="36" ry="22" fill="#c98b46"/>
+                <ellipse cx="50" cy="52" rx="36" ry="22" fill="#dca15c"/>
+                <line x1="30" y1="46" x2="40" y2="40" stroke="#8a5a30" stroke-width="2"/>
+                <line x1="46" y1="42" x2="56" y2="36" stroke="#8a5a30" stroke-width="2"/>
+                <line x1="62" y1="44" x2="72" y2="38" stroke="#8a5a30" stroke-width="2"/>
+            </svg>`,
+        // --- Getraenke ---
+        milch: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Milch">
+                <rect x="32" y="22" width="36" height="60" rx="3" fill="white" stroke="#8a8a8a" stroke-width="1.5"/>
+                <polygon points="32,22 50,12 68,22" fill="white" stroke="#8a8a8a" stroke-width="1.5"/>
+                <rect x="38" y="42" width="24" height="22" fill="#5dade2"/>
+                <text x="50" y="58" font-family="Verdana" font-size="10" font-weight="bold" text-anchor="middle" fill="white">Milch</text>
+            </svg>`,
+        saft: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Saft">
+                <path d="M 32 30 L 68 30 L 64 84 L 36 84 Z" fill="#bde0fe" opacity="0.6" stroke="#5dade2" stroke-width="1.6"/>
+                <path d="M 36 50 L 64 50 L 62 80 L 38 80 Z" fill="#e87a1d"/>
+                <rect x="48" y="14" width="3" height="22" fill="#e63946" transform="rotate(15 49 25)"/>
+            </svg>`,
+        wasser: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Wasserflasche">
+                <path d="M 42 14 L 58 14 L 58 22 Q 68 26 68 38 L 68 80 Q 68 86 62 86 L 38 86 Q 32 86 32 80 L 32 38 Q 32 26 42 22 Z" fill="#bde0fe" opacity="0.6" stroke="#5dade2" stroke-width="1.6"/>
+                <rect x="40" y="38" width="20" height="42" fill="#5dade2" opacity="0.5"/>
+                <line x1="42" y1="48" x2="46" y2="48" stroke="white" stroke-width="2"/>
+                <line x1="50" y1="58" x2="54" y2="58" stroke="white" stroke-width="2"/>
+            </svg>`,
+        // --- Moebel / Haushalt ---
+        stuhl: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Stuhl">
+                <rect x="28" y="14" width="44" height="40" rx="4" fill="#9c6b3c"/>
+                <rect x="28" y="54" width="44" height="6" fill="#7a4f24"/>
+                <rect x="32" y="60" width="6" height="28" fill="#9c6b3c"/>
+                <rect x="62" y="60" width="6" height="28" fill="#9c6b3c"/>
+                <line x1="34" y1="22" x2="66" y2="22" stroke="#7a4f24" stroke-width="2"/>
+                <line x1="34" y1="34" x2="66" y2="34" stroke="#7a4f24" stroke-width="2"/>
+            </svg>`,
+        bett: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Bett">
+                <rect x="10" y="46" width="80" height="26" rx="3" fill="#9c6b3c"/>
+                <rect x="10" y="46" width="80" height="14" fill="#f4f1ec"/>
+                <rect x="14" y="40" width="22" height="12" rx="3" fill="#bde0fe"/>
+                <rect x="40" y="40" width="22" height="12" rx="3" fill="#bde0fe"/>
+                <rect x="10" y="72" width="6" height="14" fill="#7a4f24"/>
+                <rect x="84" y="72" width="6" height="14" fill="#7a4f24"/>
+            </svg>`,
+        sofa: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Sofa">
+                <rect x="14" y="38" width="72" height="34" rx="6" fill="#7e9bbd"/>
+                <rect x="20" y="46" width="60" height="20" rx="4" fill="#a4bcd8"/>
+                <rect x="14" y="54" width="10" height="22" rx="3" fill="#5d7a9c"/>
+                <rect x="76" y="54" width="10" height="22" rx="3" fill="#5d7a9c"/>
+                <rect x="18" y="74" width="6" height="10" fill="#5d4a2e"/>
+                <rect x="76" y="74" width="6" height="10" fill="#5d4a2e"/>
+            </svg>`,
+        tisch: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Tisch">
+                <rect x="10" y="38" width="80" height="10" rx="2" fill="#9c6b3c"/>
+                <rect x="16" y="48" width="6" height="38" fill="#7a4f24"/>
+                <rect x="78" y="48" width="6" height="38" fill="#7a4f24"/>
+                <rect x="14" y="38" width="72" height="3" fill="#7a4f24"/>
+            </svg>`,
+        lampe: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Lampe">
+                <path d="M 32 34 L 68 34 L 60 56 L 40 56 Z" fill="#f1c232"/>
+                <rect x="30" y="30" width="40" height="6" fill="#7a4f24"/>
+                <rect x="48" y="56" width="4" height="22" fill="#7a4f24"/>
+                <ellipse cx="50" cy="80" rx="14" ry="4" fill="#7a4f24"/>
+                <line x1="40" y1="62" x2="32" y2="70" stroke="#f1c232" stroke-width="1.5" opacity="0.7"/>
+                <line x1="50" y1="64" x2="50" y2="74" stroke="#f1c232" stroke-width="1.5" opacity="0.7"/>
+                <line x1="60" y1="62" x2="68" y2="70" stroke="#f1c232" stroke-width="1.5" opacity="0.7"/>
+            </svg>`,
+        // --- Kleidung ---
+        schuh: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Schuh">
+                <path d="M 12 64 L 12 50 Q 28 38 50 42 Q 60 44 66 56 L 86 56 Q 92 56 92 64 Q 92 72 86 72 L 18 72 Q 12 72 12 64 Z" fill="#e63946"/>
+                <line x1="34" y1="46" x2="40" y2="56" stroke="white" stroke-width="1.5"/>
+                <line x1="46" y1="44" x2="50" y2="56" stroke="white" stroke-width="1.5"/>
+                <line x1="58" y1="46" x2="60" y2="56" stroke="white" stroke-width="1.5"/>
+                <rect x="12" y="68" width="80" height="4" fill="#1a1a1a"/>
+            </svg>`,
+        muetze: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Muetze">
+                <path d="M 22 60 Q 50 18 78 60 Z" fill="#e63946"/>
+                <rect x="18" y="58" width="64" height="10" rx="2" fill="#c0182e"/>
+                <circle cx="50" cy="20" r="6" fill="white"/>
+            </svg>`,
+        hose: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Hose">
+                <path d="M 26 18 L 74 18 L 78 86 L 58 86 L 50 42 L 42 86 L 22 86 Z" fill="#3b5998"/>
+                <rect x="26" y="18" width="48" height="6" fill="#2a3f6b"/>
+                <line x1="50" y1="24" x2="50" y2="42" stroke="#2a3f6b" stroke-width="2"/>
+            </svg>`,
+        // --- Stage 3: rund / eckig ---
+        ball: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Ball">
+                <circle cx="50" cy="52" r="34" fill="#e63946"/>
+                <circle cx="50" cy="52" r="34" fill="none" stroke="#a01e2a" stroke-width="1"/>
+                <path d="M 50 18 Q 64 52 50 86" stroke="#a01e2a" stroke-width="1.6" fill="none"/>
+                <path d="M 50 18 Q 36 52 50 86" stroke="#a01e2a" stroke-width="1.6" fill="none"/>
+                <path d="M 16 52 Q 50 38 84 52" stroke="#a01e2a" stroke-width="1.6" fill="none"/>
+            </svg>`,
+        sonne: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Sonne">
+                <circle cx="50" cy="50" r="22" fill="#f1c232"/>
+                <g stroke="#f1c232" stroke-width="4" stroke-linecap="round">
+                    <line x1="50" y1="14" x2="50" y2="22"/>
+                    <line x1="50" y1="78" x2="50" y2="86"/>
+                    <line x1="14" y1="50" x2="22" y2="50"/>
+                    <line x1="78" y1="50" x2="86" y2="50"/>
+                    <line x1="24" y1="24" x2="30" y2="30"/>
+                    <line x1="70" y1="70" x2="76" y2="76"/>
+                    <line x1="76" y1="24" x2="70" y2="30"/>
+                    <line x1="30" y1="70" x2="24" y2="76"/>
+                </g>
+            </svg>`,
+        muenze: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Muenze">
+                <circle cx="50" cy="50" r="32" fill="#e8c44b" stroke="#9a7a16" stroke-width="2"/>
+                <circle cx="50" cy="50" r="24" fill="none" stroke="#9a7a16" stroke-width="1.5"/>
+                <text x="50" y="60" font-family="Verdana" font-size="22" font-weight="bold" text-anchor="middle" fill="#9a7a16">€</text>
+            </svg>`,
+        kiste: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Kiste">
+                <rect x="20" y="22" width="60" height="58" fill="#c98b46"/>
+                <rect x="20" y="22" width="60" height="6" fill="#a06e2a"/>
+                <line x1="50" y1="22" x2="50" y2="80" stroke="#7a4f24" stroke-width="2"/>
+                <line x1="20" y1="48" x2="80" y2="48" stroke="#7a4f24" stroke-width="2"/>
+            </svg>`,
+        haus: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Haus">
+                <polygon points="50,14 14,46 86,46" fill="#c0392b"/>
+                <rect x="20" y="46" width="60" height="40" fill="#f4d2a3"/>
+                <rect x="44" y="60" width="14" height="26" fill="#7a4f24"/>
+                <rect x="28" y="56" width="10" height="10" fill="#bde0fe"/>
+                <rect x="64" y="56" width="10" height="10" fill="#bde0fe"/>
+            </svg>`,
+        baum: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Baum">
+                <rect x="44" y="50" width="12" height="36" fill="#7a4f24"/>
+                <circle cx="50" cy="38" r="26" fill="#5b8c3e"/>
+                <circle cx="36" cy="32" r="14" fill="#7cbd5b"/>
+                <circle cx="64" cy="32" r="14" fill="#7cbd5b"/>
+            </svg>`,
+        blume: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Blume">
+                <line x1="50" y1="50" x2="50" y2="86" stroke="#5b8c3e" stroke-width="3"/>
+                <ellipse cx="42" cy="68" rx="8" ry="4" fill="#5b8c3e" transform="rotate(-30 42 68)"/>
+                <circle cx="50" cy="40" r="8" fill="#f1c232"/>
+                <circle cx="50" cy="28" r="9" fill="#e63946"/>
+                <circle cx="62" cy="40" r="9" fill="#e63946"/>
+                <circle cx="50" cy="52" r="9" fill="#e63946"/>
+                <circle cx="38" cy="40" r="9" fill="#e63946"/>
+                <circle cx="50" cy="40" r="6" fill="#f1c232"/>
+            </svg>`,
+        sterne: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Stern">
+                <polygon points="50,14 58,40 86,40 64,56 72,82 50,66 28,82 36,56 14,40 42,40" fill="#f1c232" stroke="#a07a16" stroke-width="1.5"/>
+            </svg>`,
+        wolke: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Wolke">
+                <ellipse cx="32" cy="56" rx="18" ry="14" fill="white" stroke="#a4bcd8" stroke-width="2"/>
+                <ellipse cx="58" cy="48" rx="22" ry="18" fill="white" stroke="#a4bcd8" stroke-width="2"/>
+                <ellipse cx="74" cy="58" rx="14" ry="12" fill="white" stroke="#a4bcd8" stroke-width="2"/>
+                <rect x="22" y="56" width="60" height="14" fill="white"/>
+                <line x1="22" y1="62" x2="82" y2="62" stroke="white" stroke-width="14"/>
+            </svg>`,
+        // --- weitere fuer Stage-3-Konzepte ---
+        wuerfel: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Wuerfel">
+                <rect x="22" y="22" width="56" height="56" rx="6" fill="white" stroke="#1a1a1a" stroke-width="2"/>
+                <circle cx="50" cy="50" r="5" fill="#1a1a1a"/>
+            </svg>`,
+        buch: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Buch">
+                <rect x="18" y="22" width="64" height="56" rx="3" fill="#3b5998"/>
+                <rect x="22" y="26" width="28" height="48" fill="#f4f1ec"/>
+                <rect x="50" y="26" width="28" height="48" fill="#dce0e6"/>
+                <line x1="50" y1="26" x2="50" y2="74" stroke="#1a3a5e" stroke-width="2"/>
+                <line x1="26" y1="36" x2="46" y2="36" stroke="#aaa" stroke-width="1"/>
+                <line x1="26" y1="44" x2="46" y2="44" stroke="#aaa" stroke-width="1"/>
+                <line x1="26" y1="52" x2="46" y2="52" stroke="#aaa" stroke-width="1"/>
+            </svg>`,
+        bonbon: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Bonbon">
+                <ellipse cx="50" cy="50" rx="22" ry="14" fill="#e63946"/>
+                <ellipse cx="50" cy="50" rx="14" ry="10" fill="#fff5d6"/>
+                <polygon points="22,50 6,38 12,50 6,62" fill="#e63946"/>
+                <polygon points="78,50 94,38 88,50 94,62" fill="#e63946"/>
+            </svg>`,
+        rad: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Rad">
+                <circle cx="50" cy="50" r="34" fill="#1a1a1a"/>
+                <circle cx="50" cy="50" r="22" fill="#7a7a7a"/>
+                <circle cx="50" cy="50" r="6" fill="#1a1a1a"/>
+                <line x1="50" y1="28" x2="50" y2="72" stroke="#1a1a1a" stroke-width="2"/>
+                <line x1="28" y1="50" x2="72" y2="50" stroke="#1a1a1a" stroke-width="2"/>
+                <line x1="34" y1="34" x2="66" y2="66" stroke="#1a1a1a" stroke-width="2"/>
+                <line x1="66" y1="34" x2="34" y2="66" stroke="#1a1a1a" stroke-width="2"/>
+            </svg>`,
+        keks: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Keks">
+                <circle cx="50" cy="50" r="34" fill="#dca15c"/>
+                <circle cx="50" cy="50" r="34" fill="none" stroke="#a06e2a" stroke-width="1.5"/>
+                <circle cx="38" cy="40" r="3.5" fill="#5d4a2e"/>
+                <circle cx="60" cy="44" r="3" fill="#5d4a2e"/>
+                <circle cx="46" cy="58" r="3" fill="#5d4a2e"/>
+                <circle cx="62" cy="62" r="3.5" fill="#5d4a2e"/>
+                <circle cx="36" cy="62" r="2.5" fill="#5d4a2e"/>
+            </svg>`,
+        koffer: () => `
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Koffer">
+                <rect x="18" y="32" width="64" height="48" rx="4" fill="#9c6b3c"/>
+                <rect x="18" y="32" width="64" height="48" rx="4" fill="none" stroke="#7a4f24" stroke-width="2"/>
+                <rect x="38" y="22" width="24" height="12" rx="2" fill="none" stroke="#7a4f24" stroke-width="3"/>
+                <rect x="44" y="46" width="12" height="6" rx="1" fill="#5d4a2e"/>
+                <line x1="18" y1="56" x2="82" y2="56" stroke="#7a4f24" stroke-width="2"/>
+            </svg>`,
+    };
+
+    // ====================================================
+    //  AUFGABEN-POOL
+    //  group: alle Items derselben Kategorie (3 daraus werden gezogen)
+    //  outlier: das eine Item, das nicht passt
+    //  Stage 1: ganz unterschiedliche Kategorien
+    //  Stage 2: feinere Unterscheidung in einer Kategorie
+    //  Stage 3: konzeptuell (Form, Eigenschaft)
+    // ====================================================
+    const PUZZLES = [
+        // ---------- Stage 1 ----------
+        { stage: 1, group: ['hund', 'katze', 'kuh', 'schwein'], outlier: 'auto' },
+        { stage: 1, group: ['apfel', 'banane', 'kirsche', 'birne'], outlier: 'schuh' },
+        { stage: 1, group: ['stuhl', 'bett', 'sofa', 'tisch'], outlier: 'hund' },
+        { stage: 1, group: ['auto', 'bus', 'flugzeug', 'fahrrad'], outlier: 'apfel' },
+        { stage: 1, group: ['hund', 'katze', 'vogel', 'fisch'], outlier: 'stuhl' },
+        { stage: 1, group: ['apfel', 'birne', 'banane', 'traube'], outlier: 'auto' },
+        { stage: 1, group: ['stuhl', 'tisch', 'lampe', 'sofa'], outlier: 'fisch' },
+        { stage: 1, group: ['schuh', 'muetze', 'hose'], outlier: 'kuh' },
+        { stage: 1, group: ['auto', 'bus', 'zug', 'schiff'], outlier: 'banane' },
+        { stage: 1, group: ['kirsche', 'traube', 'apfel', 'birne'], outlier: 'lampe' },
+        { stage: 1, group: ['hund', 'kuh', 'schwein', 'katze'], outlier: 'tisch' },
+
+        // ---------- Stage 2 ----------
+        // 4 Tiere, eines lebt im Wasser
+        { stage: 2, group: ['hund', 'katze', 'kuh', 'schwein'], outlier: 'fisch',
+          hint: 'Drei leben an Land — eines im Wasser.' },
+        // 4 Tiere, eines fliegt
+        { stage: 2, group: ['hund', 'katze', 'kuh', 'frosch'], outlier: 'vogel',
+          hint: 'Drei laufen — eines fliegt.' },
+        // Essen vs Getraenk
+        { stage: 2, group: ['apfel', 'banane', 'brot', 'keks'], outlier: 'milch',
+          hint: 'Drei isst man — eines trinkt man.' },
+        { stage: 2, group: ['apfel', 'birne', 'karotte', 'brot'], outlier: 'saft',
+          hint: 'Drei isst man — eines trinkt man.' },
+        // Obst vs Gemuese
+        { stage: 2, group: ['apfel', 'banane', 'birne', 'kirsche'], outlier: 'karotte',
+          hint: 'Drei sind Obst — eines ist Gemuese.' },
+        // Fahrzeug Land vs Luft / Wasser
+        { stage: 2, group: ['auto', 'bus', 'fahrrad', 'zug'], outlier: 'flugzeug',
+          hint: 'Drei fahren auf der Strasse oder Schiene — eines fliegt.' },
+        { stage: 2, group: ['auto', 'bus', 'zug', 'fahrrad'], outlier: 'schiff',
+          hint: 'Drei fahren auf dem Land — eines auf dem Wasser.' },
+        // Tier-Variante: 4 Tiere, eines lebt im Wasser (anders gemischt)
+        { stage: 2, group: ['vogel', 'biene', 'schmetterling', 'hund'], outlier: 'fisch',
+          hint: 'Drei leben in der Luft oder an Land — eines im Wasser.' },
+        // Insekten vs Vogel
+        { stage: 2, group: ['biene', 'schmetterling', 'frosch'], outlier: 'elefant',
+          hint: 'Drei sind klein — eines ist riesig.' },
+
+        // ---------- Stage 3 (konzeptuell) ----------
+        // 3 fliegen — 1 nicht
+        { stage: 3, group: ['vogel', 'biene', 'schmetterling', 'flugzeug'], outlier: 'auto',
+          hint: 'Drei fliegen — eines nicht.' },
+        { stage: 3, group: ['vogel', 'flugzeug', 'biene', 'schmetterling'], outlier: 'fisch',
+          hint: 'Drei fliegen — eines schwimmt.' },
+        // 3 rund — 1 eckig
+        { stage: 3, group: ['ball', 'sonne', 'muenze', 'rad'], outlier: 'kiste',
+          hint: 'Drei sind rund — eines hat Ecken.' },
+        { stage: 3, group: ['apfel', 'ball', 'sonne', 'muenze'], outlier: 'buch',
+          hint: 'Drei sind rund — eines ist eckig.' },
+        // 3 essbar — 1 nicht
+        { stage: 3, group: ['apfel', 'banane', 'brot', 'keks'], outlier: 'schuh',
+          hint: 'Drei kann man essen — eines nicht.' },
+        { stage: 3, group: ['kirsche', 'traube', 'birne', 'bonbon'], outlier: 'lampe',
+          hint: 'Drei kann man essen — eines nicht.' },
+        // 3 leuchten / am Himmel
+        { stage: 3, group: ['sonne', 'sterne', 'wolke'], outlier: 'baum',
+          hint: 'Drei sieht man am Himmel — eines nicht.' },
+        // 3 leben — 1 ist ein Ding
+        { stage: 3, group: ['hund', 'katze', 'baum', 'blume'], outlier: 'auto',
+          hint: 'Drei leben und wachsen — eines nicht.' },
+        // 3 mit Raedern
+        { stage: 3, group: ['auto', 'bus', 'fahrrad', 'koffer'], outlier: 'flugzeug',
+          hint: 'Drei rollen auf Raedern — eines fliegt.' },
+        // 3 haben Beine
+        { stage: 3, group: ['hund', 'katze', 'kuh', 'tisch'], outlier: 'fisch',
+          hint: 'Drei haben Beine — eines nicht.' },
+    ];
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,         // 1 | 2 | 3
+        queue: [],           // Index-Liste der noch zu spielenden Aufgaben (in dieser Runde)
+        roundSize: 7,        // wie viele Aufgaben pro Runde
+        roundIdx: 0,         // wievielte Aufgabe in der Runde (0-basiert)
+        current: null,       // { puzzle, items: [{key, isOutlier}], outlierIdx }
+        gate: { passed: false }, // verhindert Doppel-Tap auf "richtig"
+        wrongTimer: null,    // Timeout-Handle fuer Hint-Fade
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'was-passt-nicht-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO (sehr dezent, nur bei "richtig")
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.07);
+            setTimeout(() => tone(880, 0.20, 'sine', 0.07), 110);
+        },
+    };
+
+    // ====================================================
+    //  AUFGABE GENERIEREN
+    // ====================================================
+    function buildQueue(stage) {
+        const indices = PUZZLES
+            .map((p, i) => p.stage === stage ? i : -1)
+            .filter(i => i >= 0);
+        return shuffle(indices);
+    }
+
+    function nextPuzzle() {
+        if (state.queue.length === 0) {
+            state.queue = buildQueue(state.stage);
+        }
+        const idx = state.queue.shift();
+        const p = PUZZLES[idx];
+        // 3 zufaellige Items aus group + outlier
+        const groupItems = shuffle(p.group).slice(0, 3);
+        const items = shuffle([
+            ...groupItems.map(k => ({ key: k, isOutlier: false })),
+            { key: p.outlier, isOutlier: true },
+        ]);
+        const outlierIdx = items.findIndex(it => it.isOutlier);
+        return { puzzle: p, items, outlierIdx };
+    }
+
+    // ====================================================
+    //  RENDERING
+    // ====================================================
+    function renderTiles() {
+        const grid = $('grid');
+        grid.innerHTML = '';
+        state.current.items.forEach((it, i) => {
+            const tile = document.createElement('button');
+            tile.className = 'tile';
+            tile.type = 'button';
+            tile.setAttribute('aria-label', it.key);
+            tile.dataset.index = i;
+            tile.innerHTML = SVG[it.key]();
+            tile.addEventListener('click', () => onTap(tile, i));
+            grid.appendChild(tile);
+        });
+    }
+
+    function showHint(text) {
+        const h = $('hint');
+        if (state.wrongTimer) {
+            clearTimeout(state.wrongTimer);
+            state.wrongTimer = null;
+        }
+        h.textContent = text;
+        h.classList.add('show');
+        state.wrongTimer = setTimeout(() => {
+            h.classList.remove('show');
+            // Text bleibt stehen waehrend des Fade-Outs, wird beim naechsten showHint ueberschrieben
+            state.wrongTimer = null;
+        }, 2200);
+    }
+    function clearHint() {
+        const h = $('hint');
+        if (state.wrongTimer) {
+            clearTimeout(state.wrongTimer);
+            state.wrongTimer = null;
+        }
+        h.classList.remove('show');
+    }
+
+    // ====================================================
+    //  TAP-HANDLING
+    // ====================================================
+    function onTap(tile, idx) {
+        // Tap-Race-Schutz: gate.passed VOR jeder State-Mutation pruefen+setzen
+        if (state.gate.passed) return;
+
+        const it = state.current.items[idx];
+        if (it.isOutlier) {
+            // Korrekt — gate sofort schliessen
+            state.gate.passed = true;
+            tile.classList.add('correct');
+            // andere Tiles dimmen + sperren
+            document.querySelectorAll('.tile').forEach(t => {
+                t.classList.add('locked');
+                if (t !== tile) t.classList.add('dim');
+            });
+            clearHint();
+            sfx.correct();
+            // weiter zur naechsten Aufgabe
+            setTimeout(advanceRound, 1100);
+        } else {
+            // Nicht passend — freundliches Wackeln, kein Spiel-Ende, kein Punktabzug
+            tile.classList.remove('wiggle');
+            // Reflow erzwingen, damit die Animation neu startet
+            void tile.offsetWidth;
+            tile.classList.add('wiggle');
+            // Hinweis (Stage-2/3 nutzen den Aufgaben-Hint, sonst neutraler Text)
+            const p = state.current.puzzle;
+            const text = (state.stage === 1)
+                ? 'Schau noch mal — drei gehoeren zusammen.'
+                : (p.hint || 'Schau noch mal genau hin.');
+            showHint(text);
+            // wiggle-Klasse nach Animationsende wieder entfernen, damit erneutes Tappen wieder wackeln kann
+            setTimeout(() => tile.classList.remove('wiggle'), 500);
+        }
+    }
+
+    // ====================================================
+    //  RUNDEN-FLUSS
+    // ====================================================
+    function advanceRound() {
+        state.roundIdx += 1;
+        if (state.roundIdx >= state.roundSize) {
+            showEnd();
+            return;
+        }
+        startNextPuzzle();
+    }
+
+    function startNextPuzzle() {
+        state.gate = { passed: false };
+        state.current = nextPuzzle();
+        clearHint();
+        renderTiles();
+        updateHud();
+    }
+
+    function updateHud() {
+        const labels = { 1: 'Ganz unterschiedlich', 2: 'Genauer hinschauen', 3: 'Gut ueberlegen' };
+        $('hud-stage').textContent = `${labels[state.stage]} · ${state.roundIdx + 1} / ${state.roundSize}`;
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game', 'end'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        state.queue = buildQueue(state.stage);
+        state.roundIdx = 0;
+        switchScreen('game');
+        startNextPuzzle();
+    }
+
+    function showEnd() {
+        switchScreen('end');
+    }
+
+    function backToStart() {
+        clearHint();
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === String(value));
+        });
+        state.stage = Number(value);
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-again').addEventListener('click', () => { startGame(); });
+    $('btn-home').addEventListener('click', backToStart);
+
+    (function init() {
+        const prefs = loadPrefs();
+        const s = prefs.stage;
+        selectStage((s === 1 || s === 2 || s === 3) ? s : 1);
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>
