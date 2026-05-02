@@ -9,13 +9,14 @@
     <link rel="apple-touch-icon" href="icon.svg">
     <meta name="theme-color" content="#764ba2">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Lernspiele">
     <meta name="mobile-web-app-capable" content="yes">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -103,17 +104,6 @@
             white-space: nowrap;
         }
         .install-banner .ib-btn:hover { transform: translateY(-1px); }
-        .install-banner .ib-close {
-            background: transparent;
-            border: none;
-            color: #92400e;
-            font-size: 1.4rem;
-            cursor: pointer;
-            padding: 4px 8px;
-            opacity: 0.6;
-            line-height: 1;
-        }
-        .install-banner .ib-close:hover { opacity: 1; }
 
         /* iOS-Anleitung */
         .install-banner .ib-ios {
@@ -202,7 +192,6 @@
                     <span class="ib-desc" id="ib-desc">Direkt auf den Startbildschirm – ein Tipp und alle Spiele sind da.</span>
                 </div>
                 <button class="ib-btn" id="btn-install">Installieren</button>
-                <button class="ib-close" id="btn-install-close" aria-label="Schließen" title="Schließen">×</button>
             </div>
             <div class="ib-ios" id="ib-ios">
                 Auf dem iPhone:
@@ -236,8 +225,8 @@
         const banner = $('install-banner');
         const desc = $('ib-desc');
         const btn = $('btn-install');
-        const btnClose = $('btn-install-close');
-        const DISMISS_KEY = 'lernspiele-install-dismissed';
+        const DESC_DEFAULT = desc.textContent;
+        const DESC_IOS = 'Auf dem iPhone in zwei Schritten:';
 
         // Bereits installiert? (PWA läuft im standalone-Modus)
         function isStandalone() {
@@ -250,24 +239,16 @@
             return /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
         }
 
-        function dismissed() {
-            try { return localStorage.getItem(DISMISS_KEY) === '1'; }
-            catch (e) { return false; }
-        }
-        function rememberDismiss() {
-            try { localStorage.setItem(DISMISS_KEY, '1'); }
-            catch (e) { /* ignore */ }
-        }
-
         let deferredPrompt = null;
 
         // Android/Chrome/Edge: beforeinstallprompt abfangen
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (!isStandalone() && !dismissed()) {
+            if (!isStandalone()) {
                 banner.classList.add('show');
                 banner.classList.remove('ios');
+                desc.textContent = DESC_DEFAULT;
             }
         });
 
@@ -281,19 +262,14 @@
             }
         });
 
-        btnClose.addEventListener('click', () => {
-            banner.classList.remove('show');
-            rememberDismiss();
-        });
-
         window.addEventListener('appinstalled', () => {
             banner.classList.remove('show');
         });
 
         // iOS: kein beforeinstallprompt — eigene Anleitung anzeigen
-        if (isIOS() && !isStandalone() && !dismissed()) {
+        if (isIOS() && !isStandalone()) {
             banner.classList.add('show', 'ios');
-            desc.textContent = 'Auf dem iPhone in zwei Schritten:';
+            desc.textContent = DESC_IOS;
         }
 
         // Service Worker registrieren

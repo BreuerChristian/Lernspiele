@@ -1,4 +1,4 @@
-const CACHE = 'buchstaben-spiel-v2';
+const CACHE = 'buchstaben-spiel-v3';
 const ASSETS = [
   './',
   './index.html',

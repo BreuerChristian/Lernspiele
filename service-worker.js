@@ -1,4 +1,4 @@
-const CACHE = 'lernspiele-landing-v1';
+const CACHE = 'lernspiele-landing-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -23,11 +23,14 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  // Nur Anfragen im eigenen Scope behandeln. Anfragen an Spiel-Unterordner
-  // werden vom jeweiligen Spiel-SW (mit engerem Scope) bedient.
+  // Nur direkte Sammlung-Dateien behandeln. Alles in Unterordnern (z.B.
+  // /Lernspiele/buchstaben/...) ueberlaesst der Sammlung-SW dem jeweiligen
+  // Spiel-SW mit engerem Scope.
   const url = new URL(event.request.url);
   const swScope = new URL(self.registration.scope);
   if (!url.pathname.startsWith(swScope.pathname)) return;
+  const rel = url.pathname.slice(swScope.pathname.length);
+  if (rel.includes('/')) return;
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
