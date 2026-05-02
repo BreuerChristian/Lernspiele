@@ -286,32 +286,16 @@
             100% { transform: scale(1); }
         }
 
-        .success-message h2 {
-            color: #1dd1a1;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
         .success-emoji {
-            font-size: 80px;
-            margin: 20px 0;
+            font-size: 90px;
+            margin: 10px 0 16px;
         }
 
-        .success-message button {
-            background: linear-gradient(145deg, #1dd1a1, #10ac84);
-            border: none;
-            border-radius: 25px;
-            padding: 15px 40px;
-            font-size: 1.3rem;
+        .success-word {
+            color: #4a4a4a;
+            font-size: 2rem;
             font-weight: bold;
-            color: white;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .success-message button:hover {
-            transform: scale(1.05);
+            letter-spacing: 4px;
         }
 
         /* Gruppen-Abschluss */
@@ -324,13 +308,8 @@
         }
 
         .group-complete h2 {
-            color: #1dd1a1;
+            color: #4a4a4a;
             font-size: 2rem;
-        }
-
-        .stars {
-            font-size: 60px;
-            margin: 20px 0;
         }
 
         /* Responsive */
@@ -403,9 +382,8 @@
 
         <!-- Gruppen-Abschluss -->
         <div id="group-complete" class="group-complete">
-            <h2>Gruppe geschafft!</h2>
-            <div class="stars">⭐⭐⭐</div>
-            <p style="font-size: 1.3rem; color: #666; margin: 20px 0;">Du hast alle 10 Wörter richtig!</p>
+            <h2>Fertig</h2>
+            <p style="font-size: 1.2rem; color: #666; margin: 20px 0;">Alle Wörter dieser Gruppe sind durch.</p>
             <div class="nav-buttons">
                 <button class="nav-btn home-btn" onclick="goHome()">Zur Auswahl</button>
                 <button class="nav-btn" onclick="nextGroup()">Nächste Gruppe</button>
@@ -413,11 +391,11 @@
         </div>
     </div>
 
-    <!-- Erfolgs-Overlay -->
+    <!-- Wort-Bestätigung (nach komplettem Wort) -->
     <div class="success-overlay" id="success-overlay">
         <div class="success-message">
-            <h2>Richtig!</h2>
-            <div class="success-emoji">🎉</div>
+            <div class="success-emoji" id="success-emoji">📖</div>
+            <div class="success-word" id="success-word"></div>
         </div>
     </div>
 
@@ -665,6 +643,8 @@
                 // Wort komplett?
                 if (enteredLetters.length === currentWord.length) {
                     setTimeout(() => {
+                        document.getElementById('success-emoji').textContent = currentEmoji;
+                        document.getElementById('success-word').textContent = currentWord;
                         document.getElementById('success-overlay').classList.add('show');
                         // Automatisch nach 1.2 Sekunden weiter
                         setTimeout(() => {

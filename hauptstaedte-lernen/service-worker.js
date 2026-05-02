@@ -1,4 +1,4 @@
-const CACHE = 'hauptstaedte-lernen-v2';
+const CACHE = 'hauptstaedte-lernen-v3';
 const ASSETS = [
   './',
   './index.html',

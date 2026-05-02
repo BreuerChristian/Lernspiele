@@ -31,7 +31,7 @@ lernspiele/
 
 Eltern installieren *eine* App (die Sammlung), beide/alle Spiele sind drin. Die einzelnen Spiel-Manifests bleiben für separate Installierbarkeit.
 
-Aktuell vorhandene Spiele: `buchstaben/`, `zahlen-parade/`
+Aktuell vorhandene Spiele: `buchstaben/`, `zahlen-parade/`, `hauptstaedte-lernen/`
 
 ## Leitprinzipien (NICHT verhandelbar)
 

@@ -14,6 +14,7 @@ Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann au
 |-------|--------|
 | [**Buchstaben-Spiel**](buchstaben/) | Buchstaben hören und erkennen |
 | [**Zahlen-Parade**](zahlen-parade/) | Rechnen mit einer wandernden Kindergruppe — Count-Masters-inspiriert, aber ohne Wettbewerb und Zeitdruck |
+| [**Hauptstädte lernen**](hauptstaedte-lernen/) | Hauptstädte in drei Stufen: deutsche Bundesländer, Europa, weltweit |
 
 ## Auf dem Handy installieren
 

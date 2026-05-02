@@ -13,12 +13,12 @@
   <!-- Tor links (orange, +2) -->
   <path d="M 165 250 Q 165 205 205 205 Q 245 205 245 250 L 245 330 L 165 330 Z"
         fill="#e07b2c" stroke="#fff" stroke-width="5"/>
-  <text x="205" y="282" font-family="Arial, sans-serif" font-size="42" font-weight="bold"
+  <text x="205" y="282" font-family="Verdana, sans-serif" font-size="42" font-weight="bold"
         fill="white" text-anchor="middle" dominant-baseline="central">+2</text>
   <!-- Tor rechts (blau, ×3) -->
   <path d="M 285 250 Q 285 205 325 205 Q 365 205 365 250 L 365 330 L 285 330 Z"
         fill="#3d6cb0" stroke="#fff" stroke-width="5"/>
-  <text x="325" y="282" font-family="Arial, sans-serif" font-size="42" font-weight="bold"
+  <text x="325" y="282" font-family="Verdana, sans-serif" font-size="42" font-weight="bold"
         fill="white" text-anchor="middle" dominant-baseline="central">×3</text>
   <!-- Strichmännchen-Reihe -->
   <g stroke="#3a3a3a" stroke-width="5" stroke-linecap="round" fill="none">

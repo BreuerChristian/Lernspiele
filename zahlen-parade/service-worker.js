@@ -1,4 +1,4 @@
-const CACHE = 'zahlen-parade-v6';
+const CACHE = 'zahlen-parade-v7';
 const ASSETS = [
   './',
   './index.html',
