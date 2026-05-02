@@ -36,7 +36,7 @@ Beide Spiele sind danach offline spielbar.
 
 ## Technik
 
-Vanilla HTML/CSS/JS, ein File pro Spiel (inline CSS+JS). Keine Build-Tools, keine npm-Dependencies. Web Audio API für Sounds, LocalStorage für Persistenz, eigener Service Worker pro Spiel mit cache-first Strategie.
+Vanilla HTML/CSS/JS, jedes Spiel in einer einzigen `index.html` (inline CSS+JS) plus eigenes Manifest, Service Worker und SVG-Icons. Keine Build-Tools, keine npm-Dependencies. Web Audio API für Sounds, LocalStorage für Persistenz, cache-first Service Worker pro Spiel.
 
 ```
 lernspiele/

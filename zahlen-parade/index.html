@@ -762,6 +762,7 @@
             case '−': r = count - val; break;
             case '×': r = count * val; break;
             case '÷': r = Math.floor(count / val); break;
+            default:  r = count;
         }
         if (r < 0) r = 0;
         if (r > CAP) r = CAP;

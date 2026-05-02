@@ -617,22 +617,6 @@
                 btn.textContent = letter;
                 btn.dataset.index = index;
 
-                // Prüfen ob Buchstabe schon verwendet wurde
-                const usedIndices = enteredLetters.map((_, i) => {
-                    return shuffledLetters.findIndex((l, idx) => {
-                        return l === enteredLetters[i] && !enteredLetters.slice(0, i).some((el, ei) =>
-                            shuffledLetters.findIndex((sl, si) => sl === el && si === idx) === idx
-                        );
-                    });
-                });
-
-                if (enteredLetters.includes(letter) &&
-                    enteredLetters.filter(l => l === letter).length >
-                    shuffledLetters.slice(0, index).filter(l => l === letter).length -
-                    enteredLetters.slice(0, enteredLetters.lastIndexOf(letter)).filter(l => l === letter).length) {
-                    // Komplexere Logik für doppelte Buchstaben
-                }
-
                 btn.onclick = () => handleLetterClick(letter, btn, index);
                 container.appendChild(btn);
             });

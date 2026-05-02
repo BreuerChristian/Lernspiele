@@ -1,0 +1,26 @@
+{
+  "name": "Hauptstädte lernen",
+  "short_name": "Hauptstädte",
+  "description": "Hauptstädte lernen in drei Stufen: deutsche Bundesländer, Europa, weltweit",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#dfeaf3",
+  "theme_color": "#2c5f8d",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

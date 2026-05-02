@@ -1,4 +1,4 @@
-const CACHE = 'buchstaben-spiel-v3';
+const CACHE = 'buchstaben-spiel-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -15,7 +15,11 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))
+      Promise.all(
+        keys
+          .filter((key) => key !== CACHE && key.startsWith('buchstaben-spiel-'))
+          .map((key) => caches.delete(key))
+      )
     )
   );
   self.clients.claim();
