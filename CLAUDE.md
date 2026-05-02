@@ -31,7 +31,7 @@ lernspiele/
 
 Eltern installieren *eine* App (die Sammlung), beide/alle Spiele sind drin. Die einzelnen Spiel-Manifests bleiben für separate Installierbarkeit.
 
-Aktuell vorhandene Spiele: `buchstaben/`, `zahlen-parade/`, `hauptstaedte-lernen/`
+Aktuell vorhandene Spiele: `buchstaben/`, `zahlen-parade/`, `hauptstaedte-lernen/`, `uhr-lesen/`, `was-passt-nicht/`, `schatten-finden/`, `tier-geraeusche/`, `jahreszeiten-sortieren/`, `muster-fortsetzen/`, `mengen-erfassen/`, `zahlenreihen/`, `symmetrie/`, `farben-mischen/`, `muenzen/`, `plus-tuermchen/`, `silben-klatschen/`, `anlaute/`, `reim-paare/`, `wort-bild/`, `englisch-erste-woerter/`, `bundeslaender/`, `flaggen/`, `planeten/`
 
 ## Leitprinzipien (NICHT verhandelbar)
 
