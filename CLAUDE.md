@@ -99,6 +99,7 @@ Aus echten Reviews aufgetaucht — beim Bauen drauf achten:
 - **Sammlung-vs-Spiel-SW-Scope:** Sammlung-SW (Scope `/Lernspiele/`) muss Spiel-Pfade (`/Lernspiele/<spiel>/...`) an die Spiel-SWs delegieren. Filter im fetch-Handler: `if (rel.includes('/')) return;` (rel = pathname nach swScope).
 - **Naming `state.running` vs `setRunning`:** wenn beides existiert, leicht zu verwechseln. State-Flag und CSS-Toggle-Funktion klar unterschiedlich benennen (z.B. `state.running` + `setFiguresAnimating`).
 - **Belohnungs-Sprache im End-Screen:** "richtig", "geschafft", "X daneben" sind Bewertungssprache. Lieber warm formulieren ohne Wettbewerbs-Vokabular ("genau!", "magst du nochmal probieren?").
+- **SVG-Rotation auf `<line>` mit `transform-box: fill-box`:** wackelig in einigen Browsern, weil eine vertikale/horizontale Linie eine Null-Breite/Höhe-Bounding-Box hat und `50% 100%`-Origin dann nicht überall sauber auflöst. Lösung: `transform-box: view-box` + Pixel-Koordinaten im viewBox-System (z.B. `transform-origin: 100px 100px` bei viewBox 0 0 200 200). Gilt analog für `<g>`-Wrapper.
 
 ## Roadmap (Phasen)
 

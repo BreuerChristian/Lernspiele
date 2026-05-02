@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Uhr lesen</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#e6a23c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #fdf3e0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #fdf3e0 0%, #f5d49a 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #b8741a;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #9a6a2a;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #b8741a;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #fcecd0;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #f8dcab; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #b8741a;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #fdf3e0;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #6e4c1a;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #fae6c2; }
+        .stage-choice.active {
+            background: #fae6c2;
+            border-color: #e6a23c;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #b8741a;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #8a6630;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #e6a23c, #b8741a);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(184, 116, 26, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #fdf3e0 0%, #f5d49a 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #b8741a;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #b8741a;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px 20px;
+            gap: 12px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #6e4c1a;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .clock-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            width: 100%;
+        }
+        .clock {
+            width: min(78vw, 60vh, 380px);
+            height: min(78vw, 60vh, 380px);
+            display: block;
+            filter: drop-shadow(0 8px 20px rgba(184, 116, 26, 0.25));
+        }
+        .clock .face {
+            fill: white;
+            stroke: #b8741a;
+            stroke-width: 5;
+        }
+        .clock .hour-tick {
+            stroke: #6e4c1a;
+            stroke-width: 3.5;
+            stroke-linecap: round;
+        }
+        .clock .minute-tick {
+            stroke: #b8741a;
+            stroke-width: 1.4;
+            stroke-linecap: round;
+            opacity: 0.55;
+        }
+        .clock .number {
+            fill: #6e4c1a;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+        .clock .hour-hand,
+        .clock .minute-hand {
+            stroke-linecap: round;
+            transform-box: view-box;
+            transform-origin: 100px 100px;
+            transition: transform 0.85s cubic-bezier(.45,0,.2,1);
+        }
+        .clock.no-anim .hour-hand,
+        .clock.no-anim .minute-hand {
+            transition: none;
+        }
+        .clock .hour-hand {
+            stroke: #3a2a14;
+            stroke-width: 6;
+        }
+        .clock .minute-hand {
+            stroke: #6e4c1a;
+            stroke-width: 4;
+        }
+        .clock .cap {
+            fill: #3a2a14;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 460px;
+        }
+        .answer {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 8px;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: #6e4c1a;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.1s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+        }
+        .answer:hover { background: #fcecd0; }
+        .answer:active { transform: translateY(1px); }
+        .answer.correct {
+            background: #c4e6b8;
+            border-color: #6cab4e;
+            color: #2f5e1d;
+        }
+        .answer.locked {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .answer.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        @media (max-width: 380px) {
+            .answer { font-size: 0.95rem; padding: 12px 6px; }
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+        }
+        @media (max-height: 600px) {
+            .prompt { font-size: 1rem; }
+            .answer { padding: 10px 6px; font-size: 0.95rem; }
+            .game-area { padding: 8px 12px 12px; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Uhr lesen</h1>
+        <p class="sub">Wann zeigt die Uhr was?</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="voll">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Volle Stunden</span>
+                        <span class="ex">3 Uhr, 7 Uhr, 12 Uhr ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="halb">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Halbe Stunden</span>
+                        <span class="ex">3 Uhr, halb 4 ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="viertel">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Viertel</span>
+                        <span class="ex">viertel nach 3, halb 4, viertel vor 4 ...</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt">Wie spät ist es?</div>
+        <div class="clock-wrap">
+            <svg class="clock no-anim" id="clock" viewBox="0 0 200 200" aria-label="Uhr">
+                <circle class="face" cx="100" cy="100" r="92"/>
+                <g id="ticks"></g>
+                <g id="numbers"></g>
+                <line class="hour-hand"   id="hour-hand"   x1="100" y1="100" x2="100" y2="55"/>
+                <line class="minute-hand" id="minute-hand" x1="100" y1="100" x2="100" y2="32"/>
+                <circle class="cap" cx="100" cy="100" r="5"/>
+            </svg>
+        </div>
+        <div class="answers" id="answers"></div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  STAGES
+    // ====================================================
+    // Welche Minuten sind in einer Stufe erlaubt?
+    const STAGES = {
+        voll:    { minutes: [0],            label: 'Volle Stunden' },
+        halb:    { minutes: [0, 30],        label: 'Halbe Stunden' },
+        viertel: { minutes: [0, 15, 30, 45], label: 'Viertel' },
+    };
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        current: null,         // { h, m }
+        last: null,            // letzte Aufgabe (gegen sofortige Wiederholung)
+        locked: false,         // true zwischen "richtig" und "neue Aufgabe"
+        hourRot: 0,            // kumulative Grad fuer sanftes Vorwaerts-Sweepen
+        minuteRot: 0,
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+    const sameTime = (a, b) => a && b && a.h === b.h && a.m === b.m;
+
+    const STORAGE_KEY = 'uhr-lesen-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.08);
+            setTimeout(() => tone(880, 0.22, 'sine', 0.08), 110);
+        },
+    };
+
+    // ====================================================
+    //  ZEIT-FORMATIERUNG
+    // ====================================================
+    function nextHour(h) { return h === 12 ? 1 : h + 1; }
+
+    function formatTime(t) {
+        const { h, m } = t;
+        if (m === 0)  return h + ' Uhr';
+        if (m === 15) return 'viertel nach ' + h;
+        if (m === 30) return 'halb ' + nextHour(h);
+        if (m === 45) return 'viertel vor ' + nextHour(h);
+        return h + ':' + (m < 10 ? '0' + m : m);
+    }
+
+    // ====================================================
+    //  AUFGABE GENERIEREN
+    // ====================================================
+    function pool(stage) {
+        const minutes = STAGES[stage].minutes;
+        const out = [];
+        for (let h = 1; h <= 12; h++) {
+            for (const m of minutes) out.push({ h, m });
+        }
+        return out;
+    }
+
+    function generateRound() {
+        const all = pool(state.stage);
+
+        // Korrekte Antwort: nicht die letzte
+        let correct;
+        do { correct = pick(all); } while (sameTime(correct, state.last));
+        state.last = correct;
+        state.current = correct;
+
+        // 3 Distraktoren: nicht gleich correct, untereinander unterschiedlich (Pool ist gross genug)
+        const distractors = shuffle(all.filter(t => !sameTime(t, correct))).slice(0, 3);
+        const options = shuffle([correct, ...distractors]);
+        return { correct, options };
+    }
+
+    // ====================================================
+    //  ZIFFERNBLATT AUFBAUEN
+    // ====================================================
+    function buildClockFace() {
+        const ticksG = $('ticks');
+        const numbersG = $('numbers');
+        ticksG.innerHTML = '';
+        numbersG.innerHTML = '';
+        const NS = 'http://www.w3.org/2000/svg';
+
+        for (let i = 0; i < 60; i++) {
+            const angle = (i * 6 - 90) * Math.PI / 180;
+            const isHour = (i % 5 === 0);
+            const r1 = isHour ? 78 : 84;
+            const r2 = 89;
+            const x1 = 100 + r1 * Math.cos(angle);
+            const y1 = 100 + r1 * Math.sin(angle);
+            const x2 = 100 + r2 * Math.cos(angle);
+            const y2 = 100 + r2 * Math.sin(angle);
+            const line = document.createElementNS(NS, 'line');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('class', isHour ? 'hour-tick' : 'minute-tick');
+            ticksG.appendChild(line);
+        }
+
+        for (let h = 1; h <= 12; h++) {
+            const angle = (h * 30 - 90) * Math.PI / 180;
+            const r = 66;
+            const x = 100 + r * Math.cos(angle);
+            const y = 100 + r * Math.sin(angle);
+            const text = document.createElementNS(NS, 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', y);
+            text.setAttribute('class', 'number');
+            text.textContent = String(h);
+            numbersG.appendChild(text);
+        }
+    }
+
+    // ====================================================
+    //  ZEIGER BEWEGEN
+    // ====================================================
+    // Forwaerts-Drehen: zaehlt kumulativ hoch, damit der Zeiger
+    // vom letzten Stand immer im Uhrzeigersinn zur neuen Position laeuft.
+    function nextForward(currentDeg, targetMod360) {
+        const base = Math.floor(currentDeg / 360) * 360;
+        let x = base + targetMod360;
+        if (x < currentDeg) x += 360;
+        return x;
+    }
+
+    function setHands(t, animate) {
+        const targetH = ((t.h % 12) * 30 + t.m * 0.5);
+        const targetM = (t.m * 6);
+        const newH = animate ? nextForward(state.hourRot, targetH) : targetH;
+        const newM = animate ? nextForward(state.minuteRot, targetM) : targetM;
+        state.hourRot = newH;
+        state.minuteRot = newM;
+
+        const clock = $('clock');
+        if (!animate) clock.classList.add('no-anim');
+
+        $('hour-hand').style.transform = `rotate(${newH}deg)`;
+        $('minute-hand').style.transform = `rotate(${newM}deg)`;
+
+        if (!animate) {
+            // Browser muss die Position einmal ohne Transition uebernehmen,
+            // bevor wir Transitions wieder einschalten.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => clock.classList.remove('no-anim'));
+            });
+        }
+    }
+
+    // ====================================================
+    //  RENDERING ANTWORTEN
+    // ====================================================
+    function renderAnswers(options, correct) {
+        const c = $('answers');
+        c.innerHTML = '';
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'answer';
+            btn.textContent = formatTime(opt);
+            btn.addEventListener('click', () => onAnswer(btn, opt, correct));
+            c.appendChild(btn);
+        });
+    }
+
+    function onAnswer(btn, opt, correct) {
+        if (state.locked) return;
+        if (sameTime(opt, correct)) {
+            state.locked = true;
+            btn.classList.add('correct');
+            // andere Buttons sperren
+            document.querySelectorAll('.answer').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            sfx.correct();
+            setTimeout(() => nextRound(true), 1200);
+        } else {
+            btn.classList.remove('wiggle');
+            // Reflow erzwingen, damit die Animation neu startet
+            void btn.offsetWidth;
+            btn.classList.add('wiggle');
+        }
+    }
+
+    // ====================================================
+    //  RUNDEN
+    // ====================================================
+    function nextRound(animate) {
+        state.locked = false;
+        const round = generateRound();
+        setHands(round.correct, animate);
+        renderAnswers(round.options, round.correct);
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        switchScreen('game');
+        state.last = null;
+        // Initialer Stand: ohne Animation auf 12 Uhr (ruhiger Start)
+        state.hourRot = 0;
+        state.minuteRot = 0;
+        setHands({ h: 12, m: 0 }, false);
+        // Erste Aufgabe nach kurzer Pause - mit Animation, damit das Kind
+        // den Sweep zur ersten Zeit sieht
+        setTimeout(() => nextRound(true), 350);
+    }
+
+    function backToStart() {
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+
+    (function init() {
+        buildClockFace();
+        const prefs = loadPrefs();
+        selectStage(prefs.stage || 'voll');
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>
