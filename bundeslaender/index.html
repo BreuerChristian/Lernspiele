@@ -661,7 +661,11 @@
         landsG.innerHTML = '';
         labelsG.innerHTML = '';
 
-        LANDS.forEach(land => {
+        // Stadtstaaten zuletzt rendern, sonst werden sie von den groesseren
+        // umschliessenden Polygonen (Niedersachsen, Brandenburg) ueberdeckt
+        // und sind nicht mehr tap-bar.
+        const renderOrder = [...LANDS.filter(l => !l.small), ...LANDS.filter(l => l.small)];
+        renderOrder.forEach(land => {
             const poly = document.createElementNS(SVG_NS, 'polygon');
             poly.setAttribute('points', land.poly);
             poly.setAttribute('class', 'land');

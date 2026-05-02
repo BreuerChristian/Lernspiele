@@ -603,6 +603,24 @@
         return audioCtx;
     }
 
+    // Voice-Auswahl: bevorzugt eine echte englische Stimme. Auf rein deutschen
+    // Geraeten faellt SpeechSynthesis sonst auf eine de-Voice mit en-Tag zurueck —
+    // klingt dann wie "Det Ket" statt "Cat". Pruefen wir vorher und merken uns.
+    let englishVoice = null;
+    function loadVoices() {
+        if (!('speechSynthesis' in window)) return;
+        const voices = speechSynthesis.getVoices() || [];
+        if (!voices.length) return;
+        const byLang = (prefix) => voices.find(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
+        englishVoice = byLang('en-gb') || byLang('en-us') || byLang('en-') || null;
+    }
+    if ('speechSynthesis' in window) {
+        loadVoices();
+        // Chrome/Edge: Voices erst nach voiceschanged-Event verfuegbar
+        try { speechSynthesis.addEventListener('voiceschanged', loadVoices); }
+        catch (e) { /* ignore */ }
+    }
+
     function showVisualHint(card) {
         // Sichtbarer Fallback wenn TTS nicht verfuegbar oder noch nicht warmgelaufen.
         // Ohne diesen Hinweis tippt das Kind auf "Hoer zu!" und nichts passiert.
@@ -632,6 +650,8 @@
             try {
                 const u = new SpeechSynthesisUtterance(card.en);
                 u.lang = 'en-US';
+                if (englishVoice) u.voice = englishVoice;
+                else { showVisualHint(card); /* zusaetzlich Wort sichtbar zeigen */ }
                 u.rate = 0.85;
                 u.pitch = 1.0;
                 u.volume = 1.0;

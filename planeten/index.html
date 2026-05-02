@@ -1167,9 +1167,15 @@
             void btn.offsetWidth;
             btn.classList.add('wiggle');
             sfx.nudge();
-            // Hint-Prompt
-            const expectedName = PLANETS.find(p => p.id === expectedId).name;
-            $('prompt').innerHTML = `Hmm, magst du nochmal schauen? <span class="small">An dieser Stelle gehoert <b>${expectedName}</b> hin? Probier den Reihe nach.</span>`;
+            // Hint-Prompt — KEIN Spoiler des erwarteten Planeten, nur sanft umlenken
+            const placedSoFar = state.order.placed.length;
+            const lastPlaced = placedSoFar > 0
+                ? PLANETS.find(p => p.id === state.order.placed[placedSoFar - 1]).name
+                : null;
+            const hint = lastPlaced
+                ? `Hmm, magst du nochmal schauen? <span class="small">Welcher Planet kommt nach <b>${lastPlaced}</b>?</span>`
+                : `Hmm, magst du nochmal schauen? <span class="small">Welcher Planet ist der Sonne am naechsten?</span>`;
+            $('prompt').innerHTML = hint;
             setTimeout(() => {
                 if (state.order.done) return;
                 $('prompt').textContent = 'Welcher Planet kommt als naechstes?';

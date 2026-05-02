@@ -1,4 +1,4 @@
-const CACHE = 'englisch-erste-woerter-v1';
+const CACHE = 'englisch-erste-woerter-v2';
 const ASSETS = [
   './',
   './index.html',

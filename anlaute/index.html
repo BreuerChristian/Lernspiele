@@ -578,16 +578,23 @@
         { w: 'Gabel',  l: 'G', svg: 'gabel' },
         { w: 'Dose',   l: 'D', svg: 'dose' },
     ]);
+    // Stufe 3: nur Woerter wo der Anlaut wirklich dem Buchstaben entspricht.
+    // KEINE Vogel/Vase (gesprochen mit F-Anlaut), KEINE Eule/Eis (Diphthong Eu/Ei
+    // beginnt nicht mit E-Anlaut). Stattdessen klare Z/Qu/X-Wörter und einige
+    // andere Buchstaben die in S1/S2 selten vorkamen.
     const WORDS_S3 = [
-        { w: 'Vogel',   l: 'V', svg: 'vogel' },
-        { w: 'Vase',    l: 'V', svg: 'vase' },
-        { w: 'Zebra',   l: 'Z', svg: 'zebra' },
-        { w: 'Zitrone', l: 'Z', svg: 'zitrone' },
-        { w: 'Zaun',    l: 'Z', svg: 'zaun' },
-        { w: 'Eule',    l: 'E', svg: 'eule' },
-        { w: 'Eis',     l: 'E', svg: 'eis' },
-        { w: 'Ohr',     l: 'O', svg: 'ohr' },
-        { w: 'Quark',   l: 'Q', svg: 'quark' },
+        { w: 'Zebra',     l: 'Z', svg: 'zebra' },
+        { w: 'Zitrone',   l: 'Z', svg: 'zitrone' },
+        { w: 'Zaun',      l: 'Z', svg: 'zaun' },
+        { w: 'Quark',     l: 'Q', svg: 'quark' },
+        { w: 'Ohr',       l: 'O', svg: 'ohr' },
+        { w: 'Wolke',     l: 'W', svg: 'wolke' },
+        { w: 'Pilz',      l: 'P', svg: 'pilz' },
+        { w: 'Gabel',     l: 'G', svg: 'gabel' },
+        { w: 'Dose',      l: 'D', svg: 'dose' },
+        { w: 'Sonne',     l: 'S', svg: 'sonne' },
+        { w: 'Fisch',     l: 'F', svg: 'fisch' },
+        { w: 'Tisch',     l: 'T', svg: 'tisch' },
     ];
 
     // Buchstaben, aus denen Distraktoren in der jeweiligen Stufe gezogen werden.

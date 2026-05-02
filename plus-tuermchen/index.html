@@ -1008,6 +1008,19 @@
         state.builtB = 0;
         state.colorOffset = randInt(0, COLORS.length - 1);
 
+        // Visual-Reset: Wenn ein vorheriger Merge mid-flight unterbrochen wurde
+        // (z.B. via Back-Tap), haengt der svg-wrap evtl. noch mit Translate-Transform.
+        // Vor neuer Runde Transforms und Opacities sauber zuruecksetzen.
+        ['tower-a', 'tower-b'].forEach(id => {
+            const t = $(id);
+            const wrap = t.querySelector('.tower-svg-wrap');
+            if (wrap) { wrap.style.transition = 'none'; wrap.style.transform = ''; }
+            const ctr = t.querySelector('.controls');
+            if (ctr) ctr.style.opacity = '';
+            const lbl = t.querySelector('.target-label');
+            if (lbl) lbl.style.opacity = '';
+        });
+
         setTaskText();
         $('hud-progress').textContent = (state.roundIndex + 1) + ' / ' + ROUNDS_PER_GAME;
         updateLabels();
