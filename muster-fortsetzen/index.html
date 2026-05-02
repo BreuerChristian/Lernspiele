@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Muster fortsetzen</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#c2185b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #fde7ef;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #fde7ef 0%, #f8b4c8 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #c2185b;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #ad1457;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #c2185b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #fde7ef;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #f8b4c8; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #c2185b;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #fde7ef;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #6e1733;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #f8c5d6; }
+        .stage-choice.active {
+            background: #f8c5d6;
+            border-color: #c2185b;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #c2185b;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #8a3a55;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #ec407a, #c2185b);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(194, 24, 91, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #fde7ef 0%, #f8b4c8 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #c2185b;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .progress {
+            display: flex;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+            align-items: center;
+        }
+        .progress .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #f8b4c8;
+            transition: background 0.25s, transform 0.25s;
+        }
+        .progress .dot.done {
+            background: #c2185b;
+            transform: scale(1.15);
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #c2185b;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 16px 20px;
+            gap: 14px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #6e1733;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* ---------- Pattern-Reihe ---------- */
+        .pattern-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            width: 100%;
+        }
+        .pattern {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-radius: 22px;
+            padding: 18px 14px;
+            box-shadow: 0 8px 22px rgba(194, 24, 91, 0.18);
+            max-width: 100%;
+        }
+        .symbol {
+            width: var(--sz, 56px);
+            height: var(--sz, 56px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .symbol svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .gap {
+            width: var(--sz, 56px);
+            height: var(--sz, 56px);
+            border: 3px dashed #c2185b;
+            border-radius: 14px;
+            background: #fde7ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s, border-color 0.2s;
+            position: relative;
+        }
+        .gap::after {
+            content: '?';
+            color: #c2185b;
+            font-weight: bold;
+            font-size: calc(var(--sz, 56px) * 0.5);
+        }
+        .gap.filled {
+            border-style: solid;
+            background: white;
+            border-color: #6cab4e;
+        }
+        .gap.filled::after { content: ''; }
+        .gap.filled .symbol {
+            animation: pop 0.35s ease-out;
+        }
+        @keyframes pop {
+            0%   { transform: scale(0.4); opacity: 0; }
+            60%  { transform: scale(1.12); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ---------- Antwort-Optionen ---------- */
+        .answers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            width: 100%;
+            max-width: 460px;
+        }
+        .answer {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 18px;
+            padding: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.1s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: calc(var(--ansz, 80px) + 24px);
+            height: calc(var(--ansz, 80px) + 24px);
+        }
+        .answer .symbol {
+            width: var(--ansz, 80px);
+            height: var(--ansz, 80px);
+        }
+        .answer:hover { background: #fde7ef; }
+        .answer:active { transform: translateY(1px); }
+        .answer.correct {
+            background: #d4ecc8;
+            border-color: #6cab4e;
+        }
+        .answer.locked {
+            pointer-events: none;
+            opacity: 0.55;
+        }
+        .answer.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        /* ---------- End-Screen ---------- */
+        #screen-end {
+            background: linear-gradient(135deg, #fde7ef 0%, #f8b4c8 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #screen-end .card {
+            background: white;
+            border-radius: 28px;
+            padding: 36px 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-end h2 {
+            color: #c2185b;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        #screen-end p {
+            color: #6e1733;
+            font-size: 1.05rem;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+        #screen-end .end-symbols {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        #screen-end .end-symbols .symbol {
+            width: 50px;
+            height: 50px;
+        }
+        .end-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.12s;
+        }
+        .end-btn:active { transform: translateY(2px); }
+        .end-btn.primary {
+            background: linear-gradient(145deg, #ec407a, #c2185b);
+            color: white;
+            box-shadow: 0 6px 14px rgba(194, 24, 91, 0.3);
+        }
+        .end-btn.secondary {
+            background: #fde7ef;
+            color: #c2185b;
+        }
+
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .pattern { gap: 7px; padding: 12px 10px; }
+            .answers { gap: 10px; }
+        }
+        @media (max-height: 600px) {
+            .prompt { font-size: 1rem; }
+            .game-area { padding: 10px 12px 14px; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Muster fortsetzen</h1>
+        <p class="sub">Was kommt als Nächstes?</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="ab">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Zwei Symbole</span>
+                        <span class="ex">A B A B …</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="abc">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Drei Symbole</span>
+                        <span class="ex">A B C A B C …</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="aab">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Eines doppelt</span>
+                        <span class="ex">A A B A A B …</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <div class="progress" id="progress"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt">Was passt in die Lücke?</div>
+        <div class="pattern-wrap">
+            <div class="pattern" id="pattern"></div>
+        </div>
+        <div class="answers" id="answers"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     END-SCREEN
+============================================================ -->
+<div id="screen-end" class="screen hidden">
+    <div class="card">
+        <h2>Alle Muster fertig!</h2>
+        <div class="end-symbols" id="end-symbols"></div>
+        <p>Magst du nochmal? Oder eine andere Stufe?</p>
+        <button class="end-btn primary" id="btn-again">Nochmal spielen</button>
+        <button class="end-btn secondary" id="btn-end-back">Andere Stufe</button>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  KONSTANTEN
+    // ====================================================
+    const ROUND_TASKS = 7;     // Aufgaben pro Runde
+    const NEXT_DELAY  = 950;   // ms zwischen "richtig" und naechster Aufgabe
+
+    // Formen (4)
+    const SHAPES = ['circle', 'square', 'triangle', 'star'];
+    // Farben (5) - bewusst kraeftig, gut unterscheidbar
+    const COLORS = [
+        { id: 'red',    fill: '#e53935', stroke: '#7d1414' },
+        { id: 'blue',   fill: '#1e88e5', stroke: '#0d3d6e' },
+        { id: 'yellow', fill: '#fdd835', stroke: '#7a6512' },
+        { id: 'green',  fill: '#43a047', stroke: '#1f4f1d' },
+        { id: 'purple', fill: '#8e24aa', stroke: '#4a1359' },
+    ];
+
+    // ====================================================
+    //  STAGES (Aufgaben-Vorlagen)
+    // ====================================================
+    // Jede Aufgabe ist ein Pattern aus Slot-Indizes (0/1/2),
+    // die spaeter mit zufaelligen Form/Farb-Kombos belegt werden.
+    // Die Luecke ist immer die letzte Position; gefragt wird das
+    // Symbol, das dort hin gehoert (= passende Stelle im Zyklus).
+    //
+    // Wir erzeugen zur Laufzeit pro Aufgabe eine zufaellige
+    // Stage-Variation (z.B. AAB vs ABB) und Pattern-Laenge.
+    const STAGES = {
+        ab: {
+            label: 'Zwei Symbole',
+            // Zyklus AB, Wiederholungen 2x oder 3x -> 4-7 Symbole vor der Luecke
+            cycle:  () => [0, 1],
+            reps:   () => 2 + Math.floor(Math.random() * 2), // 2 oder 3
+            distinct: 2,
+        },
+        abc: {
+            label: 'Drei Symbole',
+            // Zyklus ABC, 2x = 6 Symbole vor Luecke
+            cycle:  () => [0, 1, 2],
+            reps:   () => 2,
+            distinct: 3,
+        },
+        aab: {
+            label: 'Eines doppelt',
+            // AAB oder ABB, 2x = 6 Symbole vor Luecke
+            cycle:  () => Math.random() < 0.5 ? [0, 0, 1] : [0, 1, 1],
+            reps:   () => 2,
+            distinct: 2,
+        },
+    };
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        taskIdx: 0,        // 0..ROUND_TASKS
+        locked: false,     // true zwischen Tap und naechster Aufgabe
+        current: null,     // aktuelle Aufgabe { items, missing, options, slotKeys }
+        endSymbols: [],    // Symbole die im End-Screen gezeigt werden (Erinnerung)
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'muster-fortsetzen-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(620, 0.13, 'sine', 0.07);
+            setTimeout(() => tone(820, 0.20, 'sine', 0.07), 100);
+        },
+        end: () => {
+            tone(520, 0.16, 'sine', 0.07);
+            setTimeout(() => tone(660, 0.16, 'sine', 0.07), 130);
+            setTimeout(() => tone(820, 0.26, 'sine', 0.07), 260);
+        },
+    };
+
+    // ====================================================
+    //  SVG-SYMBOLE
+    // ====================================================
+    // Ein Symbol = Form + Farbe. viewBox 0 0 100 100, Inhalt zentriert.
+    function symbolSvg(shape, color) {
+        const f = color.fill, s = color.stroke;
+        let body = '';
+        switch (shape) {
+            case 'circle':
+                body = `<circle cx="50" cy="50" r="38" fill="${f}" stroke="${s}" stroke-width="5"/>`;
+                break;
+            case 'square':
+                body = `<rect x="14" y="14" width="72" height="72" rx="10" fill="${f}" stroke="${s}" stroke-width="5"/>`;
+                break;
+            case 'triangle':
+                body = `<polygon points="50,12 88,84 12,84" fill="${f}" stroke="${s}" stroke-width="5" stroke-linejoin="round"/>`;
+                break;
+            case 'star': {
+                // 5-zackiger Stern, mathematisch konstruiert (Aussen-/Innenradius)
+                const cx = 50, cy = 52;
+                const outer = 40, inner = 17;
+                const pts = [];
+                for (let i = 0; i < 10; i++) {
+                    const r = (i % 2 === 0) ? outer : inner;
+                    const ang = -Math.PI / 2 + i * Math.PI / 5;
+                    const x = cx + r * Math.cos(ang);
+                    const y = cy + r * Math.sin(ang);
+                    pts.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+                }
+                body = `<polygon points="${pts.join(' ')}" fill="${f}" stroke="${s}" stroke-width="5" stroke-linejoin="round"/>`;
+                break;
+            }
+        }
+        return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+    }
+
+    function symbolKey(sym) { return `${sym.shape}|${sym.color}`; }
+
+    function renderSymbol(parent, sym) {
+        const span = document.createElement('span');
+        span.className = 'symbol';
+        span.innerHTML = symbolSvg(sym.shape, COLORS.find(c => c.id === sym.color));
+        parent.appendChild(span);
+        return span;
+    }
+
+    // ====================================================
+    //  AUFGABE GENERIEREN
+    // ====================================================
+    function generateTask() {
+        const stageDef = STAGES[state.stage];
+        const cycle = stageDef.cycle();             // z.B. [0,1] oder [0,0,1]
+        const reps  = stageDef.reps();              // z.B. 2 oder 3
+        const distinct = stageDef.distinct;         // 2 oder 3 unterschiedliche Symbole
+
+        // Pro Slot ein eigenes Symbol (eindeutige Form/Farb-Kombo)
+        const slotSymbols = [];
+        const usedShapes = new Set();
+        const usedColors = new Set();
+        // Wir wollen sowohl unterschiedliche Formen als auch unterschiedliche Farben,
+        // damit Symbole leicht unterscheidbar sind. Bei Bedarf relaxen.
+        for (let i = 0; i < distinct; i++) {
+            let shape, color, tries = 0;
+            do {
+                shape = pick(SHAPES);
+                color = pick(COLORS).id;
+                tries++;
+            } while (
+                tries < 30 &&
+                (usedShapes.has(shape) || usedColors.has(color))
+            );
+            usedShapes.add(shape);
+            usedColors.add(color);
+            slotSymbols.push({ shape, color });
+        }
+
+        // Volle Sequenz aufbauen (Zyklus * reps)
+        const fullSeq = [];
+        for (let r = 0; r < reps; r++) {
+            for (const s of cycle) fullSeq.push(slotSymbols[s]);
+        }
+        // Plus EIN weiteres Symbol nach dem letzten Zyklus -> das ist die Loesung.
+        // Damit wird die Luecke immer am Ende sichtbar als naechstes Element.
+        const nextSlot = cycle[0]; // zyklisch geht es wieder mit dem ersten Slot weiter
+        const correctSymbol = slotSymbols[nextSlot];
+
+        // Items zum Anzeigen: fullSeq + Luecke
+        const items = fullSeq.map(sym => ({ kind: 'symbol', sym }));
+        items.push({ kind: 'gap' });
+
+        // Antwort-Optionen: korrektes Symbol + 2-3 Distraktoren
+        // Distraktoren stammen aus den anderen Slot-Symbolen (sicher falsch),
+        // aufgefuellt mit zufaelligen Form/Farb-Kombos die nicht gleich correct sind.
+        const correctKey = symbolKey(correctSymbol);
+        const candidates = [];
+        for (const s of slotSymbols) {
+            if (symbolKey(s) !== correctKey) candidates.push(s);
+        }
+        // Auf 3 Distraktoren auffuellen
+        const seen = new Set([correctKey, ...candidates.map(symbolKey)]);
+        let safety = 0;
+        while (candidates.length < 3 && safety < 60) {
+            safety++;
+            const cand = { shape: pick(SHAPES), color: pick(COLORS).id };
+            const k = symbolKey(cand);
+            if (!seen.has(k)) {
+                seen.add(k);
+                candidates.push(cand);
+            }
+        }
+
+        const options = shuffle([correctSymbol, ...candidates.slice(0, 3)]);
+
+        return {
+            items,
+            correct: correctSymbol,
+            options,
+        };
+    }
+
+    // ====================================================
+    //  GROESSEN-BERECHNUNG
+    // ====================================================
+    // Symbole sollen in eine Zeile passen (oder bei vielen umbrechen),
+    // aber nicht zu klein werden.
+    function computeSymbolSize(count) {
+        const wrap = $('pattern').parentElement;
+        const w = Math.min(wrap.clientWidth, 700) - 40; // padding
+        const gap = 10;
+        // Probiere passend in 1 Zeile:
+        let sz = Math.floor((w - gap * (count - 1)) / count);
+        sz = Math.max(36, Math.min(72, sz));
+        return sz;
+    }
+
+    // ====================================================
+    //  PATTERN RENDERN
+    // ====================================================
+    function renderPattern(items) {
+        const c = $('pattern');
+        c.innerHTML = '';
+        const sz = computeSymbolSize(items.length);
+        c.style.setProperty('--sz', sz + 'px');
+        items.forEach(it => {
+            if (it.kind === 'symbol') {
+                renderSymbol(c, it.sym);
+            } else {
+                const gap = document.createElement('span');
+                gap.className = 'gap';
+                gap.id = 'gap-slot';
+                c.appendChild(gap);
+            }
+        });
+    }
+
+    function renderAnswers(options, correct) {
+        const c = $('answers');
+        c.innerHTML = '';
+        // Antwort-Symbole etwas groesser
+        const ansz = Math.min(86, Math.max(60, computeSymbolSize(options.length) + 18));
+        c.style.setProperty('--ansz', ansz + 'px');
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'answer';
+            renderSymbol(btn, opt);
+            btn.addEventListener('click', () => onAnswer(btn, opt, correct));
+            c.appendChild(btn);
+        });
+    }
+
+    // ====================================================
+    //  ANTWORT-HANDLING
+    // ====================================================
+    function onAnswer(btn, opt, correct) {
+        // Tap-Race: locked vor jeder State-Mutation pruefen UND setzen.
+        if (state.locked) return;
+        const isCorrect = symbolKey(opt) === symbolKey(correct);
+        if (isCorrect) {
+            state.locked = true;
+            btn.classList.add('correct');
+            // andere sperren
+            document.querySelectorAll('.answer').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            // Luecke fuellen
+            const slot = $('gap-slot');
+            if (slot) {
+                slot.classList.add('filled');
+                renderSymbol(slot, correct);
+            }
+            // Erinnerung fuer End-Screen
+            state.endSymbols.push(correct);
+            sfx.correct();
+            setTimeout(() => advance(), NEXT_DELAY);
+        } else {
+            btn.classList.remove('wiggle');
+            // Reflow erzwingen
+            void btn.offsetWidth;
+            btn.classList.add('wiggle');
+        }
+    }
+
+    function advance() {
+        state.taskIdx++;
+        updateProgress();
+        if (state.taskIdx >= ROUND_TASKS) {
+            showEnd();
+            return;
+        }
+        nextTask();
+    }
+
+    // ====================================================
+    //  PROGRESS-DOTS
+    // ====================================================
+    function buildProgress() {
+        const p = $('progress');
+        p.innerHTML = '';
+        for (let i = 0; i < ROUND_TASKS; i++) {
+            const d = document.createElement('span');
+            d.className = 'dot';
+            p.appendChild(d);
+        }
+    }
+    function updateProgress() {
+        const dots = $('progress').querySelectorAll('.dot');
+        dots.forEach((d, i) => {
+            d.classList.toggle('done', i < state.taskIdx);
+        });
+    }
+
+    // ====================================================
+    //  RUNDEN-FLOW
+    // ====================================================
+    function nextTask() {
+        state.locked = false;
+        const task = generateTask();
+        state.current = task;
+        renderPattern(task.items);
+        renderAnswers(task.options, task.correct);
+    }
+
+    function startRound() {
+        state.taskIdx = 0;
+        state.endSymbols = [];
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        buildProgress();
+        updateProgress();
+        switchScreen('game');
+        nextTask();
+    }
+
+    function showEnd() {
+        // End-Screen mit Erinnerung an die letzten paar Loesungen (max 6)
+        const c = $('end-symbols');
+        c.innerHTML = '';
+        const last = state.endSymbols.slice(-6);
+        last.forEach(sym => renderSymbol(c, sym));
+        switchScreen('end');
+        sfx.end();
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game', 'end'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function backToStart() {
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => {
+        if (!state.stage) return;
+        ensureAudio();
+        savePrefs();
+        startRound();
+    });
+
+    $('btn-back').addEventListener('click', backToStart);
+
+    $('btn-again').addEventListener('click', () => {
+        ensureAudio();
+        startRound();
+    });
+    $('btn-end-back').addEventListener('click', backToStart);
+
+    // Bei Resize: Pattern neu zeichnen, damit Symbol-Groesse passt.
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            // Nur wenn Spiel laeuft und Aufgabe aktiv: Pattern neu rendern,
+            // aber Lueckenstatus erhalten (nur Groesse anpassen).
+            if (!$('screen-game').classList.contains('hidden') && state.current) {
+                const sz = computeSymbolSize(state.current.items.length);
+                $('pattern').style.setProperty('--sz', sz + 'px');
+                const ansz = Math.min(86, Math.max(60, sz + 18));
+                $('answers').style.setProperty('--ansz', ansz + 'px');
+            }
+        }, 120);
+    });
+
+    (function init() {
+        const prefs = loadPrefs();
+        selectStage(prefs.stage || 'ab');
+    })();
+
+    // Service Worker am Ende registrieren
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>
