@@ -360,7 +360,7 @@
         <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
     </div>
     <div class="game-area">
-        <div class="prompt">Wie spät ist es?</div>
+        <div class="prompt">Was zeigt die Uhr?</div>
         <div class="clock-wrap">
             <svg class="clock no-anim" id="clock" viewBox="0 0 200 200" aria-label="Uhr">
                 <circle class="face" cx="100" cy="100" r="92"/>
@@ -493,8 +493,14 @@
         state.last = correct;
         state.current = correct;
 
-        // 3 Distraktoren: nicht gleich correct, untereinander unterschiedlich (Pool ist gross genug)
-        const distractors = shuffle(all.filter(t => !sameTime(t, correct))).slice(0, 3);
+        // Distraktoren: bevorzugt aus gleicher Minuten-Klasse (z.B. nur "halb X"-Zeiten),
+        // damit das Kind tatsaechlich die Uhr lesen muss und nicht am Wort raten kann.
+        const sameClass = all.filter(t => t.m === correct.m && !sameTime(t, correct));
+        let distractors = shuffle(sameClass).slice(0, 3);
+        if (distractors.length < 3) {
+            const otherClass = all.filter(t => t.m !== correct.m);
+            distractors = distractors.concat(shuffle(otherClass).slice(0, 3 - distractors.length));
+        }
         const options = shuffle([correct, ...distractors]);
         return { correct, options };
     }
@@ -601,7 +607,11 @@
                 if (b !== btn) b.classList.add('locked');
             });
             sfx.correct();
-            setTimeout(() => nextRound(true), 1200);
+            if (state.nextTimer) clearTimeout(state.nextTimer);
+            state.nextTimer = setTimeout(() => {
+                state.nextTimer = null;
+                nextRound(true);
+            }, 1200);
         } else {
             btn.classList.remove('wiggle');
             // Reflow erzwingen, damit die Animation neu startet
@@ -634,17 +644,25 @@
         savePrefs();
         $('hud-stage').textContent = STAGES[state.stage].label;
         switchScreen('game');
-        state.last = null;
-        // Initialer Stand: ohne Animation auf 12 Uhr (ruhiger Start)
+        // Initialer Stand: 12 Uhr. state.last = 12:00 verhindert dass die erste
+        // Aufgabe wieder 12:00 ist (sonst sieht das Kind keinen Sweep).
+        state.last = { h: 12, m: 0 };
         state.hourRot = 0;
         state.minuteRot = 0;
         setHands({ h: 12, m: 0 }, false);
         // Erste Aufgabe nach kurzer Pause - mit Animation, damit das Kind
         // den Sweep zur ersten Zeit sieht
-        setTimeout(() => nextRound(true), 350);
+        if (state.startTimer) clearTimeout(state.startTimer);
+        state.startTimer = setTimeout(() => {
+            state.startTimer = null;
+            nextRound(true);
+        }, 350);
     }
 
     function backToStart() {
+        if (state.nextTimer) { clearTimeout(state.nextTimer); state.nextTimer = null; }
+        if (state.startTimer) { clearTimeout(state.startTimer); state.startTimer = null; }
+        state.locked = false;
         switchScreen('start');
     }
 

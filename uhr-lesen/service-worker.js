@@ -1,4 +1,4 @@
-const CACHE = 'uhr-lesen-v2';
+const CACHE = 'uhr-lesen-v3';
 const ASSETS = [
   './',
   './index.html',

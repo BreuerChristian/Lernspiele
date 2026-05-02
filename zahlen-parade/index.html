@@ -723,9 +723,13 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.12, type = 'sine', vol = 0.08) {
@@ -1261,12 +1265,11 @@
             if (state.count === state.target) {
                 emoji.textContent = '🎉';
                 title.textContent = `Genau ${state.count}!`;
-                msg.textContent = 'Du hast die richtige Zahl getroffen.';
+                msg.textContent = 'Schön — die Parade ist genau angekommen.';
             } else {
                 emoji.textContent = '🌼';
-                const diff = Math.abs(state.count - state.target);
                 title.textContent = `${state.count} sind angekommen.`;
-                msg.textContent = `Das Ziel war ${state.target}. ${diff === 1 ? 'Eines daneben' : diff + ' daneben'} — magst du nochmal probieren?`;
+                msg.textContent = `Das Ziel war ${state.target}. Magst du nochmal probieren?`;
             }
         } else {
             emoji.textContent = '🌻';

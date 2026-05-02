@@ -69,9 +69,9 @@
 
         .top-bar {
             position: fixed;
-            top: 12px;
-            left: 12px;
-            right: 12px;
+            top: max(12px, env(safe-area-inset-top));
+            left: max(12px, env(safe-area-inset-left));
+            right: max(12px, env(safe-area-inset-right));
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -472,7 +472,7 @@
                     { land: 'USA', stadt: 'Washington' },
                     // Südamerika
                     { land: 'Argentinien', stadt: 'Buenos Aires' },
-                    { land: 'Bolivien', stadt: 'La Paz' },
+                    { land: 'Bolivien', stadt: 'Sucre' },
                     { land: 'Brasilien', stadt: 'Brasília' },
                     { land: 'Chile', stadt: 'Santiago de Chile' },
                     { land: 'Ecuador', stadt: 'Quito' },
@@ -485,8 +485,10 @@
                     { land: 'Australien', stadt: 'Canberra' },
                     { land: 'Neuseeland', stadt: 'Wellington' },
                     { land: 'Fidschi', stadt: 'Suva' },
-                    { land: 'Papua-Neuguinea', stadt: 'Port Moresby' }
-                    // Europa: separater Pool (siehe oben), nicht doppelt aufnehmen
+                    { land: 'Papua-Neuguinea', stadt: 'Port Moresby' },
+                    // Transkontinental — auch im Welt-Pool, damit "weltweit" konsistent ist
+                    { land: 'Russland', stadt: 'Moskau' },
+                    { land: 'Türkei', stadt: 'Ankara' }
                 ]
             }
         };
