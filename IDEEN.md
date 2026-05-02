@@ -16,7 +16,7 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [ ] **Plus-Türmchen** — visuelle Addition mit gestapelten Klötzchen, Drag&Drop. Web-Variante des goldenen Perlenmaterials.
 - [x] **Uhr lesen** — analoge Uhr, "wie spät ist es?". Stufen: volle Stunde → halbe → viertel.
 - [x] **Zahlenreihen** — 2, 4, _, 8, 10 — was fehlt? Mit Zahlenstrahl als Hilfe.
-- [ ] **Münzen** — Beträge mit Euro-Münzen legen.
+- [x] **Münzen** — Beträge mit Euro-Münzen legen.
 
 ## Welt & Sachkunde
 - [ ] **Bundesländer-Spiel** — Pendant zu Hauptstädten, eine Stufe einfacher (Form ziehen → Position finden).
@@ -48,3 +48,4 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [x] **Zahlenreihen** (`zahlenreihen/`)
 - [x] **Farben mischen** (`farben-mischen/`)
 - [x] **Symmetrie** (`symmetrie/`)
+- [x] **Münzen** (`muenzen/`)
