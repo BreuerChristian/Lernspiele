@@ -493,8 +493,9 @@
         bis8: { min: 1, max: 8, label: 'Bis 8' },
     };
     const DURATIONS = {
-        kurz: 700,
-        lang: 2000,
+        // Inkl. 250ms Cover-Fade-In - effektive volle Sichtzeit ist DURATION - COVER_FADE_MS.
+        kurz: 1000,
+        lang: 2200,
     };
     const TASKS_PER_ROUND = 8;
     const COVER_FADE_MS = 250; // muss zur CSS-Transition passen

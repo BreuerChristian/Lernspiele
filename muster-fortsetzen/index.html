@@ -700,17 +700,25 @@
         for (const s of slotSymbols) {
             if (symbolKey(s) !== correctKey) candidates.push(s);
         }
-        // Auf 3 Distraktoren auffuellen
+        // Auf 3 Distraktoren auffuellen — mind. eine Achse muss vom Korrekten
+        // abweichen UND idealerweise auch vom Slot-Alphabet (sonst wirkt der
+        // Distraktor wie ein "halb-korrekter" Treffer). Wir bevorzugen Symbole
+        // die *beide* Achsen vom Korrekten verschieden haben.
         const seen = new Set([correctKey, ...candidates.map(symbolKey)]);
         let safety = 0;
         while (candidates.length < 3 && safety < 60) {
             safety++;
             const cand = { shape: pick(SHAPES), color: pick(COLORS).id };
             const k = symbolKey(cand);
-            if (!seen.has(k)) {
-                seen.add(k);
-                candidates.push(cand);
-            }
+            if (seen.has(k)) continue;
+            // Wenn moeglich: beide Achsen verschieden vom Korrekten
+            const sameShape = cand.shape === correctSymbol.shape;
+            const sameColor = cand.color === correctSymbol.color;
+            if (sameShape && sameColor) continue; // identisch (sollte schon via seen rausgefiltert sein)
+            // Erste 30 Versuche: nur Distraktoren akzeptieren wo BEIDE Achsen verschieden
+            if (safety < 30 && (sameShape || sameColor)) continue;
+            seen.add(k);
+            candidates.push(cand);
         }
 
         const options = shuffle([correctSymbol, ...candidates.slice(0, 3)]);
