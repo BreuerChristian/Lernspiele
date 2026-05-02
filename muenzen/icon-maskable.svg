@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4a017"/>
+      <stop offset="100%" stop-color="#8a6300"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205, also ca. 51..461) -->
+
+  <!-- Münze 1 (hinten Mitte oben): 1 Euro (silber-mit-gold-rand bicolor) -->
+  <g transform="translate(176,156)">
+    <circle cx="80" cy="80" r="74" fill="#a8a8b0" stroke="#5a5a60" stroke-width="3"/>
+    <circle cx="80" cy="80" r="64" fill="#cfcfd6" opacity="0.6"/>
+    <circle cx="80" cy="80" r="46" fill="#e8be3c" stroke="#a07a00" stroke-width="2"/>
+    <ellipse cx="62" cy="58" rx="22" ry="12" fill="white" opacity="0.32"/>
+    <text x="80" y="94" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="44" font-weight="bold" fill="#3a2a08">1€</text>
+  </g>
+
+  <!-- Münze 2 (rechts unten): 50 Cent (gold) -->
+  <g transform="translate(266,236)">
+    <circle cx="68" cy="68" r="62" fill="#d4a017" stroke="#7a5800" stroke-width="3"/>
+    <circle cx="68" cy="68" r="52" fill="#e8be3c" opacity="0.55"/>
+    <ellipse cx="52" cy="48" rx="20" ry="11" fill="white" opacity="0.32"/>
+    <text x="68" y="80" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="32" font-weight="bold" fill="#3a2a08">50c</text>
+  </g>
+
+  <!-- Münze 3 (links unten): 5 Cent (kupfer) -->
+  <g transform="translate(112,260)">
+    <circle cx="60" cy="60" r="54" fill="#c4733a" stroke="#7a3a0a" stroke-width="3"/>
+    <circle cx="60" cy="60" r="44" fill="#dd955a" opacity="0.55"/>
+    <ellipse cx="46" cy="42" rx="18" ry="10" fill="white" opacity="0.32"/>
+    <text x="60" y="72" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="30" font-weight="bold" fill="#3a2a08">5c</text>
+  </g>
+
+  <!-- Münze 4 (vorn unten Mitte): 2 Euro (gold-mit-silber bicolor) -->
+  <g transform="translate(220,316)">
+    <circle cx="68" cy="68" r="62" fill="#d4a017" stroke="#7a5800" stroke-width="3"/>
+    <circle cx="68" cy="68" r="54" fill="#e8be3c" opacity="0.6"/>
+    <circle cx="68" cy="68" r="38" fill="#cfcfd6" stroke="#7a7a80" stroke-width="2"/>
+    <ellipse cx="52" cy="48" rx="20" ry="11" fill="white" opacity="0.32"/>
+    <text x="68" y="80" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="32" font-weight="bold" fill="#3a3a40">2€</text>
+  </g>
+</svg>

@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Münzen</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#b8860b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #fdf3d0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #fdf3d0 0%, #f0d680 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #8a6300;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #a07a1a;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #8a6300;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #fae8a8;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #f5dc88; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #8a6300;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #fdf3d0;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #6e4f10;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #faecb0; }
+        .stage-choice.active {
+            background: #faecb0;
+            border-color: #b8860b;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #8a6300;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #8a6a30;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #d4a017, #8a6300);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(138, 99, 0, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #fdf3d0 0%, #f0d680 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+            flex-shrink: 0;
+        }
+        .hud-stage {
+            color: #8a6300;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #8a6300;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 14px 14px;
+            gap: 10px;
+            min-height: 0;
+            overflow-y: auto;
+        }
+        .prompt {
+            color: #6e4f10;
+            font-size: 1.15rem;
+            font-weight: bold;
+            text-align: center;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 16px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+        .prompt .target {
+            display: block;
+            font-size: 1.6rem;
+            color: #8a6300;
+            margin-top: 4px;
+        }
+
+        /* ---------- Available coins (oben) ---------- */
+        .coin-tray {
+            background: rgba(255,255,255,0.55);
+            border-radius: 18px;
+            padding: 12px 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px 10px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .coin-tray .label {
+            width: 100%;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #8a6a30;
+            margin-bottom: 4px;
+        }
+
+        /* ---------- Wallet (Beutel, unten) ---------- */
+        .wallet {
+            background: linear-gradient(180deg, #d8b870 0%, #b58a3a 100%);
+            border-radius: 22px;
+            padding: 12px 12px 14px;
+            min-height: 130px;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .wallet-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #3a2a08;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        .wallet-head .sum {
+            background: white;
+            color: #6e4f10;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 1rem;
+            border: 3px solid transparent;
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
+        }
+        .wallet-head .sum.match {
+            background: #c8eaba;
+            border-color: #5fa867;
+            color: #2f5e1d;
+        }
+        .wallet-coins {
+            background: rgba(255,255,255,0.25);
+            border-radius: 14px;
+            min-height: 80px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+        }
+        .wallet-coins.empty::before {
+            content: 'Tipp eine Münze oben an';
+            color: rgba(255,255,255,0.85);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* ---------- Coin element ---------- */
+        .coin {
+            position: relative;
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+        }
+        .coin:active { transform: translateY(1px) scale(0.96); }
+        .coin svg {
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+        }
+        .coin .stack-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #6e4f10;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 5px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border: 2px solid white;
+        }
+        .coin.added-pulse svg {
+            animation: coin-pulse 0.35s ease-out;
+        }
+        @keyframes coin-pulse {
+            0%   { transform: scale(0.5); opacity: 0; }
+            60%  { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ---------- Action row ---------- */
+        .actions {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            flex-shrink: 0;
+        }
+        .btn {
+            flex: 1;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 12px;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            transition: transform 0.1s, background 0.15s;
+        }
+        .btn:active { transform: translateY(1px); }
+        .btn-primary {
+            background: linear-gradient(145deg, #d4a017, #8a6300);
+            color: white;
+        }
+        .btn-secondary {
+            background: white;
+            color: #8a6300;
+            flex: 0 0 auto;
+            min-width: 110px;
+        }
+
+        /* ---------- Hint ---------- */
+        .hint {
+            background: #fff5d4;
+            border: 2px solid #e6c45a;
+            border-radius: 14px;
+            padding: 10px 14px;
+            color: #6e4f10;
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .hint.hidden { display: none; }
+        .hint .strong { color: #8a6300; font-weight: bold; }
+
+        /* ---------- Match-feedback ---------- */
+        .match-banner {
+            background: #c8eaba;
+            border: 2px solid #5fa867;
+            color: #2f5e1d;
+            border-radius: 14px;
+            padding: 12px 14px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .match-banner.hidden { display: none; }
+
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .prompt .target { font-size: 1.4rem; }
+            .btn { font-size: 0.95rem; padding: 12px 8px; }
+        }
+        @media (max-height: 600px) {
+            .game-area { gap: 8px; padding: 8px 12px 10px; }
+            .wallet { min-height: 110px; }
+            .wallet-coins { min-height: 64px; }
+            .prompt { padding: 8px 14px; font-size: 1rem; }
+            .prompt .target { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Münzen</h1>
+        <p class="sub">Lege den richtigen Betrag mit Euro-Münzen.</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="cent20">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Bis 20 Cent</span>
+                        <span class="ex">Einzelne Münzen: 1c, 2c, 5c, 10c, 20c</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="euro1">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Bis 1 Euro</span>
+                        <span class="ex">Mehrere Münzen: 5c bis 50c</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="euro5">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Bis 5 Euro</span>
+                        <span class="ex">Alle Münzen, gemischt</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt">
+            Lege diesen Betrag:
+            <span class="target" id="target-text">75 Cent</span>
+        </div>
+
+        <div class="coin-tray" id="coin-tray">
+            <div class="label">Verfügbare Münzen — antippen zum Hinzufügen</div>
+        </div>
+
+        <div class="wallet">
+            <div class="wallet-head">
+                <span>Dein Geldbeutel</span>
+                <span class="sum" id="wallet-sum">0 Cent</span>
+            </div>
+            <div class="wallet-coins empty" id="wallet-coins"></div>
+        </div>
+
+        <div class="hint hidden" id="hint"></div>
+        <div class="match-banner hidden" id="match-banner">Genau!</div>
+
+        <div class="actions">
+            <button class="btn btn-secondary" id="btn-clear">Leeren</button>
+            <button class="btn btn-primary" id="btn-check">Fertig</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  KONSTANTEN — alles in CENT als Ganzzahl gerechnet
+    //  (Floating-Point bei 0.10 + 0.20 = 0.30000004 vermeiden!)
+    // ====================================================
+
+    // Münz-Defintionen — Werte in Cent.
+    // Größen in px (Durchmesser im SVG-viewBox-Sinn).
+    const COINS = [
+        // 1c, 2c, 5c — kupfer-rot
+        { value: 1,   label: '1 Cent',  size: 38, family: 'copper' },
+        { value: 2,   label: '2 Cent',  size: 42, family: 'copper' },
+        { value: 5,   label: '5 Cent',  size: 46, family: 'copper' },
+        // 10c, 20c, 50c — gold
+        { value: 10,  label: '10 Cent', size: 48, family: 'gold'   },
+        { value: 20,  label: '20 Cent', size: 52, family: 'gold'   },
+        { value: 50,  label: '50 Cent', size: 56, family: 'gold'   },
+        // 1€, 2€ — silber mit gold-rand
+        { value: 100, label: '1 Euro',  size: 58, family: 'bicolor', innerFamily: 'silver', outerFamily: 'gold' },
+        { value: 200, label: '2 Euro',  size: 62, family: 'bicolor', innerFamily: 'gold',   outerFamily: 'silver' },
+    ];
+
+    // Welche Münzen sind in welcher Stufe verfügbar (Werte in Cent)?
+    // Welche Aufgaben gibt es pro Stufe (Werte in Cent)?
+    const STAGES = {
+        cent20: {
+            label: 'Bis 20 Cent',
+            coins: [1, 2, 5, 10, 20],
+            tasks: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 15, 17, 20]
+        },
+        euro1: {
+            label: 'Bis 1 Euro',
+            coins: [5, 10, 20, 50, 100],
+            tasks: [10, 15, 20, 25, 30, 40, 50, 60, 70, 75, 80, 95, 100]
+        },
+        euro5: {
+            label: 'Bis 5 Euro',
+            coins: [1, 2, 5, 10, 20, 50, 100, 200],
+            tasks: [110, 130, 150, 175, 200, 230, 245, 280, 320, 375, 420, 480, 500]
+        }
+    };
+
+    // Wieviele Aufgaben pro Runde, ohne Wiederholung
+    const TASKS_PER_ROUND = 7;
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        availableCoins: [],     // array of values in cent
+        targetCent: 0,          // aktueller Sollbetrag in Cent
+        wallet: new Map(),      // Map<value-in-cent, count>
+        taskQueue: [],          // verbleibende Aufgaben dieser Runde
+        locked: false,          // gesperrt zwischen "Genau!" und naechster Aufgabe
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'muenzen-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO — sehr dezent, kein Casino-Sound
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.12, type = 'sine', vol = 0.06) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        clink: () => tone(720, 0.08, 'triangle', 0.05),
+        match: () => {
+            tone(660, 0.12, 'sine', 0.06);
+            setTimeout(() => tone(880, 0.18, 'sine', 0.06), 100);
+        },
+    };
+
+    // ====================================================
+    //  BETRAG-FORMATIERUNG (alles in Cent intern!)
+    // ====================================================
+    function formatAmount(cent) {
+        // < 100 cent -> "X Cent"
+        // == 100 cent -> "1 Euro"
+        // > 100, glatt durch 100 -> "X Euro"
+        // sonst -> "X,YY Euro"
+        if (cent === 0) return '0 Cent';
+        if (cent < 100) return cent + ' Cent';
+        if (cent === 100) return '1 Euro';
+        if (cent % 100 === 0) return (cent / 100) + ' Euro';
+        const euros = Math.floor(cent / 100);
+        const rest = cent % 100;
+        return euros + ',' + (rest < 10 ? '0' + rest : rest) + ' Euro';
+    }
+
+    function shortAmount(cent) {
+        // Kompakt fuer Münz-Beschriftung: "1c" "50c" "1€" "2€"
+        if (cent < 100) return cent + 'c';
+        if (cent === 100) return '1€';
+        if (cent === 200) return '2€';
+        return cent + 'c';
+    }
+
+    // ====================================================
+    //  COIN-SVG
+    // ====================================================
+    function coinSVG(value, size) {
+        const def = COINS.find(c => c.value === value);
+        if (!def) return '';
+        const r = size / 2;
+        const cx = size / 2, cy = size / 2;
+
+        let outer, inner, ring, edge;
+        if (def.family === 'copper') {
+            outer = '#c4733a'; inner = '#dd955a'; edge = '#7a3a0a'; ring = null;
+        } else if (def.family === 'gold') {
+            outer = '#d4a017'; inner = '#e8be3c'; edge = '#7a5800'; ring = null;
+        } else if (def.family === 'silver') {
+            outer = '#a8a8b0'; inner = '#cfcfd6'; edge = '#5a5a60'; ring = null;
+        } else if (def.family === 'bicolor') {
+            // Aussenring + Innenkreis
+            const isOuterGold = def.outerFamily === 'gold';
+            outer = isOuterGold ? '#d4a017' : '#a8a8b0';
+            inner = isOuterGold ? '#e8be3c' : '#cfcfd6';
+            edge  = isOuterGold ? '#7a5800' : '#5a5a60';
+            const innerColor = def.innerFamily === 'gold' ? '#e8be3c' : '#cfcfd6';
+            const innerEdge  = def.innerFamily === 'gold' ? '#a07a00' : '#7a7a80';
+            ring = { innerColor, innerEdge };
+        }
+
+        // Text-Farbe und -Größe
+        const txt = shortAmount(value);
+        let fs;
+        if (txt.length <= 2) fs = Math.round(size * 0.42);
+        else if (txt.length === 3) fs = Math.round(size * 0.34);
+        else fs = Math.round(size * 0.28);
+        const textColor = (def.family === 'silver' || (def.family === 'bicolor' && def.innerFamily === 'silver'))
+            ? '#3a3a40' : '#3a2a08';
+
+        let body;
+        if (ring) {
+            // Bicolor: outer ring + inner disc
+            const innerR = r * 0.62;
+            body =
+                `<circle cx="${cx}" cy="${cy}" r="${r - 1}" fill="${outer}" stroke="${edge}" stroke-width="1.2"/>` +
+                `<circle cx="${cx}" cy="${cy}" r="${r * 0.86}" fill="${inner}" opacity="0.6"/>` +
+                `<circle cx="${cx}" cy="${cy}" r="${innerR}" fill="${ring.innerColor}" stroke="${ring.innerEdge}" stroke-width="1"/>`;
+        } else {
+            body =
+                `<circle cx="${cx}" cy="${cy}" r="${r - 1}" fill="${outer}" stroke="${edge}" stroke-width="1.2"/>` +
+                `<circle cx="${cx}" cy="${cy}" r="${r * 0.82}" fill="${inner}" opacity="0.55"/>`;
+        }
+
+        // Glanz oben links
+        const highlight = `<ellipse cx="${cx - r*0.32}" cy="${cy - r*0.42}" rx="${r*0.32}" ry="${r*0.18}" fill="white" opacity="0.32"/>`;
+
+        const text = `<text x="${cx}" y="${cy + fs*0.07}" text-anchor="middle" dominant-baseline="middle" font-family="Verdana, Tahoma, sans-serif" font-size="${fs}" font-weight="bold" fill="${textColor}">${txt}</text>`;
+
+        return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-label="${def.label}">${body}${highlight}${text}</svg>`;
+    }
+
+    // ====================================================
+    //  RENDERING
+    // ====================================================
+    function renderCoinTray() {
+        const tray = $('coin-tray');
+        // Label-Element behalten (erstes Kind)
+        // alles ausser dem Label entfernen:
+        Array.from(tray.querySelectorAll('.coin')).forEach(n => n.remove());
+
+        state.availableCoins.forEach(value => {
+            const def = COINS.find(c => c.value === value);
+            const btn = document.createElement('button');
+            btn.className = 'coin coin-source';
+            btn.type = 'button';
+            btn.dataset.value = String(value);
+            btn.setAttribute('aria-label', def.label + ' hinzufügen');
+            btn.innerHTML = coinSVG(value, def.size);
+            btn.addEventListener('click', () => addCoin(value));
+            tray.appendChild(btn);
+        });
+    }
+
+    function renderWallet() {
+        const wrap = $('wallet-coins');
+        wrap.innerHTML = '';
+
+        // Sortiert nach Wert absteigend, damit grosse Munzen vorne stehen
+        const entries = Array.from(state.wallet.entries())
+            .filter(([, count]) => count > 0)
+            .sort((a, b) => b[0] - a[0]);
+
+        if (entries.length === 0) {
+            wrap.classList.add('empty');
+        } else {
+            wrap.classList.remove('empty');
+        }
+
+        entries.forEach(([value, count]) => {
+            const def = COINS.find(c => c.value === value);
+            const size = Math.round(def.size * 0.85); // im Beutel etwas kleiner
+            const btn = document.createElement('button');
+            btn.className = 'coin coin-wallet added-pulse';
+            btn.type = 'button';
+            btn.dataset.value = String(value);
+            btn.setAttribute('aria-label', def.label + ' entfernen');
+            btn.innerHTML = coinSVG(value, size) +
+                (count > 1 ? `<span class="stack-count">×${count}</span>` : '');
+            btn.addEventListener('click', () => removeCoin(value));
+            wrap.appendChild(btn);
+            // pulse nur einmalig, dann entfernen, damit nachfolgende Klicks nicht wieder pulsen
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => btn.classList.remove('added-pulse'));
+            });
+        });
+
+        // Summe und Match-Status
+        const sum = currentSumCent();
+        const sumEl = $('wallet-sum');
+        sumEl.textContent = formatAmount(sum) + ' / ' + formatAmount(state.targetCent);
+        sumEl.classList.toggle('match', sum === state.targetCent && sum > 0);
+    }
+
+    function renderTarget() {
+        $('target-text').textContent = formatAmount(state.targetCent);
+    }
+
+    // ====================================================
+    //  WALLET-LOGIK (Cent als Ganzzahl!)
+    // ====================================================
+    function currentSumCent() {
+        let sum = 0;
+        for (const [value, count] of state.wallet) {
+            sum += value * count;
+        }
+        return sum;
+    }
+
+    function addCoin(value) {
+        if (state.locked) return;
+        // Hint und Banner ausblenden, weil Stand sich aendert
+        hideHint();
+        hideMatchBanner();
+
+        const cur = state.wallet.get(value) || 0;
+        state.wallet.set(value, cur + 1);
+        renderWallet();
+        sfx.clink();
+    }
+
+    function removeCoin(value) {
+        if (state.locked) return;
+        hideHint();
+        hideMatchBanner();
+
+        const cur = state.wallet.get(value) || 0;
+        if (cur <= 1) state.wallet.delete(value);
+        else state.wallet.set(value, cur - 1);
+        renderWallet();
+        sfx.clink();
+    }
+
+    function clearWallet() {
+        if (state.locked) return;
+        hideHint();
+        hideMatchBanner();
+        state.wallet.clear();
+        renderWallet();
+    }
+
+    // ====================================================
+    //  HINT / BANNER
+    // ====================================================
+    function showHint(html) {
+        const h = $('hint');
+        h.innerHTML = html;
+        h.classList.remove('hidden');
+    }
+    function hideHint() {
+        $('hint').classList.add('hidden');
+    }
+    function showMatchBanner(text) {
+        const b = $('match-banner');
+        b.textContent = text;
+        b.classList.remove('hidden');
+    }
+    function hideMatchBanner() {
+        $('match-banner').classList.add('hidden');
+    }
+
+    // ====================================================
+    //  CHECK
+    // ====================================================
+    function checkAnswer() {
+        if (state.locked) return;
+        const sum = currentSumCent();
+        const target = state.targetCent;
+
+        if (sum === 0) {
+            showHint('Magst du erst ein paar Münzen in den Beutel legen?');
+            return;
+        }
+        if (sum === target) {
+            state.locked = true;
+            hideHint();
+            showMatchBanner('Genau! ' + formatAmount(target) + '.');
+            sfx.match();
+            setTimeout(() => {
+                if (state.taskQueue.length === 0) {
+                    // Runde fertig — neue Runde starten (ohne Bewertungsdruck)
+                    startRound();
+                } else {
+                    nextTask();
+                }
+            }, 1300);
+            return;
+        }
+
+        // Sanfte Korrektur — kein "falsch", kein Wettbewerbsvokabular
+        const diff = sum - target;
+        let advice;
+        if (diff > 0) {
+            advice = `Im Beutel sind <span class="strong">${formatAmount(sum)}</span>, gesucht waren <span class="strong">${formatAmount(target)}</span>. Das ist <span class="strong">${formatAmount(diff)}</span> zu viel — magst du eine Münze rausnehmen?`;
+        } else {
+            advice = `Im Beutel sind <span class="strong">${formatAmount(sum)}</span>, gesucht waren <span class="strong">${formatAmount(target)}</span>. Es fehlen noch <span class="strong">${formatAmount(-diff)}</span> — probier's nochmal.`;
+        }
+        showHint(advice);
+    }
+
+    // ====================================================
+    //  RUNDEN / AUFGABEN
+    // ====================================================
+    function startRound() {
+        const all = STAGES[state.stage].tasks.slice();
+        const queue = shuffle(all).slice(0, TASKS_PER_ROUND);
+        state.taskQueue = queue;
+        nextTask();
+    }
+
+    function nextTask() {
+        state.locked = false;
+        state.wallet.clear();
+        hideHint();
+        hideMatchBanner();
+        state.targetCent = state.taskQueue.shift();
+        renderTarget();
+        renderWallet();
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        const cfg = STAGES[state.stage];
+        state.availableCoins = cfg.coins.slice();
+        $('hud-stage').textContent = cfg.label;
+        switchScreen('game');
+        renderCoinTray();
+        startRound();
+    }
+
+    function backToStart() {
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-check').addEventListener('click', checkAnswer);
+    $('btn-clear').addEventListener('click', clearWallet);
+
+    (function init() {
+        const prefs = loadPrefs();
+        const validStages = Object.keys(STAGES);
+        const initial = validStages.includes(prefs.stage) ? prefs.stage : 'cent20';
+        selectStage(initial);
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>
