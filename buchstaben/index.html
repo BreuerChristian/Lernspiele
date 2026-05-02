@@ -47,6 +47,22 @@
         }
 
         /* Startseite */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #764ba2;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 18px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #f0e6f7;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #e0d0ed; }
+
         #start-screen h2 {
             color: #667eea;
             margin-bottom: 25px;
@@ -355,6 +371,7 @@
 
         <!-- Startseite -->
         <div id="start-screen">
+            <a class="back-link" href="../">← Übersicht</a>
             <h2>Wähle eine Gruppe!</h2>
             <div class="group-grid" id="group-buttons">
                 <!-- Wird durch JS generiert -->

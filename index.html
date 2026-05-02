@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Lernspiele für Kinder</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
     <meta name="theme-color" content="#764ba2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Lernspiele">
+    <meta name="mobile-web-app-capable" content="yes">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -39,7 +44,95 @@
         .subtitle {
             color: #667eea;
             font-size: 1.1rem;
-            margin-bottom: 35px;
+            margin-bottom: 24px;
+        }
+
+        /* ---- Install-Banner (oberhalb der Spiele) ---- */
+        .install-banner {
+            display: none;
+            background: linear-gradient(145deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            border-radius: 20px;
+            padding: 18px 20px;
+            margin-bottom: 22px;
+            text-align: left;
+            box-shadow: 0 6px 14px rgba(245, 158, 11, 0.18);
+        }
+        .install-banner.show { display: block; }
+
+        .install-banner .ib-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .install-banner .ib-icon {
+            font-size: 2.2rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .install-banner .ib-text {
+            flex: 1;
+            min-width: 180px;
+        }
+        .install-banner .ib-title {
+            display: block;
+            color: #92400e;
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+        }
+        .install-banner .ib-desc {
+            display: block;
+            color: #92400e;
+            font-size: 0.9rem;
+            opacity: 0.85;
+            line-height: 1.4;
+        }
+        .install-banner .ib-btn {
+            background: linear-gradient(145deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 18px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+            white-space: nowrap;
+        }
+        .install-banner .ib-btn:hover { transform: translateY(-1px); }
+        .install-banner .ib-close {
+            background: transparent;
+            border: none;
+            color: #92400e;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            opacity: 0.6;
+            line-height: 1;
+        }
+        .install-banner .ib-close:hover { opacity: 1; }
+
+        /* iOS-Anleitung */
+        .install-banner .ib-ios {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(146, 64, 14, 0.25);
+            color: #92400e;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+        .install-banner.ios .ib-ios { display: block; }
+        .install-banner.ios .ib-btn { display: none; }
+        .install-banner .ib-ios b { font-weight: bold; }
+        .install-banner .ib-ios .step {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin: 0 2px;
         }
 
         .games {
@@ -92,6 +185,7 @@
         @media (max-width: 480px) {
             .container { padding: 25px 18px; }
             h1 { font-size: 2rem; }
+            .install-banner .ib-btn { width: 100%; margin-top: 6px; }
         }
     </style>
 </head>
@@ -99,6 +193,23 @@
     <div class="container">
         <h1>Lernspiele</h1>
         <p class="subtitle">Werbefrei. Open Source. Für Kinder.</p>
+
+        <div class="install-banner" id="install-banner" role="region" aria-label="Installation">
+            <div class="ib-row">
+                <div class="ib-icon">📱</div>
+                <div class="ib-text">
+                    <span class="ib-title">Auf dem Handy installieren</span>
+                    <span class="ib-desc" id="ib-desc">Direkt auf den Startbildschirm – ein Tipp und alle Spiele sind da.</span>
+                </div>
+                <button class="ib-btn" id="btn-install">Installieren</button>
+                <button class="ib-close" id="btn-install-close" aria-label="Schließen" title="Schließen">×</button>
+            </div>
+            <div class="ib-ios" id="ib-ios">
+                Auf dem iPhone:
+                <span class="step"><b>1.</b> unten auf <b>Teilen</b> 􀈂</span>
+                <span class="step"><b>2.</b> dann auf <b>Zum Home-Bildschirm</b></span>
+            </div>
+        </div>
 
         <nav class="games">
             <a class="game-card" href="buchstaben/">
@@ -116,5 +227,82 @@
             <a href="https://github.com/BreuerChristian/Lernspiele" rel="noopener">Quellcode auf GitHub</a>
         </footer>
     </div>
+
+    <script>
+    (() => {
+        'use strict';
+
+        const $ = (id) => document.getElementById(id);
+        const banner = $('install-banner');
+        const desc = $('ib-desc');
+        const btn = $('btn-install');
+        const btnClose = $('btn-install-close');
+        const DISMISS_KEY = 'lernspiele-install-dismissed';
+
+        // Bereits installiert? (PWA läuft im standalone-Modus)
+        function isStandalone() {
+            return window.matchMedia('(display-mode: standalone)').matches
+                || window.navigator.standalone === true;
+        }
+
+        function isIOS() {
+            const ua = window.navigator.userAgent;
+            return /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+        }
+
+        function dismissed() {
+            try { return localStorage.getItem(DISMISS_KEY) === '1'; }
+            catch (e) { return false; }
+        }
+        function rememberDismiss() {
+            try { localStorage.setItem(DISMISS_KEY, '1'); }
+            catch (e) { /* ignore */ }
+        }
+
+        let deferredPrompt = null;
+
+        // Android/Chrome/Edge: beforeinstallprompt abfangen
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isStandalone() && !dismissed()) {
+                banner.classList.add('show');
+                banner.classList.remove('ios');
+            }
+        });
+
+        btn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const choice = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            if (choice && choice.outcome === 'accepted') {
+                banner.classList.remove('show');
+            }
+        });
+
+        btnClose.addEventListener('click', () => {
+            banner.classList.remove('show');
+            rememberDismiss();
+        });
+
+        window.addEventListener('appinstalled', () => {
+            banner.classList.remove('show');
+        });
+
+        // iOS: kein beforeinstallprompt — eigene Anleitung anzeigen
+        if (isIOS() && !isStandalone() && !dismissed()) {
+            banner.classList.add('show', 'ios');
+            desc.textContent = 'Auf dem iPhone in zwei Schritten:';
+        }
+
+        // Service Worker registrieren
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').catch(() => {});
+            });
+        }
+    })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,26 @@
+{
+  "name": "Lernspiele",
+  "short_name": "Lernspiele",
+  "description": "Werbefreie Lernspiele fuer Kinder",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#764ba2",
+  "theme_color": "#764ba2",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
