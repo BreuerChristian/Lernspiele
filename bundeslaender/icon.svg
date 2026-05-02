@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#2e7d32"/>
+  <!-- Stilisierter Deutschland-Umriss, weiss auf gruen -->
+  <path d="
+    M 180 80
+    L 290 78
+    L 320 110
+    L 360 105
+    L 400 130
+    L 410 180
+    L 395 220
+    L 420 260
+    L 420 320
+    L 395 360
+    L 380 400
+    L 360 430
+    L 320 440
+    L 270 450
+    L 230 440
+    L 200 410
+    L 165 380
+    L 140 350
+    L 130 310
+    L 110 280
+    L 100 240
+    L 110 200
+    L 130 160
+    L 150 120
+    Z
+  " fill="white" stroke="#1b5e20" stroke-width="10" stroke-linejoin="round"/>
+  <!-- Berlin-Stern als Akzent -->
+  <circle cx="335" cy="200" r="14" fill="#fbc02d"/>
+</svg>

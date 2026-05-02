@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#2e7d32"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205, also 51..461) -->
+  <path d="
+    M 200 110
+    L 290 110
+    L 315 135
+    L 350 130
+    L 380 155
+    L 388 195
+    L 376 230
+    L 396 265
+    L 396 315
+    L 376 350
+    L 360 385
+    L 340 410
+    L 305 418
+    L 265 426
+    L 230 418
+    L 205 392
+    L 180 370
+    L 160 345
+    L 145 315
+    L 132 290
+    L 122 255
+    L 130 220
+    L 145 188
+    L 165 155
+    Z
+  " fill="white" stroke="#1b5e20" stroke-width="9" stroke-linejoin="round"/>
+  <circle cx="320" cy="220" r="12" fill="#fbc02d"/>
+</svg>

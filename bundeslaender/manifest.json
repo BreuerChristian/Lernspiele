@@ -1,0 +1,26 @@
+{
+  "name": "Bundesländer-Spiel",
+  "short_name": "Bundeslaender",
+  "description": "Werbefreies Lernspiel zu den 16 deutschen Bundesländern",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e8f5e3",
+  "theme_color": "#2e7d32",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
