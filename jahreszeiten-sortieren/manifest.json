@@ -1,0 +1,26 @@
+{
+  "name": "Jahreszeiten-Sortieren",
+  "short_name": "Jahreszeiten",
+  "description": "Werbefreies Lernspiel: Bilder den vier Jahreszeiten zuordnen",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff0f4",
+  "theme_color": "#f06292",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

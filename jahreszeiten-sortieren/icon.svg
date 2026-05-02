@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Hintergrund mit abgerundeten Ecken -->
+  <rect width="512" height="512" rx="96" fill="#fff0f4"/>
+  <!-- 4 Jahreszeiten-Felder -->
+  <g>
+    <!-- Fruehling: oben links, rosa -->
+    <rect x="40" y="40" width="216" height="216" rx="28" fill="#f8bbd0"/>
+    <!-- Bluete -->
+    <g transform="translate(148,148)">
+      <circle cx="0" cy="-34" r="22" fill="#fff"/>
+      <circle cx="32" cy="-10" r="22" fill="#fff"/>
+      <circle cx="20" cy="28" r="22" fill="#fff"/>
+      <circle cx="-20" cy="28" r="22" fill="#fff"/>
+      <circle cx="-32" cy="-10" r="22" fill="#fff"/>
+      <circle cx="0" cy="0" r="14" fill="#f9a825"/>
+    </g>
+    <!-- Sommer: oben rechts, gelb-orange -->
+    <rect x="256" y="40" width="216" height="216" rx="28" fill="#ffe082"/>
+    <!-- Sonne -->
+    <g transform="translate(364,148)">
+      <circle cx="0" cy="0" r="42" fill="#f9a825"/>
+      <g stroke="#f57c00" stroke-width="10" stroke-linecap="round">
+        <line x1="0" y1="-66" x2="0" y2="-54"/>
+        <line x1="0" y1="66" x2="0" y2="54"/>
+        <line x1="-66" y1="0" x2="-54" y2="0"/>
+        <line x1="66" y1="0" x2="54" y2="0"/>
+        <line x1="-46" y1="-46" x2="-38" y2="-38"/>
+        <line x1="46" y1="-46" x2="38" y2="-38"/>
+        <line x1="-46" y1="46" x2="-38" y2="38"/>
+        <line x1="46" y1="46" x2="38" y2="38"/>
+      </g>
+    </g>
+    <!-- Herbst: unten links, orange-braun -->
+    <rect x="40" y="256" width="216" height="216" rx="28" fill="#ffab91"/>
+    <!-- Buntes Blatt -->
+    <g transform="translate(148,364)">
+      <path d="M 0 -50 C 38 -50 50 -20 50 8 C 50 36 24 50 0 50 C -24 50 -50 36 -50 8 C -50 -20 -38 -50 0 -50 Z" fill="#e65100"/>
+      <line x1="0" y1="0" x2="0" y2="58" stroke="#5d4037" stroke-width="6" stroke-linecap="round"/>
+      <line x1="0" y1="-10" x2="-26" y2="-30" stroke="#bf360c" stroke-width="4"/>
+      <line x1="0" y1="-10" x2="26" y2="-30" stroke="#bf360c" stroke-width="4"/>
+      <line x1="0" y1="20" x2="-30" y2="14" stroke="#bf360c" stroke-width="4"/>
+      <line x1="0" y1="20" x2="30" y2="14" stroke="#bf360c" stroke-width="4"/>
+    </g>
+    <!-- Winter: unten rechts, hellblau -->
+    <rect x="256" y="256" width="216" height="216" rx="28" fill="#b3e5fc"/>
+    <!-- Schneeflocke -->
+    <g transform="translate(364,364)" stroke="#0277bd" stroke-width="8" stroke-linecap="round" fill="none">
+      <line x1="0" y1="-60" x2="0" y2="60"/>
+      <line x1="-52" y1="-30" x2="52" y2="30"/>
+      <line x1="-52" y1="30" x2="52" y2="-30"/>
+      <g stroke-width="6">
+        <line x1="0" y1="-60" x2="-12" y2="-48"/>
+        <line x1="0" y1="-60" x2="12" y2="-48"/>
+        <line x1="0" y1="60" x2="-12" y2="48"/>
+        <line x1="0" y1="60" x2="12" y2="48"/>
+        <line x1="-52" y1="-30" x2="-44" y2="-44"/>
+        <line x1="-52" y1="-30" x2="-58" y2="-16"/>
+        <line x1="52" y1="30" x2="44" y2="44"/>
+        <line x1="52" y1="30" x2="58" y2="16"/>
+        <line x1="-52" y1="30" x2="-44" y2="44"/>
+        <line x1="-52" y1="30" x2="-58" y2="16"/>
+        <line x1="52" y1="-30" x2="44" y2="-44"/>
+        <line x1="52" y1="-30" x2="58" y2="-16"/>
+      </g>
+    </g>
+  </g>
+</svg>

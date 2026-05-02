@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Jahreszeiten-Sortieren</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#f06292">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #fff0f4;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #fff0f4 0%, #f8bbd0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #c2185b;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #ad1457;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #c2185b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #fce4ec;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #f8bbd0; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #c2185b;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #fff0f4;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #6a1b3d;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #fce4ec; }
+        .stage-choice.active {
+            background: #fce4ec;
+            border-color: #f06292;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #c2185b;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #8a3a5e;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #f06292, #c2185b);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(194, 24, 91, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #fff0f4 0%, #f8bbd0 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #c2185b;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-progress {
+            color: #8a3a5e;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #c2185b;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 12px 14px;
+            gap: 10px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #6a1b3d;
+            font-size: 1.05rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.4em;
+        }
+
+        /* ---------- Bilder-Pool ---------- */
+        .pool-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+        }
+        .pool {
+            display: grid;
+            gap: 10px;
+            width: 100%;
+            max-width: 520px;
+            justify-content: center;
+        }
+        .pool.cnt-4  { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .pool.cnt-8  { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .pool.cnt-12 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+        .pic {
+            position: relative;
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.12s, border-color 0.18s, box-shadow 0.18s, opacity 0.25s;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pic svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .pic:hover { background: #fff7fa; }
+        .pic:active { transform: translateY(1px); }
+        .pic.selected {
+            border-color: #f06292;
+            background: #fff7fa;
+            box-shadow: 0 6px 16px rgba(240, 98, 146, 0.35);
+            transform: translateY(-2px);
+        }
+        .pic.placed {
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .pic.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        /* ---------- Jahreszeiten-Felder ---------- */
+        .targets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .target {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 10px 6px 8px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.12s, border-color 0.18s, background 0.18s;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .target.no-pick { cursor: default; }
+        .target .icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+        }
+        .target .name {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #444;
+            margin-top: 2px;
+        }
+        .target .placed-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            justify-content: center;
+            margin-top: 4px;
+            min-height: 20px;
+        }
+        .target .placed-row .mini {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.85);
+            padding: 1px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pop-in 0.35s ease-out;
+        }
+        .target .placed-row .mini svg {
+            width: 100%;
+            height: 100%;
+        }
+        @keyframes pop-in {
+            0%   { transform: scale(0.2); opacity: 0; }
+            70%  { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Jahreszeit-Farben */
+        .target.fruehling { background: #fce4ec; }
+        .target.fruehling .name { color: #ad1457; }
+        .target.sommer    { background: #fff8e1; }
+        .target.sommer .name { color: #ef6c00; }
+        .target.herbst    { background: #ffe0d2; }
+        .target.herbst .name { color: #bf360c; }
+        .target.winter    { background: #e1f5fe; }
+        .target.winter .name { color: #01579b; }
+
+        .target.armed.fruehling { border-color: #ec407a; background: #f8bbd0; transform: translateY(-2px); }
+        .target.armed.sommer    { border-color: #ffb300; background: #ffe082; transform: translateY(-2px); }
+        .target.armed.herbst    { border-color: #ff7043; background: #ffab91; transform: translateY(-2px); }
+        .target.armed.winter    { border-color: #29b6f6; background: #b3e5fc; transform: translateY(-2px); }
+
+        .target.shake {
+            animation: shake-target 0.45s ease-in-out;
+        }
+        @keyframes shake-target {
+            0%, 100% { transform: translateX(0); }
+            25%      { transform: translateX(-5px); }
+            75%      { transform: translateX(5px); }
+        }
+
+        /* Fliegendes Bild (Animation Pool -> Ziel) */
+        .flyer {
+            position: fixed;
+            background: white;
+            border: 3px solid #f06292;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(240, 98, 146, 0.45);
+            padding: 6px;
+            z-index: 50;
+            pointer-events: none;
+            transition: top 0.55s cubic-bezier(.5, 0, .2, 1),
+                        left 0.55s cubic-bezier(.5, 0, .2, 1),
+                        width 0.55s cubic-bezier(.5, 0, .2, 1),
+                        height 0.55s cubic-bezier(.5, 0, .2, 1),
+                        opacity 0.3s ease 0.35s,
+                        transform 0.55s cubic-bezier(.5, 0, .2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flyer svg { width: 100%; height: 100%; display: block; }
+
+        /* ---------- End-Screen ---------- */
+        #screen-end {
+            background: linear-gradient(135deg, #fff0f4 0%, #f8bbd0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-end .card {
+            background: white;
+            border-radius: 28px;
+            padding: 36px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-end h2 {
+            color: #c2185b;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        #screen-end p {
+            color: #8a3a5e;
+            margin-bottom: 24px;
+            font-size: 1.05rem;
+        }
+        #screen-end .end-icons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        #screen-end .end-icons svg {
+            width: 52px;
+            height: 52px;
+            background: #fff0f4;
+            border-radius: 12px;
+            padding: 4px;
+        }
+        .end-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-primary {
+            padding: 16px;
+            background: linear-gradient(145deg, #f06292, #c2185b);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(194, 24, 91, 0.32);
+            transition: transform 0.12s;
+        }
+        .btn-primary:active { transform: translateY(2px); }
+        .btn-secondary {
+            padding: 14px;
+            background: #fce4ec;
+            color: #c2185b;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-secondary:hover { background: #f8bbd0; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .target .name { font-size: 0.78rem; }
+            .target .icon { width: 32px; height: 32px; }
+            .target { min-height: 96px; padding: 8px 4px 6px; }
+        }
+        @media (max-height: 640px) {
+            .prompt { font-size: 0.95rem; }
+            .pool { gap: 8px; }
+            .target { min-height: 96px; }
+            .game-area { gap: 8px; padding: 8px 10px 10px; }
+        }
+        @media (max-height: 540px) {
+            .target .icon { width: 28px; height: 28px; }
+            .target .name { font-size: 0.78rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Jahreszeiten</h1>
+        <p class="sub">Was passt zu welcher Jahreszeit?</p>
+
+        <div class="group">
+            <h2>Wie viele Bilder?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="4">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">4 Bilder</span>
+                        <span class="ex">Eins pro Jahreszeit – ganz klar</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="8">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">8 Bilder</span>
+                        <span class="ex">Zwei pro Jahreszeit, gemischt</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="12">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">12 Bilder</span>
+                        <span class="ex">Drei pro Jahreszeit, auch knifflige</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <div class="hud-progress" id="hud-progress"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt" id="prompt">Tippe ein Bild an</div>
+        <div class="pool-wrap">
+            <div class="pool" id="pool"></div>
+        </div>
+        <div class="targets" id="targets"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     END-SCREEN
+============================================================ -->
+<div id="screen-end" class="screen hidden">
+    <div class="card">
+        <h2>Alle vier Jahreszeiten zusammen!</h2>
+        <p>Magst du nochmal sortieren?</p>
+        <div class="end-icons" id="end-icons"></div>
+        <div class="end-actions">
+            <button class="btn-primary" id="btn-again">Nochmal</button>
+            <button class="btn-secondary" id="btn-end-back">Zurück zur Auswahl</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  ICON-LIBRARY (Inline-SVG-Strings)
+    // ====================================================
+    // Alle Icons benutzen viewBox 0 0 100 100, einfach + kindgerecht.
+    const ICONS = {
+        // ----- Fruehling -----
+        bluete: `<svg viewBox="0 0 100 100">
+            <g transform="translate(50,52)">
+                <circle cx="0" cy="-22" r="14" fill="#f8bbd0"/>
+                <circle cx="21" cy="-7" r="14" fill="#f8bbd0"/>
+                <circle cx="13" cy="18" r="14" fill="#f8bbd0"/>
+                <circle cx="-13" cy="18" r="14" fill="#f8bbd0"/>
+                <circle cx="-21" cy="-7" r="14" fill="#f8bbd0"/>
+                <circle cx="0" cy="0" r="9" fill="#fbc02d"/>
+            </g>
+            <line x1="50" y1="78" x2="50" y2="92" stroke="#558b2f" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 50 86 Q 60 80 64 88" fill="none" stroke="#558b2f" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+        tulpe: `<svg viewBox="0 0 100 100">
+            <path d="M 36 50 Q 36 28 50 22 Q 64 28 64 50 Q 60 56 56 52 Q 50 60 44 52 Q 40 56 36 50 Z" fill="#e91e63"/>
+            <line x1="50" y1="50" x2="50" y2="90" stroke="#388e3c" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 50 70 Q 30 60 26 80" fill="none" stroke="#388e3c" stroke-width="5" stroke-linecap="round"/>
+        </svg>`,
+        schmetterling: `<svg viewBox="0 0 100 100">
+            <ellipse cx="50" cy="55" rx="3" ry="20" fill="#5d4037"/>
+            <circle cx="50" cy="36" r="4" fill="#5d4037"/>
+            <line x1="49" y1="34" x2="44" y2="26" stroke="#5d4037" stroke-width="1.5"/>
+            <line x1="51" y1="34" x2="56" y2="26" stroke="#5d4037" stroke-width="1.5"/>
+            <path d="M 50 46 Q 22 30 18 56 Q 26 70 50 60 Z" fill="#ba68c8"/>
+            <path d="M 50 46 Q 78 30 82 56 Q 74 70 50 60 Z" fill="#ba68c8"/>
+            <path d="M 50 60 Q 28 64 24 78 Q 36 82 50 70 Z" fill="#ce93d8"/>
+            <path d="M 50 60 Q 72 64 76 78 Q 64 82 50 70 Z" fill="#ce93d8"/>
+            <circle cx="32" cy="52" r="3" fill="#fff"/>
+            <circle cx="68" cy="52" r="3" fill="#fff"/>
+        </svg>`,
+        ostereier: `<svg viewBox="0 0 100 100">
+            <ellipse cx="36" cy="58" rx="16" ry="22" fill="#81d4fa"/>
+            <path d="M 22 54 Q 28 50 34 54 Q 40 58 46 54" fill="none" stroke="#fff" stroke-width="2.5"/>
+            <path d="M 22 64 Q 28 60 34 64 Q 40 68 46 64" fill="none" stroke="#f06292" stroke-width="2.5"/>
+            <ellipse cx="64" cy="50" rx="16" ry="22" fill="#fff59d"/>
+            <circle cx="60" cy="46" r="3" fill="#f06292"/>
+            <circle cx="68" cy="54" r="3" fill="#9ccc65"/>
+            <circle cx="64" cy="38" r="3" fill="#81d4fa"/>
+            <ellipse cx="80" cy="64" rx="3" ry="2" fill="#ce93d8"/>
+            <path d="M 18 84 Q 50 76 84 84" fill="none" stroke="#9ccc65" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+
+        // ----- Sommer -----
+        sonne: `<svg viewBox="0 0 100 100">
+            <g stroke="#f57c00" stroke-width="4" stroke-linecap="round">
+                <line x1="50" y1="10" x2="50" y2="22"/>
+                <line x1="50" y1="78" x2="50" y2="90"/>
+                <line x1="10" y1="50" x2="22" y2="50"/>
+                <line x1="78" y1="50" x2="90" y2="50"/>
+                <line x1="22" y1="22" x2="30" y2="30"/>
+                <line x1="70" y1="30" x2="78" y2="22"/>
+                <line x1="22" y1="78" x2="30" y2="70"/>
+                <line x1="70" y1="70" x2="78" y2="78"/>
+            </g>
+            <circle cx="50" cy="50" r="22" fill="#fdd835" stroke="#f57c00" stroke-width="3"/>
+            <path d="M 42 52 Q 50 58 58 52" fill="none" stroke="#f57c00" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="44" cy="46" r="2" fill="#5d4037"/>
+            <circle cx="56" cy="46" r="2" fill="#5d4037"/>
+        </svg>`,
+        sonnenblume: `<svg viewBox="0 0 100 100">
+            <g transform="translate(50,38)" fill="#fdd835" stroke="#f9a825" stroke-width="1.5">
+                <ellipse cx="0" cy="-22" rx="7" ry="14"/>
+                <ellipse cx="22" cy="0" rx="14" ry="7"/>
+                <ellipse cx="0" cy="22" rx="7" ry="14"/>
+                <ellipse cx="-22" cy="0" rx="14" ry="7"/>
+                <ellipse cx="16" cy="-16" rx="7" ry="13" transform="rotate(45)"/>
+                <ellipse cx="-16" cy="-16" rx="13" ry="7" transform="rotate(45)"/>
+                <ellipse cx="16" cy="16" rx="13" ry="7" transform="rotate(45)"/>
+                <ellipse cx="-16" cy="16" rx="7" ry="13" transform="rotate(45)"/>
+            </g>
+            <circle cx="50" cy="38" r="11" fill="#5d4037"/>
+            <line x1="50" y1="49" x2="50" y2="92" stroke="#388e3c" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 50 70 Q 32 62 28 78" fill="none" stroke="#388e3c" stroke-width="5" stroke-linecap="round"/>
+            <path d="M 50 78 Q 70 70 74 86" fill="none" stroke="#388e3c" stroke-width="5" stroke-linecap="round"/>
+        </svg>`,
+        eis: `<svg viewBox="0 0 100 100">
+            <path d="M 32 36 Q 32 18 50 18 Q 68 18 68 36 Z" fill="#fff59d" stroke="#a1887f" stroke-width="2"/>
+            <circle cx="50" cy="32" r="14" fill="#f48fb1"/>
+            <circle cx="40" cy="28" r="6" fill="#fff" opacity="0.6"/>
+            <path d="M 36 36 L 50 84 L 64 36 Z" fill="#d7a86e" stroke="#8d6e63" stroke-width="2"/>
+            <line x1="42" y1="46" x2="56" y2="48" stroke="#8d6e63" stroke-width="1.5"/>
+            <line x1="44" y1="58" x2="55" y2="60" stroke="#8d6e63" stroke-width="1.5"/>
+        </svg>`,
+        wassermelone: `<svg viewBox="0 0 100 100">
+            <path d="M 14 58 A 36 36 0 0 0 86 58 L 50 84 Z" fill="#ef5350"/>
+            <path d="M 14 58 A 36 36 0 0 0 86 58 L 80 58 A 30 30 0 0 1 20 58 Z" fill="#fff"/>
+            <path d="M 20 58 A 30 30 0 0 1 80 58" fill="none" stroke="#43a047" stroke-width="4"/>
+            <circle cx="34" cy="68" r="2.5" fill="#3e2723"/>
+            <circle cx="50" cy="72" r="2.5" fill="#3e2723"/>
+            <circle cx="66" cy="68" r="2.5" fill="#3e2723"/>
+            <circle cx="42" cy="78" r="2.5" fill="#3e2723"/>
+            <circle cx="58" cy="78" r="2.5" fill="#3e2723"/>
+        </svg>`,
+        drache: `<svg viewBox="0 0 100 100">
+            <path d="M 50 14 L 78 50 L 50 86 L 22 50 Z" fill="#42a5f5" stroke="#1565c0" stroke-width="2"/>
+            <line x1="50" y1="14" x2="50" y2="86" stroke="#1565c0" stroke-width="2"/>
+            <line x1="22" y1="50" x2="78" y2="50" stroke="#1565c0" stroke-width="2"/>
+            <path d="M 50 86 Q 50 92 56 90 Q 60 96 64 90 Q 68 96 72 90" fill="none" stroke="#c2185b" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M 50 86 Q 50 94 44 92 Q 40 98 36 92 Q 32 98 28 92" fill="none" stroke="#c2185b" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`,
+
+        // ----- Herbst -----
+        blatt: `<svg viewBox="0 0 100 100">
+            <path d="M 50 16 C 76 22 84 50 76 66 C 70 80 56 86 50 84 C 44 86 30 80 24 66 C 16 50 24 22 50 16 Z" fill="#ef6c00"/>
+            <path d="M 50 16 L 50 84" stroke="#5d4037" stroke-width="3" stroke-linecap="round"/>
+            <line x1="50" y1="32" x2="34" y2="22" stroke="#bf360c" stroke-width="2"/>
+            <line x1="50" y1="32" x2="66" y2="22" stroke="#bf360c" stroke-width="2"/>
+            <line x1="50" y1="48" x2="28" y2="42" stroke="#bf360c" stroke-width="2"/>
+            <line x1="50" y1="48" x2="72" y2="42" stroke="#bf360c" stroke-width="2"/>
+            <line x1="50" y1="64" x2="32" y2="64" stroke="#bf360c" stroke-width="2"/>
+            <line x1="50" y1="64" x2="68" y2="64" stroke="#bf360c" stroke-width="2"/>
+            <line x1="50" y1="84" x2="50" y2="92" stroke="#5d4037" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+        pilz: `<svg viewBox="0 0 100 100">
+            <path d="M 18 48 Q 18 22 50 22 Q 82 22 82 48 Z" fill="#e53935"/>
+            <circle cx="32" cy="36" r="5" fill="#fff"/>
+            <circle cx="50" cy="30" r="5" fill="#fff"/>
+            <circle cx="66" cy="38" r="5" fill="#fff"/>
+            <circle cx="42" cy="44" r="3.5" fill="#fff"/>
+            <circle cx="60" cy="44" r="3.5" fill="#fff"/>
+            <path d="M 36 48 L 36 80 Q 36 86 50 86 Q 64 86 64 80 L 64 48 Z" fill="#f5e6c8"/>
+            <line x1="42" y1="56" x2="42" y2="78" stroke="#d7c098" stroke-width="1.5"/>
+            <line x1="50" y1="56" x2="50" y2="80" stroke="#d7c098" stroke-width="1.5"/>
+            <line x1="58" y1="56" x2="58" y2="78" stroke="#d7c098" stroke-width="1.5"/>
+        </svg>`,
+        kuerbis: `<svg viewBox="0 0 100 100">
+            <ellipse cx="30" cy="58" rx="16" ry="22" fill="#ef6c00"/>
+            <ellipse cx="50" cy="58" rx="22" ry="26" fill="#fb8c00"/>
+            <ellipse cx="70" cy="58" rx="16" ry="22" fill="#ef6c00"/>
+            <path d="M 50 32 Q 56 24 62 22 Q 58 28 56 34" fill="#558b2f" stroke="#33691e" stroke-width="1.5"/>
+            <line x1="50" y1="34" x2="50" y2="84" stroke="#bf360c" stroke-width="1.5" opacity="0.6"/>
+            <line x1="38" y1="36" x2="42" y2="82" stroke="#bf360c" stroke-width="1.5" opacity="0.6"/>
+            <line x1="62" y1="36" x2="58" y2="82" stroke="#bf360c" stroke-width="1.5" opacity="0.6"/>
+        </svg>`,
+        regenschirm: `<svg viewBox="0 0 100 100">
+            <path d="M 14 50 Q 50 14 86 50 Q 76 44 68 50 Q 60 44 50 50 Q 40 44 32 50 Q 24 44 14 50 Z" fill="#ab47bc"/>
+            <line x1="50" y1="50" x2="50" y2="80" stroke="#5d4037" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 50 80 Q 50 88 58 88" fill="none" stroke="#5d4037" stroke-width="4" stroke-linecap="round"/>
+            <line x1="22" y1="76" x2="20" y2="86" stroke="#42a5f5" stroke-width="3" stroke-linecap="round"/>
+            <line x1="78" y1="74" x2="80" y2="84" stroke="#42a5f5" stroke-width="3" stroke-linecap="round"/>
+            <line x1="32" y1="86" x2="30" y2="94" stroke="#42a5f5" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+
+        // ----- Winter -----
+        schneeflocke: `<svg viewBox="0 0 100 100">
+            <g transform="translate(50,50)" stroke="#1976d2" stroke-width="3.5" stroke-linecap="round" fill="none">
+                <line x1="0" y1="-36" x2="0" y2="36"/>
+                <line x1="-31" y1="-18" x2="31" y2="18"/>
+                <line x1="-31" y1="18" x2="31" y2="-18"/>
+                <g stroke-width="2.5">
+                    <line x1="0" y1="-36" x2="-7" y2="-29"/>
+                    <line x1="0" y1="-36" x2="7" y2="-29"/>
+                    <line x1="0" y1="36" x2="-7" y2="29"/>
+                    <line x1="0" y1="36" x2="7" y2="29"/>
+                    <line x1="-31" y1="-18" x2="-26" y2="-26"/>
+                    <line x1="-31" y1="-18" x2="-34" y2="-10"/>
+                    <line x1="31" y1="18" x2="26" y2="26"/>
+                    <line x1="31" y1="18" x2="34" y2="10"/>
+                    <line x1="-31" y1="18" x2="-26" y2="26"/>
+                    <line x1="-31" y1="18" x2="-34" y2="10"/>
+                    <line x1="31" y1="-18" x2="26" y2="-26"/>
+                    <line x1="31" y1="-18" x2="34" y2="-10"/>
+                </g>
+            </g>
+        </svg>`,
+        schneemann: `<svg viewBox="0 0 100 100">
+            <ellipse cx="50" cy="76" rx="22" ry="14" fill="#fff" stroke="#90caf9" stroke-width="2"/>
+            <circle cx="50" cy="56" r="14" fill="#fff" stroke="#90caf9" stroke-width="2"/>
+            <circle cx="50" cy="36" r="11" fill="#fff" stroke="#90caf9" stroke-width="2"/>
+            <rect x="40" y="20" width="20" height="6" fill="#212121"/>
+            <rect x="36" y="16" width="28" height="6" fill="#212121"/>
+            <circle cx="46" cy="34" r="1.5" fill="#212121"/>
+            <circle cx="54" cy="34" r="1.5" fill="#212121"/>
+            <polygon points="49,38 56,40 49,42" fill="#fb8c00"/>
+            <circle cx="50" cy="50" r="2" fill="#212121"/>
+            <circle cx="50" cy="58" r="2" fill="#212121"/>
+            <circle cx="50" cy="66" r="2" fill="#212121"/>
+            <line x1="36" y1="58" x2="20" y2="48" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="64" y1="58" x2="80" y2="48" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`,
+        schlitten: `<svg viewBox="0 0 100 100">
+            <path d="M 16 56 L 84 56 L 80 64 L 20 64 Z" fill="#c62828"/>
+            <line x1="20" y1="64" x2="14" y2="78" stroke="#5d4037" stroke-width="4" stroke-linecap="round"/>
+            <line x1="80" y1="64" x2="86" y2="78" stroke="#5d4037" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 12 78 Q 50 88 88 78" fill="none" stroke="#5d4037" stroke-width="5" stroke-linecap="round"/>
+            <line x1="28" y1="48" x2="28" y2="56" stroke="#8d6e63" stroke-width="3"/>
+            <line x1="50" y1="48" x2="50" y2="56" stroke="#8d6e63" stroke-width="3"/>
+            <line x1="72" y1="48" x2="72" y2="56" stroke="#8d6e63" stroke-width="3"/>
+            <line x1="22" y1="48" x2="78" y2="48" stroke="#8d6e63" stroke-width="3"/>
+        </svg>`,
+        lebkuchen: `<svg viewBox="0 0 100 100">
+            <circle cx="50" cy="32" r="12" fill="#a1683a"/>
+            <rect x="38" y="44" width="24" height="22" rx="3" fill="#a1683a"/>
+            <rect x="22" y="46" width="16" height="8" rx="3" fill="#a1683a"/>
+            <rect x="62" y="46" width="16" height="8" rx="3" fill="#a1683a"/>
+            <rect x="38" y="64" width="10" height="20" rx="3" fill="#a1683a"/>
+            <rect x="52" y="64" width="10" height="20" rx="3" fill="#a1683a"/>
+            <circle cx="46" cy="30" r="1.5" fill="#fff"/>
+            <circle cx="54" cy="30" r="1.5" fill="#fff"/>
+            <path d="M 46 36 Q 50 39 54 36" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M 38 50 Q 50 46 62 50" fill="none" stroke="#fff" stroke-width="1.5"/>
+            <path d="M 38 58 Q 50 54 62 58" fill="none" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="44" cy="74" r="1.5" fill="#e53935"/>
+            <circle cx="56" cy="74" r="1.5" fill="#43a047"/>
+        </svg>`,
+    };
+
+    // ====================================================
+    //  JAHRESZEITEN
+    // ====================================================
+    const SEASONS = [
+        { id: 'fruehling', name: 'Frühling', icon: 'bluete' },
+        { id: 'sommer',    name: 'Sommer',   icon: 'sonne'  },
+        { id: 'herbst',    name: 'Herbst',   icon: 'blatt'  },
+        { id: 'winter',    name: 'Winter',   icon: 'schneeflocke' },
+    ];
+
+    // ====================================================
+    //  STAGES
+    //  - jede Stufe legt fest, welche Bilder verwendet werden
+    //    (key in ICONS) und zu welcher Jahreszeit sie gehoeren.
+    // ====================================================
+    const STAGES = {
+        '4': {
+            label: '4 Bilder',
+            items: [
+                { key: 'bluete',       season: 'fruehling' },
+                { key: 'sonne',        season: 'sommer'    },
+                { key: 'blatt',        season: 'herbst'    },
+                { key: 'schneeflocke', season: 'winter'    },
+            ],
+        },
+        '8': {
+            label: '8 Bilder',
+            items: [
+                { key: 'tulpe',        season: 'fruehling' },
+                { key: 'schmetterling',season: 'fruehling' },
+                { key: 'sonnenblume',  season: 'sommer'    },
+                { key: 'wassermelone', season: 'sommer'    },
+                { key: 'pilz',         season: 'herbst'    },
+                { key: 'kuerbis',      season: 'herbst'    },
+                { key: 'schneemann',   season: 'winter'    },
+                { key: 'schlitten',    season: 'winter'    },
+            ],
+        },
+        '12': {
+            label: '12 Bilder',
+            items: [
+                { key: 'bluete',       season: 'fruehling' },
+                { key: 'tulpe',        season: 'fruehling' },
+                { key: 'ostereier',    season: 'fruehling' },
+                { key: 'sonne',        season: 'sommer'    },
+                { key: 'sonnenblume',  season: 'sommer'    },
+                { key: 'eis',          season: 'sommer'    },
+                { key: 'blatt',        season: 'herbst'    },
+                { key: 'pilz',         season: 'herbst'    },
+                { key: 'drache',       season: 'herbst'    },
+                { key: 'schneeflocke', season: 'winter'    },
+                { key: 'schneemann',   season: 'winter'    },
+                { key: 'lebkuchen',    season: 'winter'    },
+            ],
+        },
+    };
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        items: [],         // shuffled items for this round
+        placedCount: 0,
+        totalCount: 0,
+        selectedId: null,  // currently selected pic-id
+        locked: false,     // true while a flyer is in flight
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'jahreszeiten-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.12, 'sine', 0.07);
+            setTimeout(() => tone(880, 0.20, 'sine', 0.07), 100);
+        },
+        finish: () => {
+            tone(523, 0.15, 'sine', 0.06);
+            setTimeout(() => tone(659, 0.15, 'sine', 0.06), 130);
+            setTimeout(() => tone(784, 0.25, 'sine', 0.06), 260);
+        },
+    };
+
+    // ====================================================
+    //  DOM-AUFBAU
+    // ====================================================
+    function buildPool() {
+        const pool = $('pool');
+        pool.innerHTML = '';
+        pool.classList.remove('cnt-4', 'cnt-8', 'cnt-12');
+        pool.classList.add('cnt-' + state.totalCount);
+
+        state.items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'pic';
+            div.dataset.id = item.id;
+            div.dataset.season = item.season;
+            div.setAttribute('role', 'button');
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('aria-label', 'Bild auswählen');
+            div.innerHTML = ICONS[item.key];
+            div.addEventListener('click', () => onPicClick(item.id));
+            pool.appendChild(div);
+        });
+    }
+
+    function buildTargets() {
+        const tgt = $('targets');
+        tgt.innerHTML = '';
+        SEASONS.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'target ' + s.id;
+            div.dataset.season = s.id;
+            div.setAttribute('role', 'button');
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('aria-label', s.name);
+            div.innerHTML = `
+                <div class="icon">${ICONS[s.icon]}</div>
+                <div class="name">${s.name}</div>
+                <div class="placed-row" data-season="${s.id}"></div>
+            `;
+            div.addEventListener('click', () => onTargetClick(s.id));
+            tgt.appendChild(div);
+        });
+    }
+
+    function updateProgress() {
+        $('hud-progress').textContent = state.placedCount + ' / ' + state.totalCount;
+    }
+
+    function setPrompt(text) {
+        $('prompt').textContent = text;
+    }
+
+    // ====================================================
+    //  TAP-FLOW
+    // ====================================================
+    function onPicClick(id) {
+        if (state.locked) return;
+        const el = document.querySelector('.pic[data-id="' + id + '"]');
+        if (!el || el.classList.contains('placed')) return;
+
+        // Toggle: gleiche Karte erneut antippen = Auswahl aufheben
+        if (state.selectedId === id) {
+            clearSelection();
+            setPrompt('Tippe ein Bild an');
+            return;
+        }
+        clearSelection();
+        state.selectedId = id;
+        el.classList.add('selected');
+        setPrompt('Zu welcher Jahreszeit gehört das?');
+    }
+
+    function clearSelection() {
+        state.selectedId = null;
+        document.querySelectorAll('.pic.selected').forEach(p => p.classList.remove('selected'));
+        document.querySelectorAll('.target.armed').forEach(t => t.classList.remove('armed'));
+    }
+
+    function onTargetClick(seasonId) {
+        if (state.locked) return;
+        if (!state.selectedId) {
+            // Hinweis: erst ein Bild waehlen
+            const tgt = document.querySelector('.target[data-season="' + seasonId + '"]');
+            if (tgt) {
+                tgt.classList.remove('shake');
+                void tgt.offsetWidth;
+                tgt.classList.add('shake');
+            }
+            setPrompt('Tippe zuerst ein Bild an');
+            return;
+        }
+
+        const item = state.items.find(it => it.id === state.selectedId);
+        if (!item) return;
+
+        if (item.season === seasonId) {
+            placeCorrect(item, seasonId);
+        } else {
+            wrongTry(item, seasonId);
+        }
+    }
+
+    function wrongTry(item, seasonId) {
+        const picEl = document.querySelector('.pic[data-id="' + item.id + '"]');
+        const tgtEl = document.querySelector('.target[data-season="' + seasonId + '"]');
+        if (picEl) {
+            picEl.classList.remove('wiggle');
+            void picEl.offsetWidth;
+            picEl.classList.add('wiggle');
+        }
+        if (tgtEl) {
+            tgtEl.classList.remove('shake');
+            void tgtEl.offsetWidth;
+            tgtEl.classList.add('shake');
+        }
+        setPrompt('Probier nochmal');
+    }
+
+    // ====================================================
+    //  FLIEGENDES BILD: Pool -> Ziel
+    // ====================================================
+    function placeCorrect(item, seasonId) {
+        // Lock SOFORT setzen (vor jeglicher Animation/Mutation),
+        // damit Doppel-Taps wahrend des Flugs ignoriert werden.
+        state.locked = true;
+        state.placedCount += 1;
+        clearSelection();
+
+        const picEl = document.querySelector('.pic[data-id="' + item.id + '"]');
+        const tgtEl = document.querySelector('.target[data-season="' + seasonId + '"]');
+        if (!picEl || !tgtEl) {
+            // Fallback: ohne Animation
+            finalizePlacement(item, seasonId);
+            return;
+        }
+
+        const startRect = picEl.getBoundingClientRect();
+        const endRect   = tgtEl.querySelector('.placed-row').getBoundingClientRect();
+
+        // Pool-Karte sofort verstecken (visibility: hidden, behaelt Layout-Platz)
+        picEl.classList.add('placed');
+
+        // Flyer erzeugen
+        const flyer = document.createElement('div');
+        flyer.className = 'flyer';
+        flyer.style.left   = startRect.left + 'px';
+        flyer.style.top    = startRect.top + 'px';
+        flyer.style.width  = startRect.width + 'px';
+        flyer.style.height = startRect.height + 'px';
+        flyer.innerHTML = ICONS[item.key];
+        document.body.appendChild(flyer);
+
+        // Force reflow, dann Ziel-Position setzen (loest Transition aus)
+        void flyer.offsetWidth;
+        const targetSize = 28; // landet als Mini im placed-row
+        const targetLeft = endRect.left + endRect.width / 2 - targetSize / 2;
+        const targetTop  = endRect.top  + endRect.height / 2 - targetSize / 2;
+        flyer.style.left   = targetLeft + 'px';
+        flyer.style.top    = targetTop + 'px';
+        flyer.style.width  = targetSize + 'px';
+        flyer.style.height = targetSize + 'px';
+        flyer.style.opacity = '0';
+
+        sfx.correct();
+
+        // Nach der Flug-Dauer: Flyer entfernen, Mini-Icon im Ziel hinzufuegen
+        const FLIGHT_MS = 600;
+        setTimeout(() => {
+            try { flyer.remove(); } catch (e) { /* ignore */ }
+            finalizePlacement(item, seasonId);
+        }, FLIGHT_MS);
+    }
+
+    function finalizePlacement(item, seasonId) {
+        const row = document.querySelector('.target[data-season="' + seasonId + '"] .placed-row');
+        if (row) {
+            const mini = document.createElement('div');
+            mini.className = 'mini';
+            mini.innerHTML = ICONS[item.key];
+            row.appendChild(mini);
+        }
+        updateProgress();
+
+        if (state.placedCount >= state.totalCount) {
+            state.locked = true; // bleibt gesperrt bis End-Screen
+            setTimeout(() => showEndScreen(), 450);
+        } else {
+            state.locked = false;
+            setPrompt('Tippe ein Bild an');
+        }
+    }
+
+    // ====================================================
+    //  END-SCREEN
+    // ====================================================
+    function showEndScreen() {
+        sfx.finish();
+        const ic = $('end-icons');
+        ic.innerHTML = '';
+        SEASONS.forEach(s => {
+            const wrap = document.createElement('div');
+            wrap.innerHTML = ICONS[s.icon];
+            ic.appendChild(wrap.firstElementChild);
+        });
+        switchScreen('end');
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game', 'end'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        const def = STAGES[state.stage];
+        $('hud-stage').textContent = def.label;
+
+        // Bilder durchnummerieren + mischen
+        state.items = shuffle(def.items.map((it, i) => ({
+            id: 'p' + i,
+            key: it.key,
+            season: it.season,
+        })));
+        state.totalCount = state.items.length;
+        state.placedCount = 0;
+        state.selectedId = null;
+        state.locked = false;
+
+        buildPool();
+        buildTargets();
+        updateProgress();
+        setPrompt('Tippe ein Bild an');
+        switchScreen('game');
+    }
+
+    function backToStart() {
+        // Falls noch ein Flyer in der Luft ist: aufraeumen.
+        document.querySelectorAll('.flyer').forEach(f => f.remove());
+        state.locked = false;
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-again').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-end-back').addEventListener('click', backToStart);
+
+    (function init() {
+        const prefs = loadPrefs();
+        const stage = (prefs.stage && STAGES[prefs.stage]) ? prefs.stage : '4';
+        selectStage(stage);
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>
