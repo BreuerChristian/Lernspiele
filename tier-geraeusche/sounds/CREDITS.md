@@ -15,7 +15,7 @@ hier nur unverändert mitgeliefert.
 | schwein.ogg | [Pig grunt - Erdie.ogg](https://commons.wikimedia.org/wiki/File:Pig_grunt_-_Erdie.ogg) | CC BY 3.0 |
 | pferd.ogg   | [Wiehern.ogg](https://commons.wikimedia.org/wiki/File:Wiehern.ogg) | Public Domain |
 | ente.mp3    | [Anas platyrhynchos - Mallard XC112828.mp3](https://commons.wikimedia.org/wiki/File:Anas_platyrhynchos_-_Mallard_XC112828.mp3) | CC BY-SA 3.0 |
-| frosch.oga  | [Single Frog Croak.oga](https://commons.wikimedia.org/wiki/File:Single_Frog_Croak.oga) | CC BY-SA 4.0 |
+| frosch.ogg  | [Single Frog Croak.oga](https://commons.wikimedia.org/wiki/File:Single_Frog_Croak.oga) (umbenannt zu .ogg) | CC BY-SA 4.0 |
 | eule.mp3    | [Strix aluco - Tawny Owl XC494801.mp3](https://commons.wikimedia.org/wiki/File:Strix_aluco_-_Tawny_Owl_XC494801.mp3) | CC BY-SA 4.0 |
 | biene.opus  | [Bee buzzing sound (animal noises).opus](https://commons.wikimedia.org/wiki/File:Bee_buzzing_sound_(animal_noises).opus) | CC BY 3.0 |
 | loewe.ogg   | [Lion raring-sound1TamilNadu178.ogg](https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg) | Public Domain |

@@ -240,7 +240,7 @@
             align-items: center;
             justify-content: center;
         }
-        .option:hover { background: #f3f4fa; }
+        .option:not(.correct):not(.locked):hover { background: #f3f4fa; }
         .option:active { transform: translateY(1px); }
         .option svg {
             width: 100%;
@@ -824,8 +824,12 @@
         schwer: {
             label: 'Schwer',
             count: 4,
-            // Vögel-Familie - feinste Formunterschiede
-            pool: ['eule', 'hahn', 'ente', 'spatz', 'vogel'],
+            // Voegel mit eindeutig unterschiedlichen Silhouetten:
+            // Eule (Federohren), Hahn (Saegezahn-Kamm + grosse Schwanzfedern),
+            // Ente (loeffelartiger Schnabel), Spatz (kompakter kleiner Vogel).
+            // Generischer "vogel" wurde entfernt — er war in Silhouette nicht
+            // zuverlaessig vom Spatzen unterscheidbar.
+            pool: ['eule', 'hahn', 'ente', 'spatz'],
             crossGroup: false,
         },
     };
@@ -870,7 +874,12 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
+        if (audioCtx) {
+            if (audioCtx.state === 'suspended') {
+                try { audioCtx.resume(); } catch (e) { /* ignore */ }
+            }
+            return audioCtx;
+        }
         try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         catch (e) { audioCtx = null; }
         return audioCtx;

@@ -571,9 +571,13 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {

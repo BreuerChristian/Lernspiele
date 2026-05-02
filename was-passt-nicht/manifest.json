@@ -1,7 +1,7 @@
 {
   "name": "Was passt nicht?",
-  "short_name": "Wasn't",
-  "description": "Werbefreies Lernspiel: ein Bild faellt aus der Kategorie",
+  "short_name": "Was passt",
+  "description": "Werbefreies Lernspiel: ein Bild fällt aus der Kategorie",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -853,9 +853,13 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
@@ -1048,9 +1052,13 @@
 
         sfx.correct();
 
-        // Nach der Flug-Dauer: Flyer entfernen, Mini-Icon im Ziel hinzufuegen
+        // Nach der Flug-Dauer: Flyer entfernen, Mini-Icon im Ziel hinzufuegen.
+        // runId-Pattern verhindert dass nach 'Zurueck' (mid-flight) der Endscreen
+        // nachtraeglich aufpoppt.
         const FLIGHT_MS = 600;
+        const myRun = state.runId;
         setTimeout(() => {
+            if (myRun !== state.runId) return;
             try { flyer.remove(); } catch (e) { /* ignore */ }
             finalizePlacement(item, seasonId);
         }, FLIGHT_MS);
@@ -1067,8 +1075,12 @@
         updateProgress();
 
         if (state.placedCount >= state.totalCount) {
-            state.locked = true; // bleibt gesperrt bis End-Screen
-            setTimeout(() => showEndScreen(), 450);
+            state.locked = true;
+            const myRun = state.runId;
+            setTimeout(() => {
+                if (myRun !== state.runId) return;
+                showEndScreen();
+            }, 450);
         } else {
             state.locked = false;
             setPrompt('Tippe ein Bild an');
@@ -1105,6 +1117,9 @@
         const def = STAGES[state.stage];
         $('hud-stage').textContent = def.label;
 
+        // runId++ invalidiert pending setTimeouts aus alten Spielen
+        state.runId = (state.runId || 0) + 1;
+
         // Bilder durchnummerieren + mischen
         state.items = shuffle(def.items.map((it, i) => ({
             id: 'p' + i,
@@ -1124,6 +1139,8 @@
     }
 
     function backToStart() {
+        // runId++ invalidiert pending setTimeouts (Flyer/EndScreen) aus laufendem Spiel
+        state.runId = (state.runId || 0) + 1;
         // Falls noch ein Flyer in der Luft ist: aufraeumen.
         document.querySelectorAll('.flyer').forEach(f => f.remove());
         state.locked = false;

@@ -940,7 +940,7 @@
         // Tier-Variante: 4 Tiere, eines lebt im Wasser (anders gemischt)
         { stage: 2, group: ['vogel', 'biene', 'schmetterling', 'hund'], outlier: 'fisch',
           hint: 'Drei leben in der Luft oder an Land — eines im Wasser.' },
-        // Insekten vs Vogel
+        // Klein vs riesig — alle drei sind klein, Elefant ist riesig
         { stage: 2, group: ['biene', 'schmetterling', 'frosch'], outlier: 'elefant',
           hint: 'Drei sind klein — eines ist riesig.' },
 
@@ -968,9 +968,9 @@
           hint: 'Drei leben und wachsen — eines nicht.' },
         // 3 mit Raedern
         { stage: 3, group: ['auto', 'bus', 'fahrrad', 'koffer'], outlier: 'flugzeug',
-          hint: 'Drei rollen auf Raedern — eines fliegt.' },
-        // 3 haben Beine
-        { stage: 3, group: ['hund', 'katze', 'kuh', 'tisch'], outlier: 'fisch',
+          hint: 'Drei rollen auf Rädern — eines fliegt.' },
+        // 3 haben Beine — Tier-only damit das Puzzle eindeutig bleibt
+        { stage: 3, group: ['hund', 'katze', 'kuh'], outlier: 'fisch',
           hint: 'Drei haben Beine — eines nicht.' },
     ];
 
@@ -985,6 +985,7 @@
         current: null,       // { puzzle, items: [{key, isOutlier}], outlierIdx }
         gate: { passed: false }, // verhindert Doppel-Tap auf "richtig"
         wrongTimer: null,    // Timeout-Handle fuer Hint-Fade
+        advanceTimer: null,  // Timeout-Handle fuer Wechsel zur naechsten Aufgabe
     };
 
     // ====================================================
@@ -1015,9 +1016,13 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {
@@ -1142,7 +1147,7 @@
             // Hinweis (Stage-2/3 nutzen den Aufgaben-Hint, sonst neutraler Text)
             const p = state.current.puzzle;
             const text = (state.stage === 1)
-                ? 'Schau noch mal — drei gehoeren zusammen.'
+                ? 'Schau noch mal — drei gehören zusammen.'
                 : (p.hint || 'Schau noch mal genau hin.');
             showHint(text);
             // wiggle-Klasse nach Animationsende wieder entfernen, damit erneutes Tappen wieder wackeln kann
@@ -1171,7 +1176,7 @@
     }
 
     function updateHud() {
-        const labels = { 1: 'Ganz unterschiedlich', 2: 'Genauer hinschauen', 3: 'Gut ueberlegen' };
+        const labels = { 1: 'Ganz unterschiedlich', 2: 'Genauer hinschauen', 3: 'Gut überlegen' };
         $('hud-stage').textContent = `${labels[state.stage]} · ${state.roundIdx + 1} / ${state.roundSize}`;
     }
 

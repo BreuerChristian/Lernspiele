@@ -1,4 +1,4 @@
-const CACHE = 'muster-fortsetzen-v2';
+const CACHE = 'muster-fortsetzen-v3';
 const ASSETS = [
   './',
   './index.html',

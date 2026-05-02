@@ -1,4 +1,4 @@
-const CACHE = 'tier-geraeusche-v3';
+const CACHE = 'tier-geraeusche-v4';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -18,7 +18,7 @@ const SOUND_ASSETS = [
   './sounds/schwein.ogg',
   './sounds/pferd.ogg',
   './sounds/ente.mp3',
-  './sounds/frosch.oga',
+  './sounds/frosch.ogg',
   './sounds/eule.mp3',
   './sounds/biene.opus',
   './sounds/loewe.ogg'

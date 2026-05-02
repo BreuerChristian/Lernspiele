@@ -575,9 +575,13 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {
@@ -890,9 +894,14 @@
     document.addEventListener('visibilitychange', () => {
         if (document.hidden && state.phase !== 'idle') {
             clearTimers();
-            // Cover sichtbar lassen, Phase auf hidden -> Kind kann beim Zurueckkommen
-            // einfach raten; oder zur Uebersicht. Sicherheitshalber: beim erneuten
-            // Sichtbarwerden bleibt der Stand, kein Auto-Restart.
+            // Wenn die Punkte gerade gezeigt wurden / das Cover gerade fadete:
+            // Phase auf 'hidden' setzen, Cover wieder drauf, sonst haengt das
+            // Spiel beim Zurueckkommen (Kind koennte nicht antworten).
+            if (state.phase === 'showing' || state.phase === 'between') {
+                $('dot-board').classList.add('covered');
+                state.phase = 'hidden';
+                $('prompt').textContent = 'Wie viele waren das?';
+            }
         }
     });
 
