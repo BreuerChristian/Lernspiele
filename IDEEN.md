@@ -12,10 +12,10 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [ ] **Erste englische Wörter** — Bild + Audio + englisches Wort, ohne Test-Druck.
 
 ## Mathe & Zahlen
-- [ ] **Mengen erfassen** — Punktwolke kurz zeigen, Anzahl wählen. Trainiert Subitizing (1-5 auf einen Blick).
+- [x] **Mengen erfassen** — Punktwolke kurz zeigen, Anzahl wählen. Trainiert Subitizing (1-5 auf einen Blick).
 - [ ] **Plus-Türmchen** — visuelle Addition mit gestapelten Klötzchen, Drag&Drop. Web-Variante des goldenen Perlenmaterials.
 - [x] **Uhr lesen** — analoge Uhr, "wie spät ist es?". Stufen: volle Stunde → halbe → viertel.
-- [ ] **Zahlenreihen** — 2, 4, _, 8, 10 — was fehlt? Mit Zahlenstrahl als Hilfe.
+- [x] **Zahlenreihen** — 2, 4, _, 8, 10 — was fehlt? Mit Zahlenstrahl als Hilfe.
 - [ ] **Münzen** — Beträge mit Euro-Münzen legen.
 
 ## Welt & Sachkunde
@@ -23,14 +23,14 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [ ] **Länder-Flaggen** — Flagge → Land. Knüpft direkt an Hauptstädte-Spiel an.
 - [x] **Tier-Geräusche** — Geräusch hören, Tier antippen (4-6 Optionen). Niedrigschwellig, sofort spielbar.
 - [ ] **Planeten der Reihe nach** — Sonnensystem ordnen, mit Größenverhältnissen.
-- [ ] **Jahreszeiten-Sortieren** — Bilder (Schnee, Blüten, Sonnenblume, Laub) den vier Bäumen zuordnen.
+- [x] **Jahreszeiten-Sortieren** — Bilder (Schnee, Blüten, Sonnenblume, Laub) den vier Bäumen zuordnen.
 
 ## Wahrnehmung & Logik
 - [x] **Schatten finden** — Tier-Silhouette, welche von 3 passt? Trainiert Form-Wahrnehmung.
-- [ ] **Muster fortsetzen** — 🔴🔵🔴🔵_ — was kommt? Stufenweise komplexer.
+- [x] **Muster fortsetzen** — 🔴🔵🔴🔵_ — was kommt? Stufenweise komplexer.
 - [x] **Was passt nicht?** — 4 Bilder, eines fällt aus der Kategorie.
-- [ ] **Symmetrie-Vervollständigen** — linke Hälfte vorgegeben, rechte spiegeln (auf Raster).
-- [ ] **Farben mischen** — Wassertropfen-Optik, Gelb+Blau → Grün. Sandbox, keine Aufgaben.
+- [x] **Symmetrie-Vervollständigen** — linke Hälfte vorgegeben, rechte spiegeln (auf Raster).
+- [x] **Farben mischen** — Wassertropfen-Optik, Gelb+Blau → Grün. Sandbox, keine Aufgaben.
 
 ---
 
@@ -42,3 +42,9 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [x] **Was passt nicht?** (`was-passt-nicht/`)
 - [x] **Schatten finden** (`schatten-finden/`)
 - [x] **Tier-Geräusche** (`tier-geraeusche/`)
+- [x] **Jahreszeiten-Sortieren** (`jahreszeiten-sortieren/`)
+- [x] **Muster fortsetzen** (`muster-fortsetzen/`)
+- [x] **Mengen erfassen** (`mengen-erfassen/`)
+- [x] **Zahlenreihen** (`zahlenreihen/`)
+- [x] **Farben mischen** (`farben-mischen/`)
+- [x] **Symmetrie** (`symmetrie/`)

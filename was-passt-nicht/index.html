@@ -686,7 +686,8 @@
                 <rect x="32" y="22" width="36" height="60" rx="3" fill="white" stroke="#8a8a8a" stroke-width="1.5"/>
                 <polygon points="32,22 50,12 68,22" fill="white" stroke="#8a8a8a" stroke-width="1.5"/>
                 <rect x="38" y="42" width="24" height="22" fill="#5dade2"/>
-                <text x="50" y="58" font-family="Verdana" font-size="10" font-weight="bold" text-anchor="middle" fill="white">Milch</text>
+                <circle cx="50" cy="53" r="6" fill="white"/>
+                <path d="M 44 53 Q 50 47 56 53 Q 50 59 44 53 Z" fill="white"/>
             </svg>`,
         saft: () => `
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Saft">
@@ -1127,7 +1128,11 @@
             clearHint();
             sfx.correct();
             // weiter zur naechsten Aufgabe
-            setTimeout(advanceRound, 1100);
+            if (state.advanceTimer) clearTimeout(state.advanceTimer);
+            state.advanceTimer = setTimeout(() => {
+                state.advanceTimer = null;
+                advanceRound();
+            }, 1100);
         } else {
             // Nicht passend — freundliches Wackeln, kein Spiel-Ende, kein Punktabzug
             tile.classList.remove('wiggle');
@@ -1193,6 +1198,11 @@
     }
 
     function backToStart() {
+        if (state.advanceTimer) {
+            clearTimeout(state.advanceTimer);
+            state.advanceTimer = null;
+        }
+        if (state.gate) state.gate.passed = true;
         clearHint();
         switchScreen('start');
     }

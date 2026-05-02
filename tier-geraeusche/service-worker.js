@@ -1,4 +1,4 @@
-const CACHE = 'tier-geraeusche-v1';
+const CACHE = 'tier-geraeusche-v2';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -50,6 +50,23 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  // Sounds: network-first mit Cache-Fallback. So werden nachtraeglich
+  // hinzugefuegte/geaenderte Tier-Aufnahmen sofort erkannt, und der Cache
+  // dient nur als Offline-Sicherung.
+  if (url.pathname.endsWith('.mp3') || url.pathname.includes('/sounds/')) {
+    event.respondWith(
+      fetch(event.request).then((res) => {
+        if (res && res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE).then((c) => c.put(event.request, clone)).catch(() => {});
+        }
+        return res;
+      }).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+  // Alles andere: cache-first.
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );

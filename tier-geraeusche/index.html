@@ -206,6 +206,16 @@
         }
         .listen-btn:hover { background: #f0f7e3; }
         .listen-btn:active { transform: translateY(2px); }
+        .audio-hint {
+            min-height: 1.4em;
+            font-size: 1.5rem;
+            color: #5d7e3a;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            margin: 6px 0 -6px;
+        }
+        .audio-hint.show { opacity: 1; }
         .listen-btn.pulse {
             animation: pulse 1.6s ease-in-out infinite;
         }
@@ -230,7 +240,9 @@
             min-height: 0;
             align-content: center;
         }
-        .tiles.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        @media (min-width: 520px) {
+            .tiles[data-stage="6"] { grid-template-columns: repeat(3, 1fr); }
+        }
 
         .tile {
             background: white;
@@ -355,6 +367,7 @@
             </span>
             <span>Hör mal!</span>
         </button>
+        <div class="audio-hint" id="audio-hint" aria-live="polite"></div>
         <div class="tiles" id="tiles"></div>
     </div>
 </div>
@@ -396,6 +409,7 @@
         locked: false,         // zwischen Richtig-Tap und neuer Runde
         currentAudio: null,    // gerade abspielendes Audio-Element
         audioFailed: {},       // {animalId: true} wenn Datei nicht existiert
+        hintTimer: null,       // setTimeout-Handle fuer visuellen Audio-Hint
     };
 
     let pendingSpeechTimer = null;     // setTimeout-Handle fuer verzoegertes speak()
@@ -429,10 +443,25 @@
     //  AUDIO
     // ====================================================
     let audioCtx = null;
+    let speechWarmedUp = false;
     function ensureAudioCtx() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
+        // Speech-Warmup: stille Utterance synchron im User-Geste-Click, damit
+        // spaetere setTimeout-getriggerte Utterances auf iOS/Safari erlaubt sind.
+        if (!speechWarmedUp && 'speechSynthesis' in window) {
+            try {
+                const u = new SpeechSynthesisUtterance(' ');
+                u.volume = 0;
+                speechSynthesis.speak(u);
+                speechWarmedUp = true;
+            } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
@@ -461,20 +490,45 @@
             try { state.currentAudio.pause(); } catch (e) { /* ignore */ }
             state.currentAudio = null;
         }
+        if (stalledTimer) { clearTimeout(stalledTimer); stalledTimer = null; }
+        if (pendingSpeechTimer) { clearTimeout(pendingSpeechTimer); pendingSpeechTimer = null; }
         if ('speechSynthesis' in window) {
             try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
         }
     }
 
+    // Speech-Synthesis: cancel() ist async, also nach kurzem Tick neu sprechen,
+    // damit schnelles Mehrfach-Tippen nicht zu verschluckten/doppelten Utterances fuehrt.
+    function showVisualHint(animal) {
+        // Sichtbarer Fallback wenn weder MP3 noch SpeechSynthesis funktionieren —
+        // sonst tippt das Kind auf "Hoer mal!" und nichts passiert.
+        const hint = $('audio-hint');
+        if (!hint) return;
+        hint.textContent = `${animal.emoji} ${animal.say}`;
+        hint.classList.add('show');
+        if (state.hintTimer) clearTimeout(state.hintTimer);
+        state.hintTimer = setTimeout(() => {
+            hint.classList.remove('show');
+            state.hintTimer = null;
+        }, 2000);
+    }
     function speakFallback(animal) {
-        if (!('speechSynthesis' in window)) return;
-        try {
-            const u = new SpeechSynthesisUtterance(animal.say);
-            u.lang = 'de-DE';
-            u.rate = 0.9;
-            u.pitch = 1.0;
-            speechSynthesis.speak(u);
-        } catch (e) { /* ignore */ }
+        if (!('speechSynthesis' in window)) {
+            showVisualHint(animal);
+            return;
+        }
+        if (pendingSpeechTimer) clearTimeout(pendingSpeechTimer);
+        try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+        pendingSpeechTimer = setTimeout(() => {
+            pendingSpeechTimer = null;
+            try {
+                const u = new SpeechSynthesisUtterance(animal.say);
+                u.lang = 'de-DE';
+                u.rate = 0.9;
+                u.pitch = 1.0;
+                speechSynthesis.speak(u);
+            } catch (e) { /* ignore */ }
+        }, 60);
     }
 
     function playAnimal(animal) {
@@ -486,15 +540,31 @@
         const audio = new Audio(`sounds/${animal.id}.mp3`);
         audio.preload = 'auto';
         state.currentAudio = audio;
+        let handled = false;
         const failed = () => {
+            if (handled) return;
+            handled = true;
+            if (stalledTimer) { clearTimeout(stalledTimer); stalledTimer = null; }
             state.audioFailed[animal.id] = true;
             if (state.currentAudio === audio) state.currentAudio = null;
             speakFallback(animal);
         };
+        const succeeded = () => {
+            if (handled) return;
+            handled = true;
+            if (stalledTimer) { clearTimeout(stalledTimer); stalledTimer = null; }
+        };
         audio.addEventListener('error', failed, { once: true });
-        const p = audio.play();
-        if (p && typeof p.then === 'function') {
-            p.catch(failed);
+        audio.addEventListener('stalled', failed, { once: true });
+        audio.addEventListener('playing', succeeded, { once: true });
+        // Sicherheitsnetz: wenn nach 1.5s weder error noch playing kam,
+        // betrachten wir es als Fehler (z.B. seltene WebViews ohne Promise/Event).
+        stalledTimer = setTimeout(failed, 1500);
+        try {
+            const p = audio.play();
+            if (p && typeof p.then === 'function') p.catch(failed);
+        } catch (e) {
+            failed();
         }
     }
 
@@ -517,9 +587,9 @@
     function renderTiles(options, correct) {
         const tilesEl = $('tiles');
         tilesEl.innerHTML = '';
-        // 2 / 4 / 6 Kacheln: 2 Spalten klappt fuer alle (1, 2, 3 Reihen).
-        // Bei 6 auf breiten Bildschirmen waere 3 Spalten huebscher.
-        tilesEl.classList.toggle('cols-3', state.stage === 6 && window.innerWidth >= 520);
+        // 2 / 4 / 6 Kacheln: 2 Spalten in Portrait, 3 Spalten ab 520px bei Stage 6
+        // (siehe CSS-Media-Query). Reagiert automatisch auf Resize/Rotation.
+        tilesEl.dataset.stage = String(state.stage);
 
         options.forEach(opt => {
             const tile = document.createElement('button');

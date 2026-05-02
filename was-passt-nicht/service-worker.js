@@ -1,4 +1,4 @@
-const CACHE = 'was-passt-nicht-v1';
+const CACHE = 'was-passt-nicht-v2';
 const ASSETS = [
   './',
   './index.html',

@@ -1,4 +1,4 @@
-const CACHE = 'schatten-finden-v1';
+const CACHE = 'schatten-finden-v2';
 const ASSETS = [
   './',
   './index.html',
