@@ -1,0 +1,26 @@
+{
+  "name": "Farben mischen",
+  "short_name": "Farben",
+  "description": "Werbefreies Farb-Misch-Spiel fuer Kinder",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3eef9",
+  "theme_color": "#5e35b1",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#f3eef9"/>
+
+  <!-- Inhalt komplett innerhalb 80% Safe-Zone (256 +/- 205, also 51..461) -->
+  <!-- Drei Tropfen, kleiner skaliert (80x100 statt 100x130) -->
+
+  <!-- Rot: oben -->
+  <g transform="translate(256 232) rotate(180) scale(0.8)">
+    <path d="M0 -120 C -60 -10, -90 70, -50 110 C -20 140, 20 140, 50 110 C 90 70, 60 -10, 0 -120 Z"
+          fill="#e53935" stroke="#7a1414" stroke-width="6" opacity="0.92"/>
+  </g>
+  <!-- Gelb: unten links -->
+  <g transform="translate(208 318) rotate(60) scale(0.8)">
+    <path d="M0 -120 C -60 -10, -90 70, -50 110 C -20 140, 20 140, 50 110 C 90 70, 60 -10, 0 -120 Z"
+          fill="#fdd835" stroke="#8c7307" stroke-width="6" opacity="0.92"/>
+  </g>
+  <!-- Blau: unten rechts -->
+  <g transform="translate(304 318) rotate(-60) scale(0.8)">
+    <path d="M0 -120 C -60 -10, -90 70, -50 110 C -20 140, 20 140, 50 110 C 90 70, 60 -10, 0 -120 Z"
+          fill="#1e88e5" stroke="#0a2a55" stroke-width="6" opacity="0.92"/>
+  </g>
+
+  <!-- Mitte: Mischfarbe (Braun) -->
+  <circle cx="256" cy="290" r="40" fill="#795548" stroke="#3a2519" stroke-width="6"/>
+  <ellipse cx="246" cy="280" rx="8" ry="11" fill="rgba(255,255,255,0.55)"/>
+</svg>
