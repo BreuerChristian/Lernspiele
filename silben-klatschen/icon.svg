@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#ad1457"/>
+  <!-- Wort-Linie (drei Silben-Bloecke) -->
+  <g>
+    <rect x="78"  y="186" width="104" height="60" rx="14" fill="white"/>
+    <rect x="204" y="186" width="104" height="60" rx="14" fill="white"/>
+    <rect x="330" y="186" width="104" height="60" rx="14" fill="white"/>
+  </g>
+  <!-- Drei Silben-Boegen darunter -->
+  <g fill="none" stroke="#fce4ec" stroke-width="14" stroke-linecap="round">
+    <path d="M 86 322 Q 130 282 174 322"/>
+    <path d="M 212 322 Q 256 282 300 322"/>
+    <path d="M 338 322 Q 382 282 426 322"/>
+  </g>
+  <!-- Drei Klatsch-Punkte -->
+  <g fill="#fce4ec">
+    <circle cx="130" cy="382" r="16"/>
+    <circle cx="256" cy="382" r="16"/>
+    <circle cx="382" cy="382" r="16"/>
+  </g>
+</svg>

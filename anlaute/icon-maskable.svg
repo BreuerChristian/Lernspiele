@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#1abc9c"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205, also 51..461) -->
+  <!-- Apfel links, kompakter -->
+  <g transform="translate(120 168)">
+    <path d="M 64 30 C 38 30 16 50 16 80 C 16 120 44 168 64 168 C 84 168 112 120 112 80 C 112 50 90 30 64 30 Z"
+          fill="#ffffff" stroke="#0e7c66" stroke-width="7"/>
+    <path d="M 64 30 C 64 14 74 6 84 6"
+          fill="none" stroke="#0e7c66" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="74" cy="18" rx="12" ry="7" fill="#9ae6b4"/>
+  </g>
+  <!-- Buchstabe A rechts, in Safe-Zone -->
+  <text x="340" y="320" font-family="Verdana, Tahoma, sans-serif" font-size="200" font-weight="bold"
+        text-anchor="middle" fill="#ffffff">A</text>
+</svg>

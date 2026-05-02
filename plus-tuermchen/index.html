@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Plus-Türmchen</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#d84315">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #fff3e8;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #fff3e8 0%, #ffcfa8 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #d84315;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #a13513;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #d84315;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #ffe2cc;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #ffcfa8; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #d84315;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #fff3e8;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #6e2c12;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #ffe2cc; }
+        .stage-choice.active {
+            background: #ffe2cc;
+            border-color: #d84315;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #d84315;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #8a4520;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #ef6c33, #d84315);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(216, 67, 21, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #fff3e8 0%, #ffcfa8 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #d84315;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-progress {
+            color: #8a4520;
+            font-size: 0.95rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #d84315;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px 20px;
+            gap: 12px;
+            min-height: 0;
+        }
+
+        /* ---------- Aufgabe ---------- */
+        .task {
+            color: #6e2c12;
+            font-size: 1.6rem;
+            font-weight: bold;
+            text-align: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .task .num-a { color: #c63d10; }
+        .task .num-b { color: #1f7a4a; }
+        .task .eq { color: #6e2c12; }
+
+        .stage-box {
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            width: 100%;
+            min-height: 0;
+            gap: 18px;
+            padding: 6px 4px;
+        }
+
+        .tower {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.6s cubic-bezier(.45,0,.2,1);
+        }
+
+        .tower-svg-wrap {
+            position: relative;
+            width: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .tower-svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+        .tower-block {
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .tower-block.appearing {
+            animation: drop-in 0.32s ease-out;
+        }
+        @keyframes drop-in {
+            0%   { opacity: 0; transform: translateY(-22px); }
+            70%  { opacity: 1; transform: translateY(3px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .ctrl-btn {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #d84315;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s, background 0.15s;
+        }
+        .ctrl-btn:hover { background: #fff3e8; }
+        .ctrl-btn:active { transform: translateY(2px); }
+        .ctrl-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .target-label {
+            color: #6e2c12;
+            font-size: 0.95rem;
+            font-weight: bold;
+            background: rgba(255,255,255,0.85);
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-top: 4px;
+        }
+        .target-label.done {
+            background: #c4e6b8;
+            color: #2f5e1d;
+        }
+
+        /* ---------- Aktion-Bereich (Zusammenfügen + Antworten) ---------- */
+        .action-area {
+            width: 100%;
+            max-width: 460px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .merge-btn {
+            display: none;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(145deg, #ef6c33, #d84315);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(216, 67, 21, 0.3);
+            transition: transform 0.12s;
+        }
+        .merge-btn.show { display: block; }
+        .merge-btn:active { transform: translateY(2px); }
+
+        .question {
+            display: none;
+            color: #6e2c12;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .question.show { display: block; }
+
+        .answers {
+            display: none;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+        }
+        .answers.show { display: grid; }
+        .answer {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 6px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #6e2c12;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.1s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+        }
+        .answer:hover { background: #fff3e8; }
+        .answer:active { transform: translateY(1px); }
+        .answer.correct {
+            background: #c4e6b8;
+            border-color: #6cab4e;
+            color: #2f5e1d;
+        }
+        .answer.locked {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .answer.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        /* ---------- End-Screen ---------- */
+        #screen-end {
+            background: linear-gradient(135deg, #fff3e8 0%, #ffcfa8 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #screen-end .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+        }
+        #screen-end h2 {
+            color: #d84315;
+            font-size: 1.8rem;
+            margin-bottom: 14px;
+        }
+        #screen-end p {
+            color: #6e2c12;
+            margin-bottom: 22px;
+            font-size: 1.05rem;
+        }
+        .end-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .end-btn {
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.12s;
+        }
+        .end-btn:active { transform: translateY(2px); }
+        .end-btn-primary {
+            background: linear-gradient(145deg, #ef6c33, #d84315);
+            color: white;
+            box-shadow: 0 6px 14px rgba(216, 67, 21, 0.3);
+        }
+        .end-btn-secondary {
+            background: #ffe2cc;
+            color: #d84315;
+        }
+
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .task { font-size: 1.35rem; padding: 8px 14px; }
+            .answer { font-size: 1.1rem; padding: 12px 4px; }
+            .ctrl-btn { width: 44px; height: 44px; font-size: 1.3rem; }
+            .stage-box { gap: 10px; }
+            .tower-svg-wrap { width: 96px; }
+        }
+        @media (max-height: 640px) {
+            .task { font-size: 1.3rem; padding: 8px 14px; }
+            .game-area { padding: 8px 12px 12px; gap: 8px; }
+            .answer { padding: 10px 4px; font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Plus-Türmchen</h1>
+        <p class="sub">Türme bauen, zusammenfügen, zählen.</p>
+
+        <div class="group">
+            <h2>Wie weit möchtest du rechnen?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="bis5">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Bis 5</span>
+                        <span class="ex">1+1, 2+2, 1+4 ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="bis10">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Bis 10</span>
+                        <span class="ex">3+4, 5+5, 6+2 ...</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="bis15">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Bis 15</span>
+                        <span class="ex">7+5, 8+6, 9+5 ...</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <div class="hud-progress" id="hud-progress"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="task" id="task" aria-live="polite"></div>
+
+        <div class="stage-box">
+            <div class="tower" id="tower-a">
+                <div class="tower-svg-wrap">
+                    <svg class="tower-svg" id="svg-a" viewBox="0 0 80 360" preserveAspectRatio="xMidYEnd meet"></svg>
+                </div>
+                <div class="controls">
+                    <button class="ctrl-btn" id="minus-a" aria-label="Klötzchen wegnehmen">−</button>
+                    <button class="ctrl-btn" id="plus-a" aria-label="Klötzchen hinzufügen">+</button>
+                </div>
+                <div class="target-label" id="label-a">0 / 0</div>
+            </div>
+            <div class="tower" id="tower-b">
+                <div class="tower-svg-wrap">
+                    <svg class="tower-svg" id="svg-b" viewBox="0 0 80 360" preserveAspectRatio="xMidYEnd meet"></svg>
+                </div>
+                <div class="controls">
+                    <button class="ctrl-btn" id="minus-b" aria-label="Klötzchen wegnehmen">−</button>
+                    <button class="ctrl-btn" id="plus-b" aria-label="Klötzchen hinzufügen">+</button>
+                </div>
+                <div class="target-label" id="label-b">0 / 0</div>
+            </div>
+        </div>
+
+        <div class="action-area">
+            <button class="merge-btn" id="btn-merge">Zusammenfügen!</button>
+            <div class="question" id="question">Wie hoch ist der Turm?</div>
+            <div class="answers" id="answers"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     END-SCREEN
+============================================================ -->
+<div id="screen-end" class="screen hidden">
+    <div class="card">
+        <h2 id="end-title">Schöne Runde!</h2>
+        <p id="end-text">Magst du nochmal?</p>
+        <div class="end-buttons">
+            <button class="end-btn end-btn-primary" id="btn-again">Nochmal spielen</button>
+            <button class="end-btn end-btn-secondary" id="btn-end-back">Zurück zur Auswahl</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  STAGES + AUFGABEN-POOLS
+    // ====================================================
+    const STAGES = {
+        bis5:  {
+            label: 'Bis 5',
+            problems: [
+                [1,1],[1,2],[2,1],[2,2],[2,3],[3,2],[1,4],[4,1],[1,3],[3,1],[1,5],[5,0]
+                    .filter(()=>true) // safety; siehe sanitize unten
+            ],
+            // Cleanup: Liste manuell + sanitize
+        },
+        bis10: {
+            label: 'Bis 10',
+            problems: [
+                [3,4],[4,3],[5,3],[3,5],[4,4],[6,2],[2,6],[5,5],[4,5],[5,4],[6,3],[3,6],[7,2],[2,7],[5,2],[2,5]
+            ],
+        },
+        bis15: {
+            label: 'Bis 15',
+            problems: [
+                [7,5],[5,7],[8,4],[4,8],[6,7],[7,6],[8,6],[6,8],[9,5],[5,9],[7,7],[6,6],[8,5],[5,8],[9,4],[4,9]
+            ],
+        },
+    };
+
+    // Stage 1 sauber neu (Filter-Trick oben war defensiv, hier explizit):
+    STAGES.bis5.problems = [
+        [1,1],[1,2],[2,1],[2,2],[2,3],[3,2],[1,3],[3,1],[1,4],[4,1],[3,2],[2,3]
+    ];
+
+    const ROUNDS_PER_GAME = 7;
+    const COLORS = ['#ef5350','#ffb74d','#ffd54f','#aed581','#4dd0e1','#7986cb','#ba68c8','#f06292'];
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        roundIndex: 0,
+        problem: null,        // {a, b}
+        builtA: 0,
+        builtB: 0,
+        phase: 'build',       // 'build' | 'merging' | 'answer' | 'locked' | 'done'
+        lastProblemKey: null, // gegen sofortige Wiederholung
+        colorOffset: 0,       // welche Farbe das untere Klötzchen hat
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const NS = 'http://www.w3.org/2000/svg';
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'plus-tuermchen-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO (sanft, kein Casino)
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.12, type = 'sine', vol = 0.06) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        place: () => tone(520, 0.08, 'sine', 0.05),
+        remove: () => tone(360, 0.08, 'sine', 0.04),
+        ready: () => {
+            tone(660, 0.10, 'sine', 0.06);
+            setTimeout(() => tone(880, 0.16, 'sine', 0.06), 90);
+        },
+        merge: () => {
+            tone(440, 0.12, 'sine', 0.06);
+            setTimeout(() => tone(660, 0.16, 'sine', 0.06), 130);
+            setTimeout(() => tone(880, 0.20, 'sine', 0.06), 280);
+        },
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.07);
+            setTimeout(() => tone(880, 0.22, 'sine', 0.07), 110);
+        },
+    };
+
+    // ====================================================
+    //  AUFGABEN
+    // ====================================================
+    function pickProblem() {
+        const pool = STAGES[state.stage].problems;
+        let p, key;
+        let tries = 0;
+        do {
+            p = pick(pool);
+            key = p[0] + '+' + p[1];
+            tries++;
+        } while (key === state.lastProblemKey && tries < 8);
+        state.lastProblemKey = key;
+        return { a: p[0], b: p[1] };
+    }
+
+    // ====================================================
+    //  KLÖTZCHEN ZEICHNEN
+    // ====================================================
+    // SVG: viewBox 0 0 80 360 — Klötzchen bauen von unten nach oben.
+    // BlockHeight passt sich an die maximal erwartete Stapelhöhe an, damit
+    // die Türme bei kleinen Aufgaben nicht winzig wirken aber bei grossen
+    // (z.B. 15 hoch) noch reinpassen. maxStack = a+b der aktuellen Aufgabe.
+    function getBlockGeom(maxStack) {
+        // Wir halten 2px Luft zwischen Klötzchen
+        const total = 350;             // verfügbarer Höhe-Bereich
+        const gap = 2;
+        // Block-Höhe so, dass maxStack Klötzchen (mit gap) reinpassen,
+        // aber nicht winzig sind. Gleichzeitig nicht riesig bei 1+1.
+        const idealH = Math.min(40, Math.max(18, Math.floor((total - gap * (maxStack - 1)) / Math.max(maxStack, 4))));
+        const blockW = 64;
+        const blockX = (80 - blockW) / 2;
+        return { blockH: idealH, gap, blockW, blockX, baseY: 358 };
+    }
+
+    function colorForIndex(i) {
+        return COLORS[(i + state.colorOffset) % COLORS.length];
+    }
+
+    function darkenHex(hex, amt = 0.2) {
+        // einfacher Schatten-Farbton
+        const c = hex.replace('#', '');
+        const r = parseInt(c.substr(0,2), 16);
+        const g = parseInt(c.substr(2,2), 16);
+        const b = parseInt(c.substr(4,2), 16);
+        const f = (v) => Math.max(0, Math.min(255, Math.round(v * (1 - amt))));
+        const toHex = (v) => v.toString(16).padStart(2, '0');
+        return '#' + toHex(f(r)) + toHex(f(g)) + toHex(f(b));
+    }
+
+    // Zeichnet `count` Klötzchen in das svg, von unten nach oben gestapelt.
+    // colorStartIndex: Farbindex des untersten Klötzchens (für Merge: linker Turm zuerst, dann rechter).
+    // animateNew: Index des Klötzchens, das gerade neu kam (drop-in). -1 = keines.
+    function renderTower(svgEl, count, maxStack, colorStartIndex, animateNew) {
+        svgEl.innerHTML = '';
+        const g = getBlockGeom(maxStack);
+        for (let i = 0; i < count; i++) {
+            const x = g.blockX;
+            const y = g.baseY - g.blockH - i * (g.blockH + g.gap);
+            const color = colorForIndex(colorStartIndex + i);
+            const shadow = darkenHex(color, 0.25);
+
+            const grp = document.createElementNS(NS, 'g');
+            grp.setAttribute('class', 'tower-block' + (i === animateNew ? ' appearing' : ''));
+            grp.style.transformBox = 'fill-box';
+
+            // Schatten-Strip unten (3D-Andeutung)
+            const shadowRect = document.createElementNS(NS, 'rect');
+            shadowRect.setAttribute('x', x);
+            shadowRect.setAttribute('y', y + g.blockH - 5);
+            shadowRect.setAttribute('width', g.blockW);
+            shadowRect.setAttribute('height', 5);
+            shadowRect.setAttribute('rx', 3);
+            shadowRect.setAttribute('fill', shadow);
+            grp.appendChild(shadowRect);
+
+            // Hauptkörper
+            const rect = document.createElementNS(NS, 'rect');
+            rect.setAttribute('x', x);
+            rect.setAttribute('y', y);
+            rect.setAttribute('width', g.blockW);
+            rect.setAttribute('height', g.blockH - 2);
+            rect.setAttribute('rx', 6);
+            rect.setAttribute('fill', color);
+            rect.setAttribute('stroke', shadow);
+            rect.setAttribute('stroke-width', 1.2);
+            grp.appendChild(rect);
+
+            // Noppe oben (kleine Klötzchen-Optik)
+            const noppe = document.createElementNS(NS, 'rect');
+            noppe.setAttribute('x', x + g.blockW / 2 - 8);
+            noppe.setAttribute('y', y + 2);
+            noppe.setAttribute('width', 16);
+            noppe.setAttribute('height', 4);
+            noppe.setAttribute('rx', 1.5);
+            noppe.setAttribute('fill', 'rgba(255,255,255,0.55)');
+            grp.appendChild(noppe);
+
+            svgEl.appendChild(grp);
+        }
+    }
+
+    function maxStackForProblem() {
+        // Plant für den Endzustand (a+b), damit nach Merge nichts überläuft.
+        return state.problem ? state.problem.a + state.problem.b : 4;
+    }
+
+    // ====================================================
+    //  RUNDEN-ABLAUF
+    // ====================================================
+    function setTaskText() {
+        const a = state.problem.a;
+        const b = state.problem.b;
+        $('task').innerHTML = '<span class="num-a">' + a + '</span> <span class="eq">+</span> <span class="num-b">' + b + '</span> <span class="eq">= ?</span>';
+    }
+
+    function updateLabels() {
+        const a = state.problem.a;
+        const b = state.problem.b;
+        const labA = $('label-a');
+        const labB = $('label-b');
+        labA.textContent = state.builtA + ' / ' + a;
+        labB.textContent = state.builtB + ' / ' + b;
+        labA.classList.toggle('done', state.builtA === a);
+        labB.classList.toggle('done', state.builtB === b);
+    }
+
+    function updateControls() {
+        const a = state.problem.a;
+        const b = state.problem.b;
+        $('plus-a').disabled = state.phase !== 'build' || state.builtA >= a;
+        $('minus-a').disabled = state.phase !== 'build' || state.builtA <= 0;
+        $('plus-b').disabled = state.phase !== 'build' || state.builtB >= b;
+        $('minus-b').disabled = state.phase !== 'build' || state.builtB <= 0;
+    }
+
+    function updateMergeBtn() {
+        const a = state.problem.a;
+        const b = state.problem.b;
+        const ready = state.phase === 'build' && state.builtA === a && state.builtB === b;
+        $('btn-merge').classList.toggle('show', ready);
+    }
+
+    function rerenderTowers(animateA, animateB) {
+        const ms = maxStackForProblem();
+        // Linker Turm: Farben starten bei Index 0
+        renderTower($('svg-a'), state.builtA, ms, 0, animateA == null ? -1 : animateA);
+        // Rechter Turm: Farben starten dort, wo der linke Turm in seinem
+        // Zielzustand aufhören würde (a). Damit sind die Klötzchen nach
+        // dem Merge bunt durchnummeriert.
+        renderTower($('svg-b'), state.builtB, ms, state.problem.a, animateB == null ? -1 : animateB);
+    }
+
+    function setPhase(p) {
+        state.phase = p;
+        updateControls();
+        updateMergeBtn();
+        const isBuild = p === 'build';
+        $('question').classList.toggle('show', p === 'answer' || p === 'locked');
+        $('answers').classList.toggle('show', p === 'answer' || p === 'locked');
+        // Controls beim Merge-/Antwort-Phase ausblenden? Wir lassen sie sichtbar
+        // aber disabled, damit der Layout-Sprung gering bleibt.
+    }
+
+    // -----------------------------------------------------
+    //  Build-Phase: Plus/Minus
+    // -----------------------------------------------------
+    function plus(side) {
+        if (state.phase !== 'build') return;
+        const target = side === 'a' ? state.problem.a : state.problem.b;
+        const cur = side === 'a' ? state.builtA : state.builtB;
+        if (cur >= target) return;
+        if (side === 'a') state.builtA++; else state.builtB++;
+        const newIdx = (side === 'a' ? state.builtA : state.builtB) - 1;
+        rerenderTowers(side === 'a' ? newIdx : -1, side === 'b' ? newIdx : -1);
+        sfx.place();
+        updateLabels();
+        updateControls();
+        const ready = state.builtA === state.problem.a && state.builtB === state.problem.b;
+        if (ready) {
+            sfx.ready();
+        }
+        updateMergeBtn();
+    }
+
+    function minus(side) {
+        if (state.phase !== 'build') return;
+        const cur = side === 'a' ? state.builtA : state.builtB;
+        if (cur <= 0) return;
+        if (side === 'a') state.builtA--; else state.builtB--;
+        rerenderTowers(-1, -1);
+        sfx.remove();
+        updateLabels();
+        updateControls();
+        updateMergeBtn();
+    }
+
+    // -----------------------------------------------------
+    //  Merge-Phase: rechter Turm rutscht auf linken
+    // -----------------------------------------------------
+    let mergeTimer = null;
+    function startMerge() {
+        if (state.phase !== 'build') return; // Tap-Race-Schutz: Phase prüfen UND ändern bevor Animation läuft
+        if (state.builtA !== state.problem.a || state.builtB !== state.problem.b) return;
+        setPhase('merging');
+        sfx.merge();
+
+        const ms = maxStackForProblem();
+        const g = getBlockGeom(ms);
+        // Rechter Turm bewegt sich nach links (Mitte des linken Turm-Slots)
+        // und nach oben (auf den linken Turm drauf).
+        const towerB = $('tower-b');
+
+        // Horizontaler Abstand: stage-box-gap (18) + tower-svg-wrap-Breite (120)
+        // Aber wir nehmen es lieber direkt aus dem Layout, damit es bei
+        // engen Bildschirmen passt.
+        const towerA = $('tower-a');
+        const rectA = towerA.getBoundingClientRect();
+        const rectB = towerB.getBoundingClientRect();
+        const dx = rectA.left - rectB.left;
+        // Vertikal: rechte Klötzchen müssen so weit nach oben, dass ihr
+        // unteres Ende auf dem aktuellen oberen Ende des linken Turms liegt.
+        // In SVG-Koordinaten ist das builtA * (blockH + gap) Pixel.
+        // Da der svg ein viewBox hat aber preserveAspectRatio meet+xMidYEnd,
+        // skaliert er nicht horizontal anders als das Wrap. Wir berechnen
+        // aus dem Layout: SVG-Wrap-Höhe = visuelle Pixel-Höhe.
+        const svgWrap = towerB.querySelector('.tower-svg-wrap');
+        const wrapPxHeight = svgWrap.getBoundingClientRect().height;
+        const svgPxPerUnit = wrapPxHeight / 360; // viewBox-Höhe = 360
+        const dy = -state.builtA * (g.blockH + g.gap) * svgPxPerUnit;
+
+        // Auf das tower-Element (nicht nur svg) translaten, damit auch die
+        // Controls/Label mitwandern wirkt seltsam — daher nur den svg-wrap
+        // bewegen.
+        svgWrap.style.transition = 'transform 0.7s cubic-bezier(.45,0,.2,1)';
+        svgWrap.style.transform = 'translate(' + dx + 'px, ' + dy + 'px)';
+
+        // Andere Tür-Elemente während Merge "verstecken" (Controls/Label),
+        // damit sie nicht falsch aussehen wenn der svg woanders ist.
+        towerB.querySelector('.controls').style.opacity = '0';
+        towerB.querySelector('.target-label').style.opacity = '0';
+        towerA.querySelector('.controls').style.opacity = '0';
+        towerA.querySelector('.target-label').style.opacity = '0';
+
+        if (mergeTimer) clearTimeout(mergeTimer);
+        mergeTimer = setTimeout(() => {
+            mergeTimer = null;
+            // Tap-Race-Schutz: nur fortsetzen wenn wir noch in 'merging' sind
+            if (state.phase !== 'merging') return;
+            finalizeMerge();
+        }, 750);
+    }
+
+    function finalizeMerge() {
+        // Linken Turm auf a+b setzen, rechten leeren.
+        // Visuell: linker svg zeigt jetzt alle a+b Klötzchen.
+        const total = state.problem.a + state.problem.b;
+        state.builtA = total;
+        state.builtB = 0;
+        const ms = maxStackForProblem();
+        renderTower($('svg-a'), total, ms, 0, -1);
+        renderTower($('svg-b'), 0, ms, state.problem.a, -1);
+
+        // Rechter SVG-Wrap zurück an Originalposition (für die nächste Runde)
+        const towerB = $('tower-b');
+        const towerA = $('tower-a');
+        const svgWrapB = towerB.querySelector('.tower-svg-wrap');
+        svgWrapB.style.transition = 'none';
+        svgWrapB.style.transform = '';
+        // Browser zwingen, das Reset zu übernehmen:
+        // (kein Reflow auf neue Transition nötig, da wir sie für nächste Merge erst wieder setzen)
+        void svgWrapB.offsetWidth;
+
+        // Controls verbergen (in Antwort-Phase nicht mehr nötig); Label des
+        // linken Turms zeigen nun "Gesamt"
+        towerB.querySelector('.controls').style.opacity = '';
+        towerB.querySelector('.target-label').style.opacity = '';
+        towerA.querySelector('.controls').style.opacity = '';
+        towerA.querySelector('.target-label').style.opacity = '';
+
+        // Antwort-Phase: Optionen anbieten
+        renderAnswers(total);
+        setPhase('answer');
+    }
+
+    // -----------------------------------------------------
+    //  Antwort-Phase
+    // -----------------------------------------------------
+    function renderAnswers(correct) {
+        const c = $('answers');
+        c.innerHTML = '';
+
+        // Distraktoren: nahe der korrekten Lösung, plausible Fehler
+        const opts = new Set([correct]);
+        const candidates = [correct - 2, correct - 1, correct + 1, correct + 2];
+        const shuffled = shuffle(candidates).filter(n => n >= 1 && n !== correct);
+        for (const n of shuffled) {
+            if (opts.size >= 3) break;
+            opts.add(n);
+        }
+        // Falls noch nicht genug (bei sehr kleinen correct): fülle auf
+        let n = correct + 3;
+        while (opts.size < 3) { opts.add(n); n++; }
+
+        const arr = shuffle(Array.from(opts));
+        arr.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'answer';
+            btn.textContent = String(opt);
+            btn.addEventListener('click', () => onAnswer(btn, opt, correct));
+            c.appendChild(btn);
+        });
+    }
+
+    function onAnswer(btn, opt, correct) {
+        if (state.phase !== 'answer') return; // Tap-Race: nur in answer-Phase
+        if (opt === correct) {
+            setPhase('locked'); // sperren bevor Timeout läuft (Tap-Race)
+            btn.classList.add('correct');
+            document.querySelectorAll('.answer').forEach(b => {
+                if (b !== btn) b.classList.add('locked');
+            });
+            sfx.correct();
+            setTimeout(() => {
+                state.roundIndex++;
+                if (state.roundIndex >= ROUNDS_PER_GAME) {
+                    showEnd();
+                } else {
+                    nextRound();
+                }
+            }, 1100);
+        } else {
+            btn.classList.remove('wiggle');
+            void btn.offsetWidth;
+            btn.classList.add('wiggle');
+        }
+    }
+
+    // -----------------------------------------------------
+    //  Runde starten
+    // -----------------------------------------------------
+    function nextRound() {
+        state.problem = pickProblem();
+        state.builtA = 0;
+        state.builtB = 0;
+        state.colorOffset = randInt(0, COLORS.length - 1);
+
+        setTaskText();
+        $('hud-progress').textContent = (state.roundIndex + 1) + ' / ' + ROUNDS_PER_GAME;
+        updateLabels();
+
+        // Türme leer rendern (mit aktueller maxStack)
+        const ms = maxStackForProblem();
+        renderTower($('svg-a'), 0, ms, 0, -1);
+        renderTower($('svg-b'), 0, ms, state.problem.a, -1);
+
+        $('answers').innerHTML = '';
+        setPhase('build');
+    }
+
+    // ====================================================
+    //  SCREENS
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game', 'end'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        $('hud-stage').textContent = STAGES[state.stage].label;
+        state.roundIndex = 0;
+        state.lastProblemKey = null;
+        switchScreen('game');
+        nextRound();
+    }
+
+    function showEnd() {
+        setPhase('done');
+        if (mergeTimer) { clearTimeout(mergeTimer); mergeTimer = null; }
+        switchScreen('end');
+    }
+
+    function backToStart() {
+        if (mergeTimer) { clearTimeout(mergeTimer); mergeTimer = null; }
+        setPhase('done');
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-end-back').addEventListener('click', backToStart);
+    $('btn-again').addEventListener('click', () => { startGame(); });
+
+    $('plus-a').addEventListener('click', () => plus('a'));
+    $('minus-a').addEventListener('click', () => minus('a'));
+    $('plus-b').addEventListener('click', () => plus('b'));
+    $('minus-b').addEventListener('click', () => minus('b'));
+    $('btn-merge').addEventListener('click', startMerge);
+
+    (function init() {
+        const prefs = loadPrefs();
+        const allowed = ['bis5','bis10','bis15'];
+        selectStage(allowed.includes(prefs.stage) ? prefs.stage : 'bis5');
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>

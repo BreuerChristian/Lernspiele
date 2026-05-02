@@ -1,0 +1,26 @@
+{
+  "name": "Anlaut-Spiel",
+  "short_name": "Anlaute",
+  "description": "Werbefreies Anlaut-Spiel fuer Kinder",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e6fbf6",
+  "theme_color": "#1abc9c",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -5,15 +5,15 @@ Sammlung möglicher nächster Spiele. Reihenfolge ist kein Ranking — gebaut wi
 Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (mit Begründung).
 
 ## Sprache & Lesen
-- [ ] **Silben klatschen** — Wort wird gezeigt/gesagt, Kind tippt pro Silbe einmal. Silbenbögen werden visualisiert.
-- [ ] **Anlaut-Spiel** — Bild (Apfel), Kind wählt Anfangsbuchstaben aus 3-4 Optionen. Anschluss an Buchstaben-Spiel.
+- [x] **Silben klatschen** — Wort wird gezeigt/gesagt, Kind tippt pro Silbe einmal. Silbenbögen werden visualisiert.
+- [x] **Anlaut-Spiel** — Bild (Apfel), Kind wählt Anfangsbuchstaben aus 3-4 Optionen. Anschluss an Buchstaben-Spiel.
 - [ ] **Reim-Paare** — zwei Bilder, reimt sich oder nicht (Haus/Maus vs. Haus/Auto).
 - [ ] **Wort-Bild-Memory** — kurzes Wort lesen, passendes Bild antippen. Erste echte Lese-Übung.
 - [ ] **Erste englische Wörter** — Bild + Audio + englisches Wort, ohne Test-Druck.
 
 ## Mathe & Zahlen
 - [x] **Mengen erfassen** — Punktwolke kurz zeigen, Anzahl wählen. Trainiert Subitizing (1-5 auf einen Blick).
-- [ ] **Plus-Türmchen** — visuelle Addition mit gestapelten Klötzchen, Drag&Drop. Web-Variante des goldenen Perlenmaterials.
+- [x] **Plus-Türmchen** — visuelle Addition mit gestapelten Klötzchen, Drag&Drop. Web-Variante des goldenen Perlenmaterials.
 - [x] **Uhr lesen** — analoge Uhr, "wie spät ist es?". Stufen: volle Stunde → halbe → viertel.
 - [x] **Zahlenreihen** — 2, 4, _, 8, 10 — was fehlt? Mit Zahlenstrahl als Hilfe.
 - [x] **Münzen** — Beträge mit Euro-Münzen legen.
@@ -49,3 +49,6 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [x] **Farben mischen** (`farben-mischen/`)
 - [x] **Symmetrie** (`symmetrie/`)
 - [x] **Münzen** (`muenzen/`)
+- [x] **Plus-Türmchen** (`plus-tuermchen/`)
+- [x] **Silben klatschen** (`silben-klatschen/`)
+- [x] **Anlaut-Spiel** (`anlaute/`)

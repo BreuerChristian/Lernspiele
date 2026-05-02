@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#d84315"/>
+  <!-- Linker Stapel (2 Kloetzchen) -->
+  <g>
+    <rect x="92"  y="320" width="96" height="64" rx="10" fill="#ffd54f" stroke="#9a7a1a" stroke-width="3"/>
+    <rect x="116" y="312" width="48" height="8"  rx="2" fill="rgba(255,255,255,0.6)"/>
+    <rect x="92"  y="248" width="96" height="64" rx="10" fill="#aed581" stroke="#5b8a36" stroke-width="3"/>
+    <rect x="116" y="240" width="48" height="8"  rx="2" fill="rgba(255,255,255,0.6)"/>
+  </g>
+  <!-- Plus-Symbol -->
+  <g fill="white">
+    <rect x="232" y="288" width="48" height="14" rx="6"/>
+    <rect x="249" y="271" width="14" height="48" rx="6"/>
+  </g>
+  <!-- Rechter Stapel (3 Kloetzchen, hoeher) -->
+  <g>
+    <rect x="324" y="320" width="96" height="64" rx="10" fill="#4dd0e1" stroke="#1a7280" stroke-width="3"/>
+    <rect x="348" y="312" width="48" height="8"  rx="2" fill="rgba(255,255,255,0.6)"/>
+    <rect x="324" y="248" width="96" height="64" rx="10" fill="#ba68c8" stroke="#6b3a78" stroke-width="3"/>
+    <rect x="348" y="240" width="48" height="8"  rx="2" fill="rgba(255,255,255,0.6)"/>
+    <rect x="324" y="176" width="96" height="64" rx="10" fill="#ef5350" stroke="#9a2a28" stroke-width="3"/>
+    <rect x="348" y="168" width="48" height="8"  rx="2" fill="rgba(255,255,255,0.6)"/>
+  </g>
+  <!-- Bodenlinie -->
+  <rect x="80" y="392" width="352" height="6" rx="3" fill="rgba(255,255,255,0.45)"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund, kein border-radius (OS maskiert) -->
+  <rect width="512" height="512" fill="#ad1457"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (~52..460 auf beiden Achsen) -->
+  <!-- Drei Silben-Bloecke (Wort) -->
+  <g>
+    <rect x="116" y="206" width="86"  height="54" rx="12" fill="white"/>
+    <rect x="213" y="206" width="86"  height="54" rx="12" fill="white"/>
+    <rect x="310" y="206" width="86"  height="54" rx="12" fill="white"/>
+  </g>
+  <!-- Drei Silben-Boegen -->
+  <g fill="none" stroke="#fce4ec" stroke-width="12" stroke-linecap="round">
+    <path d="M 124 322 Q 159 286 194 322"/>
+    <path d="M 221 322 Q 256 286 291 322"/>
+    <path d="M 318 322 Q 353 286 388 322"/>
+  </g>
+  <!-- Drei Klatsch-Punkte -->
+  <g fill="#fce4ec">
+    <circle cx="159" cy="372" r="13"/>
+    <circle cx="256" cy="372" r="13"/>
+    <circle cx="353" cy="372" r="13"/>
+  </g>
+</svg>
