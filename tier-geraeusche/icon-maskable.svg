@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#7cb556"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (256 +/- 205, also 51..461) -->
+  <path d="M 165 220 L 220 220 L 290 165 L 290 347 L 220 292 L 165 292 Z"
+        fill="white" stroke="#3e6628" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M 322 226 Q 354 256 322 286" stroke="white" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <path d="M 354 200 Q 402 256 354 312" stroke="white" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <path d="M 386 174 Q 446 256 386 338" stroke="white" stroke-width="13" fill="none" stroke-linecap="round"/>
+</svg>

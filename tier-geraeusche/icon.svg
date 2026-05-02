@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#7cb556"/>
+  <!-- Lautsprecher-Korpus -->
+  <path d="M 130 200 L 200 200 L 290 130 L 290 382 L 200 312 L 130 312 Z"
+        fill="white" stroke="#3e6628" stroke-width="6" stroke-linejoin="round"/>
+  <!-- Schallwellen -->
+  <path d="M 330 210 Q 370 256 330 302" stroke="white" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M 370 178 Q 432 256 370 334" stroke="white" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M 410 146 Q 494 256 410 366" stroke="white" stroke-width="16" fill="none" stroke-linecap="round"/>
+</svg>

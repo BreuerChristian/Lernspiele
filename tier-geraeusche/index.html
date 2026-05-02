@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Tier-Geräusche</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#7cb556">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #eaf4dc;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #eaf4dc 0%, #b8dba0 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #4a7a32;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #6e8a52;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #4a7a32;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #e6efd6;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #d4e6bc; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #4a7a32;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #f0f5e6;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #4a7a32;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #e1edcd; }
+        .stage-choice.active {
+            background: #d6e6bc;
+            border-color: #7cb556;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #4a7a32;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #6e8a52;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #7cb556, #4a7a32);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(74, 122, 50, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #eaf4dc 0%, #b8dba0 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #4a7a32;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #4a7a32;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 16px 20px;
+            gap: 16px;
+            min-height: 0;
+        }
+
+        .listen-btn {
+            background: white;
+            border: 3px solid #7cb556;
+            border-radius: 22px;
+            padding: 16px 28px;
+            font-family: inherit;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #4a7a32;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 14px rgba(74, 122, 50, 0.18);
+            transition: transform 0.1s, background 0.15s, box-shadow 0.2s;
+        }
+        .listen-btn:hover { background: #f0f7e3; }
+        .listen-btn:active { transform: translateY(2px); }
+        .listen-btn.pulse {
+            animation: pulse 1.6s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 6px 14px rgba(74, 122, 50, 0.18); }
+            50%      { box-shadow: 0 6px 22px rgba(124, 181, 86, 0.55); }
+        }
+        .listen-btn .speaker {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+        }
+        .listen-btn .speaker svg { width: 100%; height: 100%; display: block; }
+
+        .tiles {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 520px;
+            min-height: 0;
+            align-content: center;
+        }
+        .tiles.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+        .tile {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 20px;
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.10);
+            transition: transform 0.12s, border-color 0.15s, background 0.2s, box-shadow 0.15s;
+            min-height: 0;
+        }
+        .tile:hover { background: #f0f7e3; }
+        .tile:active { transform: translateY(1px); }
+        .tile .tile-emoji {
+            font-size: clamp(2.6rem, 11vw, 4.2rem);
+            line-height: 1;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+        }
+        .tile .tile-name {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #4a7a32;
+        }
+        .tile.correct {
+            background: #c4e6b8;
+            border-color: #6cab4e;
+        }
+        .tile.locked {
+            pointer-events: none;
+            opacity: 0.55;
+        }
+        .tile.wiggle {
+            animation: wiggle 0.45s ease-in-out;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            20%      { transform: translateX(-7px); }
+            40%      { transform: translateX(7px); }
+            60%      { transform: translateX(-5px); }
+            80%      { transform: translateX(5px); }
+        }
+
+        @media (max-width: 380px) {
+            .tile .tile-name { font-size: 0.85rem; }
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .listen-btn { padding: 14px 22px; font-size: 1.05rem; }
+        }
+        @media (max-height: 600px) {
+            .game-area { gap: 10px; padding: 10px 14px 14px; }
+            .listen-btn { padding: 12px 22px; font-size: 1rem; }
+            .tile { padding: 8px 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Tier-Geräusche</h1>
+        <p class="sub">Hör zu und finde das passende Tier.</p>
+
+        <div class="group">
+            <h2>Wie viele Tiere zur Wahl?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="2">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Zwei Tiere</span>
+                        <span class="ex">leichter Anfang</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="4">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Vier Tiere</span>
+                        <span class="ex">etwas schwieriger</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="6">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Sechs Tiere</span>
+                        <span class="ex">genau hinhören</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <button class="listen-btn pulse" id="btn-listen" aria-label="Geräusch wiederholen">
+            <span class="speaker" aria-hidden="true">
+                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 6 12 L 11 12 L 17 7 L 17 25 L 11 20 L 6 20 Z"
+                          fill="currentColor"/>
+                    <path d="M 20 11 Q 23.5 16 20 21" stroke="currentColor" stroke-width="2.2"
+                          fill="none" stroke-linecap="round"/>
+                    <path d="M 23.5 8 Q 29 16 23.5 24" stroke="currentColor" stroke-width="2.2"
+                          fill="none" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span>Hör mal!</span>
+        </button>
+        <div class="tiles" id="tiles"></div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  TIERE
+    //  Sounds: lege passende {id}.mp3 in den Ordner "sounds/" -
+    //  CC0-Quellen z.B. https://pixabay.com/sound-effects/
+    //  Solange keine Datei vorhanden ist, greift der Speech-
+    //  Synthesis-Fallback (Browser spricht "say"-Text).
+    // ====================================================
+    const ANIMALS = [
+        { id: 'kuh',     name: 'Kuh',     emoji: '🐄', say: 'Muuuuuh' },
+        { id: 'hund',    name: 'Hund',    emoji: '🐶', say: 'Wau, wau' },
+        { id: 'katze',   name: 'Katze',   emoji: '🐱', say: 'Miau' },
+        { id: 'hahn',    name: 'Hahn',    emoji: '🐓', say: 'Kikeriki' },
+        { id: 'schaf',   name: 'Schaf',   emoji: '🐑', say: 'Mäh, mäh' },
+        { id: 'schwein', name: 'Schwein', emoji: '🐷', say: 'Oink, oink' },
+        { id: 'pferd',   name: 'Pferd',   emoji: '🐴', say: 'Iiiiih' },
+        { id: 'ente',    name: 'Ente',    emoji: '🦆', say: 'Quak, quak' },
+        { id: 'frosch',  name: 'Frosch',  emoji: '🐸', say: 'Kwäk, kwäk' },
+        { id: 'maus',    name: 'Maus',    emoji: '🐭', say: 'Piep, piep' },
+        { id: 'eule',    name: 'Eule',    emoji: '🦉', say: 'Huhu' },
+        { id: 'biene',   name: 'Biene',   emoji: '🐝', say: 'Summ, summ' },
+        { id: 'loewe',   name: 'Löwe',    emoji: '🦁', say: 'Brüll, brüll' },
+    ];
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,           // 2 | 4 | 6
+        current: null,         // aktuelles Ziel-Tier
+        last: null,            // letztes Tier (gegen sofortige Wiederholung)
+        locked: false,         // zwischen Richtig-Tap und neuer Runde
+        currentAudio: null,    // gerade abspielendes Audio-Element
+        audioFailed: {},       // {animalId: true} wenn Datei nicht existiert
+    };
+
+    let pendingSpeechTimer = null;     // setTimeout-Handle fuer verzoegertes speak()
+    let stalledTimer = null;           // setTimeout-Handle fuer stalled-Detection
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const shuffle = (a) => {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    };
+
+    const STORAGE_KEY = 'tier-geraeusche-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    // ====================================================
+    //  AUDIO
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudioCtx() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
+        const ctx = ensureAudioCtx();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        correct: () => {
+            tone(660, 0.14, 'sine', 0.08);
+            setTimeout(() => tone(880, 0.22, 'sine', 0.08), 110);
+        },
+    };
+
+    function stopAnimalSound() {
+        if (state.currentAudio) {
+            try { state.currentAudio.pause(); } catch (e) { /* ignore */ }
+            state.currentAudio = null;
+        }
+        if ('speechSynthesis' in window) {
+            try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+        }
+    }
+
+    function speakFallback(animal) {
+        if (!('speechSynthesis' in window)) return;
+        try {
+            const u = new SpeechSynthesisUtterance(animal.say);
+            u.lang = 'de-DE';
+            u.rate = 0.9;
+            u.pitch = 1.0;
+            speechSynthesis.speak(u);
+        } catch (e) { /* ignore */ }
+    }
+
+    function playAnimal(animal) {
+        stopAnimalSound();
+        if (state.audioFailed[animal.id]) {
+            speakFallback(animal);
+            return;
+        }
+        const audio = new Audio(`sounds/${animal.id}.mp3`);
+        audio.preload = 'auto';
+        state.currentAudio = audio;
+        const failed = () => {
+            state.audioFailed[animal.id] = true;
+            if (state.currentAudio === audio) state.currentAudio = null;
+            speakFallback(animal);
+        };
+        audio.addEventListener('error', failed, { once: true });
+        const p = audio.play();
+        if (p && typeof p.then === 'function') {
+            p.catch(failed);
+        }
+    }
+
+    // ====================================================
+    //  RUNDE
+    // ====================================================
+    function generateRound() {
+        // Ziel: nicht das letzte Tier
+        let correct;
+        do { correct = pick(ANIMALS); } while (state.last && correct.id === state.last.id);
+        state.last = correct;
+        state.current = correct;
+
+        // Distraktoren aus dem Pool ohne correct
+        const distractors = shuffle(ANIMALS.filter(a => a.id !== correct.id))
+            .slice(0, state.stage - 1);
+        return { correct, options: shuffle([correct, ...distractors]) };
+    }
+
+    function renderTiles(options, correct) {
+        const tilesEl = $('tiles');
+        tilesEl.innerHTML = '';
+        // 2 / 4 / 6 Kacheln: 2 Spalten klappt fuer alle (1, 2, 3 Reihen).
+        // Bei 6 auf breiten Bildschirmen waere 3 Spalten huebscher.
+        tilesEl.classList.toggle('cols-3', state.stage === 6 && window.innerWidth >= 520);
+
+        options.forEach(opt => {
+            const tile = document.createElement('button');
+            tile.className = 'tile';
+            tile.innerHTML = `
+                <span class="tile-emoji">${opt.emoji}</span>
+                <span class="tile-name">${opt.name}</span>
+            `;
+            tile.addEventListener('click', () => onTileTap(tile, opt, correct));
+            tilesEl.appendChild(tile);
+        });
+    }
+
+    function onTileTap(tile, opt, correct) {
+        if (state.locked) return;
+        if (opt.id === correct.id) {
+            state.locked = true;
+            tile.classList.add('correct');
+            document.querySelectorAll('.tile').forEach(t => {
+                if (t !== tile) t.classList.add('locked');
+            });
+            stopAnimalSound();
+            sfx.correct();
+            $('btn-listen').classList.remove('pulse');
+            setTimeout(() => nextRound(), 1300);
+        } else {
+            tile.classList.remove('wiggle');
+            void tile.offsetWidth;
+            tile.classList.add('wiggle');
+        }
+    }
+
+    function nextRound() {
+        state.locked = false;
+        const round = generateRound();
+        renderTiles(round.options, round.correct);
+        $('btn-listen').classList.add('pulse');
+        // Kurzer Atempause, dann Geraeusch automatisch starten
+        setTimeout(() => playAnimal(round.correct), 250);
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        $('hud-stage').textContent = state.stage + ' Tiere';
+        switchScreen('game');
+        state.last = null;
+        state.locked = false;
+        nextRound();
+    }
+
+    function backToStart() {
+        stopAnimalSound();
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === String(value));
+        });
+        state.stage = Number(value);
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudioCtx(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-listen').addEventListener('click', () => {
+        if (state.current) playAnimal(state.current);
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopAnimalSound();
+    });
+
+    (function init() {
+        const prefs = loadPrefs();
+        const initial = [2, 4, 6].includes(prefs.stage) ? prefs.stage : 2;
+        selectStage(initial);
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>

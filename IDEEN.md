@@ -21,14 +21,14 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 ## Welt & Sachkunde
 - [ ] **Bundesländer-Spiel** — Pendant zu Hauptstädten, eine Stufe einfacher (Form ziehen → Position finden).
 - [ ] **Länder-Flaggen** — Flagge → Land. Knüpft direkt an Hauptstädte-Spiel an.
-- [ ] **Tier-Geräusche** — Geräusch hören, Tier antippen (4-6 Optionen). Niedrigschwellig, sofort spielbar.
+- [x] **Tier-Geräusche** — Geräusch hören, Tier antippen (4-6 Optionen). Niedrigschwellig, sofort spielbar.
 - [ ] **Planeten der Reihe nach** — Sonnensystem ordnen, mit Größenverhältnissen.
 - [ ] **Jahreszeiten-Sortieren** — Bilder (Schnee, Blüten, Sonnenblume, Laub) den vier Bäumen zuordnen.
 
 ## Wahrnehmung & Logik
-- [ ] **Schatten finden** — Tier-Silhouette, welche von 3 passt? Trainiert Form-Wahrnehmung.
+- [x] **Schatten finden** — Tier-Silhouette, welche von 3 passt? Trainiert Form-Wahrnehmung.
 - [ ] **Muster fortsetzen** — 🔴🔵🔴🔵_ — was kommt? Stufenweise komplexer.
-- [ ] **Was passt nicht?** — 4 Bilder, eines fällt aus der Kategorie.
+- [x] **Was passt nicht?** — 4 Bilder, eines fällt aus der Kategorie.
 - [ ] **Symmetrie-Vervollständigen** — linke Hälfte vorgegeben, rechte spiegeln (auf Raster).
 - [ ] **Farben mischen** — Wassertropfen-Optik, Gelb+Blau → Grün. Sandbox, keine Aufgaben.
 
@@ -39,3 +39,6 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [x] **Zahlen-Parade** (`zahlen-parade/`)
 - [x] **Hauptstädte-Lernen** (`hauptstaedte-lernen/`)
 - [x] **Uhr lesen** (`uhr-lesen/`)
+- [x] **Was passt nicht?** (`was-passt-nicht/`)
+- [x] **Schatten finden** (`schatten-finden/`)
+- [x] **Tier-Geräusche** (`tier-geraeusche/`)
