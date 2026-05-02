@@ -1,0 +1,26 @@
+{
+  "name": "Symmetrie",
+  "short_name": "Symmetrie",
+  "description": "Werbefreies Spiel zum Vervollstaendigen symmetrischer Muster fuer Kinder",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3e8fa",
+  "theme_color": "#6a1b9a",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

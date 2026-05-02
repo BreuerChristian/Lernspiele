@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#6a1b9a"/>
+  <!-- Schmetterling-Symbol fuer Symmetrie: zwei gespiegelte Flügel mit Mittellinie -->
+  <!-- Linker Fluegel -->
+  <path d="M 256 156
+           C 200 90, 100 90, 80 180
+           C 70 240, 110 300, 180 320
+           C 220 332, 246 320, 256 296 Z"
+        fill="#e75480"/>
+  <path d="M 256 296
+           C 246 332, 220 380, 170 396
+           C 110 408, 70 380, 80 330
+           C 100 290, 180 280, 256 296 Z"
+        fill="#3aa6dc"/>
+  <!-- Rechter Fluegel (gespiegelt) -->
+  <path d="M 256 156
+           C 312 90, 412 90, 432 180
+           C 442 240, 402 300, 332 320
+           C 292 332, 266 320, 256 296 Z"
+        fill="#e75480"/>
+  <path d="M 256 296
+           C 266 332, 292 380, 342 396
+           C 402 408, 442 380, 432 330
+           C 412 290, 332 280, 256 296 Z"
+        fill="#3aa6dc"/>
+  <!-- Mittellinie -->
+  <line x1="256" y1="100" x2="256" y2="412" stroke="white" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 14"/>
+  <!-- Koerper -->
+  <ellipse cx="256" cy="256" rx="14" ry="80" fill="#3a1657"/>
+  <circle cx="256" cy="180" r="14" fill="#3a1657"/>
+</svg>

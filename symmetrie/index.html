@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Symmetrie</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#6a1b9a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Verdana', 'Tahoma', sans-serif;
+            background: #f3e8fa;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen.hidden { display: none; }
+
+        /* ---------- Start-Screen ---------- */
+        #screen-start {
+            background: linear-gradient(135deg, #f3e8fa 0%, #d9b8ed 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #screen-start .card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        #screen-start h1 {
+            color: #6a1b9a;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
+        }
+        #screen-start .sub {
+            color: #7e3aa9;
+            margin-bottom: 22px;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #6a1b9a;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: #ead1f5;
+            transition: background 0.15s;
+        }
+        .back-link:hover { background: #dfb9ee; }
+
+        .group { margin-bottom: 22px; text-align: left; }
+        .group h2 {
+            color: #6a1b9a;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .stage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .stage-choice {
+            background: #f3e8fa;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #4a1a6e;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.12s, border-color 0.12s, background 0.12s;
+        }
+        .stage-choice:hover { background: #e6d2f2; }
+        .stage-choice.active {
+            background: #e6d2f2;
+            border-color: #6a1b9a;
+        }
+        .stage-choice .emoji {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .stage-choice .label {
+            display: block;
+            font-weight: bold;
+            color: #6a1b9a;
+            margin-bottom: 2px;
+        }
+        .stage-choice .ex {
+            display: block;
+            font-size: 0.85rem;
+            color: #6e4a8a;
+        }
+        #btn-start {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 18px;
+            background: linear-gradient(145deg, #9b4dca, #6a1b9a);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: inherit;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(106, 27, 154, 0.35);
+            transition: transform 0.12s;
+        }
+        #btn-start:active { transform: translateY(2px); }
+
+        /* ---------- Game-Screen ---------- */
+        #screen-game {
+            background: linear-gradient(180deg, #f3e8fa 0%, #d9b8ed 100%);
+        }
+        .hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 30;
+        }
+        .hud-stage {
+            color: #6a1b9a;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .hud-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 14px;
+            background: white;
+            color: #6a1b9a;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px 20px;
+            gap: 10px;
+            min-height: 0;
+        }
+        .prompt {
+            color: #4a1a6e;
+            font-size: 1.05rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.4em;
+        }
+        .grid-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            width: 100%;
+        }
+        .grid {
+            display: grid;
+            gap: 4px;
+            background: #b785d4;
+            padding: 6px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(106, 27, 154, 0.25);
+            position: relative;
+            /* Groesse passt sich dynamisch an */
+            width: min(86vw, 60vh, 460px);
+            height: min(86vw, 60vh, 460px);
+        }
+        .cell {
+            background: white;
+            border-radius: 6px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+            border: 0;
+            padding: 0;
+            font: inherit;
+        }
+        .cell.left {
+            cursor: default;
+            background: #f3e8fa;
+        }
+        .cell.left.filled,
+        .cell.right.filled {
+            box-shadow: inset 0 0 0 2px rgba(0,0,0,0.06);
+        }
+        .cell.right:hover { background: #f8eefc; }
+        .cell.right:active { transform: scale(0.95); }
+        .cell.right.filled:hover { filter: brightness(1.05); }
+
+        /* Mittellinie: grafisch deutlich zwischen mittlerer Spalte links/rechts */
+        .grid::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            bottom: 6px;
+            left: 50%;
+            width: 3px;
+            background: #6a1b9a;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .cell.wrong {
+            box-shadow: inset 0 0 0 3px #d23b3b;
+            animation: shake 0.4s ease-in-out;
+        }
+        .cell.hint {
+            box-shadow: inset 0 0 0 3px #f1b400;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25%      { transform: translateX(-3px); }
+            75%      { transform: translateX(3px); }
+        }
+
+        .cell.celebrate {
+            animation: pop 0.5s ease;
+        }
+        @keyframes pop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 460px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 14px 20px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #6a1b9a;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.1s, background 0.15s;
+            min-width: 110px;
+        }
+        .ctrl-btn:hover { background: #f3e8fa; }
+        .ctrl-btn:active { transform: translateY(1px); }
+        .ctrl-btn.primary {
+            background: linear-gradient(145deg, #9b4dca, #6a1b9a);
+            color: white;
+            box-shadow: 0 5px 12px rgba(106, 27, 154, 0.3);
+        }
+        .ctrl-btn.primary:hover { filter: brightness(1.05); background: linear-gradient(145deg, #9b4dca, #6a1b9a); }
+        .ctrl-btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Done-Overlay */
+        .done-overlay {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(243, 232, 250, 0.85);
+            border-radius: 14px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .done-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        .done-overlay .msg {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+            color: #6a1b9a;
+            font-weight: bold;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+
+        @media (max-width: 380px) {
+            #screen-start h1 { font-size: 1.8rem; }
+            #screen-start .card { padding: 24px 20px; }
+            .ctrl-btn { padding: 12px 14px; font-size: 0.95rem; min-width: 90px; }
+        }
+        @media (max-height: 600px) {
+            .prompt { font-size: 0.95rem; }
+            .game-area { padding: 8px 12px 12px; gap: 6px; }
+            .ctrl-btn { padding: 10px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     START-SCREEN
+============================================================ -->
+<div id="screen-start" class="screen">
+    <div class="card">
+        <a class="back-link" href="../">← Übersicht</a>
+        <h1>Symmetrie</h1>
+        <p class="sub">Tippe rechts so, dass beide Seiten gleich aussehen.</p>
+
+        <div class="group">
+            <h2>Wie schwer?</h2>
+            <div class="stage-list" id="stage-list">
+                <button class="stage-choice" data-stage="s1">
+                    <span class="emoji">🌱</span>
+                    <span>
+                        <span class="label">Eine Farbe</span>
+                        <span class="ex">6×6, einfache Formen</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="s2">
+                    <span class="emoji">🌿</span>
+                    <span>
+                        <span class="label">Zwei Farben</span>
+                        <span class="ex">6×6, Tippen schaltet die Farben durch</span>
+                    </span>
+                </button>
+                <button class="stage-choice" data-stage="s3">
+                    <span class="emoji">🌳</span>
+                    <span>
+                        <span class="label">Drei Farben</span>
+                        <span class="ex">8×8, größere Bilder</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btn-start">Los geht's!</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     GAME-SCREEN
+============================================================ -->
+<div id="screen-game" class="screen hidden">
+    <div class="hud">
+        <div class="hud-stage" id="hud-stage"></div>
+        <button class="hud-btn" id="btn-back" aria-label="Zurück">×</button>
+    </div>
+    <div class="game-area">
+        <div class="prompt" id="prompt">Spiegel die Form auf die rechte Seite.</div>
+        <div class="grid-wrap">
+            <div class="grid" id="grid">
+                <div class="done-overlay" id="done-overlay">
+                    <div class="msg" id="done-msg">Genau so!</div>
+                </div>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="ctrl-btn" id="btn-clear">Rechts leeren</button>
+            <button class="ctrl-btn primary" id="btn-check">Fertig</button>
+            <button class="ctrl-btn" id="btn-next" disabled>Nächste</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+
+    // ====================================================
+    //  FARBPALETTEN PRO STUFE
+    //  Index 0 = "leer". Indizes 1+ = Farben in der Cycle-Reihenfolge.
+    // ====================================================
+    const PALETTES = {
+        s1: ['#ffffff', '#e75480'],                                 // Pink
+        s2: ['#ffffff', '#e75480', '#3aa6dc'],                      // Pink, Blau
+        s3: ['#ffffff', '#e75480', '#3aa6dc', '#f4b400'],           // Pink, Blau, Gelb
+    };
+
+    // ====================================================
+    //  AUFGABEN
+    //  Jede Aufgabe = nur die LINKE Haelfte (read-only).
+    //  Spalten-Index 0 .. (cols/2 - 1). Zellwerte 0..n (Index in Palette).
+    //  Die rechte Seite ist die horizontale Spiegelung.
+    //
+    //  6x6 -> linke Haelfte hat 3 Spalten (0,1,2). Spiegelung:
+    //         rechte Spalte 5 <-> linke 0
+    //         rechte Spalte 4 <-> linke 1
+    //         rechte Spalte 3 <-> linke 2
+    //
+    //  8x8 -> linke Haelfte hat 4 Spalten (0..3).
+    //
+    //  Jede Aufgabe = Array von Reihen (oben nach unten),
+    //  jede Reihe = Array der linken Spalten (links nach rechts).
+    // ====================================================
+
+    // ----- STUFE 1: 6x6, eine Farbe -----
+    const PUZZLES_S1 = [
+        // 1) Halber Diamant (linke Haelfte einer Raute)
+        [
+            [0,0,1],
+            [0,1,1],
+            [1,1,1],
+            [1,1,1],
+            [0,1,1],
+            [0,0,1],
+        ],
+        // 2) Bogen / Tor
+        [
+            [0,1,1],
+            [1,1,0],
+            [1,0,0],
+            [1,0,0],
+            [1,0,0],
+            [1,1,0],
+        ],
+        // 3) Treppe nach oben
+        [
+            [0,0,0],
+            [0,0,1],
+            [0,1,1],
+            [1,1,1],
+            [0,0,0],
+            [0,0,0],
+        ],
+        // 4) Pluszeichen-Haelfte
+        [
+            [0,0,0],
+            [0,0,1],
+            [0,0,1],
+            [1,1,1],
+            [0,0,1],
+            [0,0,1],
+        ],
+        // 5) Herz-Haelfte
+        [
+            [0,1,1],
+            [1,1,1],
+            [1,1,1],
+            [0,1,1],
+            [0,0,1],
+            [0,0,0],
+        ],
+        // 6) Schmetterlings-Fluegel (klein)
+        [
+            [1,0,0],
+            [1,1,0],
+            [1,1,1],
+            [1,1,1],
+            [1,1,0],
+            [1,0,0],
+        ],
+        // 7) Pfeil nach innen
+        [
+            [0,0,0],
+            [1,0,0],
+            [1,1,0],
+            [1,1,1],
+            [1,1,0],
+            [1,0,0],
+        ],
+        // 8) Doppel-Punkte
+        [
+            [0,0,0],
+            [0,1,0],
+            [0,0,0],
+            [0,0,0],
+            [0,1,0],
+            [0,0,0],
+        ],
+    ];
+
+    // ----- STUFE 2: 6x6, zwei Farben -----
+    const PUZZLES_S2 = [
+        // 1) Bluete: rosa Blueten, blaue Mitte
+        [
+            [0,0,1],
+            [0,1,1],
+            [1,1,2],
+            [1,1,2],
+            [0,1,1],
+            [0,0,1],
+        ],
+        // 2) Haus: blaues Dach, rosa Wand
+        [
+            [0,0,1],
+            [0,1,1],
+            [1,1,1],
+            [2,2,2],
+            [2,0,2],
+            [2,2,2],
+        ],
+        // 3) Streifen-Schmetterling
+        [
+            [1,0,0],
+            [2,1,0],
+            [1,2,1],
+            [1,2,1],
+            [2,1,0],
+            [1,0,0],
+        ],
+        // 4) Kerze
+        [
+            [0,0,1],
+            [0,0,1],
+            [0,0,2],
+            [0,0,2],
+            [0,1,2],
+            [0,1,2],
+        ],
+        // 5) Krone
+        [
+            [1,0,1],
+            [1,1,1],
+            [1,2,1],
+            [2,2,2],
+            [2,2,2],
+            [0,0,0],
+        ],
+        // 6) Roboter-Gesicht
+        [
+            [0,2,2],
+            [0,2,2],
+            [1,1,2],
+            [1,2,1],
+            [1,1,2],
+            [0,2,2],
+        ],
+        // 7) Tropfen
+        [
+            [0,0,2],
+            [0,2,1],
+            [2,1,1],
+            [2,1,1],
+            [0,2,1],
+            [0,0,2],
+        ],
+    ];
+
+    // ----- STUFE 3: 8x8, drei Farben -----
+    const PUZZLES_S3 = [
+        // 1) Blume mit Stiel
+        [
+            [0,0,0,1],
+            [0,0,1,1],
+            [0,1,1,3],
+            [0,1,3,3],
+            [0,0,2,3],
+            [0,0,2,0],
+            [0,0,2,0],
+            [0,2,2,2],
+        ],
+        // 2) Schmetterling
+        [
+            [1,0,0,3],
+            [1,1,3,3],
+            [2,1,1,3],
+            [2,2,1,3],
+            [2,2,1,3],
+            [2,1,1,3],
+            [1,1,3,3],
+            [1,0,0,3],
+        ],
+        // 3) Burg
+        [
+            [0,0,0,1],
+            [0,0,1,1],
+            [0,1,1,1],
+            [3,3,3,1],
+            [3,2,3,1],
+            [3,3,3,1],
+            [3,2,3,1],
+            [3,3,3,3],
+        ],
+        // 4) Eule
+        [
+            [0,1,1,0],
+            [1,1,1,1],
+            [1,2,2,1],
+            [1,2,3,1],
+            [1,2,2,1],
+            [1,1,1,1],
+            [0,1,3,1],
+            [0,0,1,0],
+        ],
+        // 5) Blume gross
+        [
+            [0,0,0,3],
+            [0,0,3,3],
+            [0,3,3,1],
+            [3,3,1,1],
+            [3,1,1,2],
+            [0,3,1,1],
+            [0,0,3,1],
+            [0,0,0,3],
+        ],
+        // 6) Stern
+        [
+            [0,0,0,3],
+            [0,0,0,3],
+            [0,0,3,3],
+            [3,3,3,3],
+            [0,3,3,1],
+            [0,3,1,2],
+            [3,1,0,2],
+            [1,0,0,2],
+        ],
+        // 7) Boot mit Segel
+        [
+            [0,0,0,1],
+            [0,0,3,1],
+            [0,3,3,1],
+            [3,3,3,1],
+            [0,0,0,1],
+            [0,0,0,0],
+            [0,2,2,2],
+            [0,0,2,2],
+        ],
+    ];
+
+    const PUZZLES = { s1: PUZZLES_S1, s2: PUZZLES_S2, s3: PUZZLES_S3 };
+    const STAGE_META = {
+        s1: { label: 'Eine Farbe',  cols: 6, rows: 6 },
+        s2: { label: 'Zwei Farben', cols: 6, rows: 6 },
+        s3: { label: 'Drei Farben', cols: 8, rows: 8 },
+    };
+
+    // ====================================================
+    //  STATE
+    // ====================================================
+    const state = {
+        stage: null,
+        cols: 6,
+        rows: 6,
+        half: 3,                  // cols / 2
+        palette: PALETTES.s1,
+        leftPattern: null,        // 2D, rows x half
+        rightPattern: null,       // 2D, rows x half (Eingabe des Kindes)
+        cells: {},                // Map "r-c" -> button-element
+        puzzleIdx: 0,
+        order: [],                // Reihenfolge der Aufgaben
+        locked: false,            // true im "Gelöst"-Zustand zwischen Aufgaben
+        hintTimers: [],           // Timeouts für Hint/Wrong-Markierung
+    };
+
+    // ====================================================
+    //  HELPERS
+    // ====================================================
+    const $ = (id) => document.getElementById(id);
+    const STORAGE_KEY = 'symmetrie-prefs';
+    function loadPrefs() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePrefs() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ stage: state.stage })); }
+        catch (e) { /* ignore */ }
+    }
+
+    function shuffle(a) {
+        const r = a.slice();
+        for (let i = r.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [r[i], r[j]] = [r[j], r[i]];
+        }
+        return r;
+    }
+
+    function clearTimers() {
+        state.hintTimers.forEach(t => clearTimeout(t));
+        state.hintTimers = [];
+    }
+
+    // ====================================================
+    //  AUDIO (sehr dezent, nur dezenter Sound bei "fertig")
+    // ====================================================
+    let audioCtx = null;
+    function ensureAudio() {
+        if (audioCtx) return audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audioCtx = null; }
+        return audioCtx;
+    }
+    function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0;
+        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+    }
+    const sfx = {
+        done: () => {
+            tone(660, 0.15, 'sine', 0.07);
+            setTimeout(() => tone(880, 0.22, 'sine', 0.07), 120);
+        },
+    };
+
+    // ====================================================
+    //  GRID AUFBAUEN
+    // ====================================================
+    function buildGrid() {
+        const grid = $('grid');
+        // Behalte Done-Overlay, alles andere weg
+        const overlay = $('done-overlay');
+        grid.innerHTML = '';
+        grid.appendChild(overlay);
+        grid.style.gridTemplateColumns = `repeat(${state.cols}, 1fr)`;
+        grid.style.gridTemplateRows    = `repeat(${state.rows}, 1fr)`;
+        state.cells = {};
+
+        for (let r = 0; r < state.rows; r++) {
+            for (let c = 0; c < state.cols; c++) {
+                const btn = document.createElement('button');
+                const isLeft = c < state.half;
+                btn.className = 'cell ' + (isLeft ? 'left' : 'right');
+                btn.dataset.row = String(r);
+                btn.dataset.col = String(c);
+                btn.type = 'button';
+                if (isLeft) {
+                    btn.setAttribute('aria-label', 'Vorgegebenes Feld');
+                    btn.tabIndex = -1;
+                } else {
+                    btn.setAttribute('aria-label', 'Feld antippen zum Färben');
+                    btn.addEventListener('click', () => onRightTap(r, c));
+                }
+                state.cells[r + '-' + c] = btn;
+                grid.appendChild(btn);
+            }
+        }
+    }
+
+    // Mapping rechte Spalte -> linke Spiegel-Spalte
+    function mirrorCol(c) {
+        return state.cols - 1 - c;
+    }
+    // Index in leftPattern[row][...] aus absoluter Spalte (links: 0..half-1)
+    function leftColIdx(c) {
+        return c; // links: c entspricht direkt dem Index
+    }
+    // Index in rightPattern[row][...] aus absoluter Spalte (rechts: half..cols-1)
+    function rightColIdx(c) {
+        return c - state.half;
+    }
+
+    function paintCell(r, c, value) {
+        const cell = state.cells[r + '-' + c];
+        if (!cell) return;
+        const color = state.palette[value];
+        cell.style.background = (value === 0)
+            ? (c < state.half ? '#f3e8fa' : 'white')
+            : color;
+        cell.classList.toggle('filled', value !== 0);
+    }
+
+    function renderAll() {
+        for (let r = 0; r < state.rows; r++) {
+            for (let c = 0; c < state.cols; c++) {
+                let v;
+                if (c < state.half) v = state.leftPattern[r][leftColIdx(c)];
+                else                v = state.rightPattern[r][rightColIdx(c)];
+                paintCell(r, c, v);
+                // hint/wrong/celebrate vorsichtshalber zuruecksetzen
+                state.cells[r + '-' + c].classList.remove('wrong', 'hint', 'celebrate');
+            }
+        }
+    }
+
+    // ====================================================
+    //  TAP HANDLER (rechts)
+    // ====================================================
+    function onRightTap(r, c) {
+        if (state.locked) return;
+        // Nicht-blockierende Markierungen entfernen, damit man weiter tippen kann
+        clearTimers();
+        Object.values(state.cells).forEach(el => el.classList.remove('wrong', 'hint'));
+
+        const idx = rightColIdx(c);
+        const cur = state.rightPattern[r][idx];
+        const next = (cur + 1) % state.palette.length;
+        state.rightPattern[r][idx] = next;
+        paintCell(r, c, next);
+    }
+
+    // ====================================================
+    //  CHECK
+    // ====================================================
+    function checkSolution() {
+        if (state.locked) return;
+        clearTimers();
+
+        const wrongCells = [];
+        for (let r = 0; r < state.rows; r++) {
+            for (let cR = state.half; cR < state.cols; cR++) {
+                const cL = mirrorCol(cR);
+                const expected = state.leftPattern[r][leftColIdx(cL)];
+                const got      = state.rightPattern[r][rightColIdx(cR)];
+                if (expected !== got) wrongCells.push({ r, cR, cL });
+            }
+        }
+
+        if (wrongCells.length === 0) {
+            // Vollstaendig symmetrisch: Done-Overlay, kurze Pop-Animation
+            state.locked = true;
+            $('btn-check').disabled = true;
+            $('btn-clear').disabled = true;
+            $('btn-next').disabled = false;
+            // Pop-Animation auf allen gefuellten rechten Zellen
+            for (let r = 0; r < state.rows; r++) {
+                for (let cR = state.half; cR < state.cols; cR++) {
+                    if (state.rightPattern[r][rightColIdx(cR)] !== 0) {
+                        state.cells[r + '-' + cR].classList.add('celebrate');
+                    }
+                }
+            }
+            $('done-overlay').classList.add('show');
+            sfx.done();
+            // Hint: Auto-Vorschlag, dass es weitergehen kann (nach Klick auf "Nächste")
+        } else {
+            // Markiere falsche rechte Zellen + zeige kurz die zugehoerige linke Zelle als Hint
+            wrongCells.forEach(({ r, cR, cL }) => {
+                const right = state.cells[r + '-' + cR];
+                const left  = state.cells[r + '-' + cL];
+                if (right) right.classList.add('wrong');
+                if (left)  left.classList.add('hint');
+            });
+            const t = setTimeout(() => {
+                wrongCells.forEach(({ r, cR, cL }) => {
+                    const right = state.cells[r + '-' + cR];
+                    const left  = state.cells[r + '-' + cL];
+                    if (right) right.classList.remove('wrong');
+                    if (left)  left.classList.remove('hint');
+                });
+            }, 1600);
+            state.hintTimers.push(t);
+        }
+    }
+
+    function clearRight() {
+        if (state.locked) return;
+        clearTimers();
+        for (let r = 0; r < state.rows; r++) {
+            for (let i = 0; i < state.half; i++) {
+                state.rightPattern[r][i] = 0;
+            }
+        }
+        renderAll();
+    }
+
+    // ====================================================
+    //  AUFGABE LADEN
+    // ====================================================
+    function loadPuzzle(idx) {
+        clearTimers();
+        state.locked = false;
+        $('done-overlay').classList.remove('show');
+        $('btn-check').disabled = false;
+        $('btn-clear').disabled = false;
+        $('btn-next').disabled = true;
+
+        const list = PUZZLES[state.stage];
+        const puzzle = list[state.order[idx % state.order.length]];
+        // Defensive Kopie der linken Haelfte
+        state.leftPattern = puzzle.map(row => row.slice());
+        // Rechte Haelfte mit 0 initialisieren
+        state.rightPattern = [];
+        for (let r = 0; r < state.rows; r++) {
+            const row = new Array(state.half).fill(0);
+            state.rightPattern.push(row);
+        }
+        renderAll();
+
+        // Aufgabennummer im HUD ergaenzen (z.B. "Eine Farbe — Bild 2 von 8")
+        const totalText = ' — Bild ' + ((idx % state.order.length) + 1) + ' von ' + state.order.length;
+        $('hud-stage').textContent = STAGE_META[state.stage].label + totalText;
+    }
+
+    function nextPuzzle() {
+        state.puzzleIdx++;
+        // Wenn alle durch sind: einfach neu mischen, kein Endscreen, kein Wettbewerb
+        if (state.puzzleIdx >= state.order.length) {
+            state.puzzleIdx = 0;
+            state.order = shuffle(state.order);
+        }
+        loadPuzzle(state.puzzleIdx);
+    }
+
+    // ====================================================
+    //  SCREEN-MANAGEMENT
+    // ====================================================
+    function switchScreen(name) {
+        ['start', 'game'].forEach(n => {
+            $('screen-' + n).classList.toggle('hidden', n !== name);
+        });
+    }
+
+    function startGame() {
+        if (!state.stage) return;
+        savePrefs();
+        const meta = STAGE_META[state.stage];
+        state.cols = meta.cols;
+        state.rows = meta.rows;
+        state.half = meta.cols / 2;
+        state.palette = PALETTES[state.stage];
+
+        const list = PUZZLES[state.stage];
+        state.order = shuffle(list.map((_, i) => i));
+        state.puzzleIdx = 0;
+
+        switchScreen('game');
+        buildGrid();
+        loadPuzzle(0);
+    }
+
+    function backToStart() {
+        clearTimers();
+        switchScreen('start');
+    }
+
+    // ====================================================
+    //  EVENT-WIRING
+    // ====================================================
+    function selectStage(value) {
+        $('stage-list').querySelectorAll('.stage-choice').forEach(b => {
+            b.classList.toggle('active', b.dataset.stage === value);
+        });
+        state.stage = value;
+    }
+
+    document.querySelectorAll('#stage-list .stage-choice').forEach(b => {
+        b.addEventListener('click', () => selectStage(b.dataset.stage));
+    });
+
+    $('btn-start').addEventListener('click', () => { ensureAudio(); startGame(); });
+    $('btn-back').addEventListener('click', backToStart);
+    $('btn-check').addEventListener('click', checkSolution);
+    $('btn-clear').addEventListener('click', clearRight);
+    $('btn-next').addEventListener('click', nextPuzzle);
+
+    (function init() {
+        const prefs = loadPrefs();
+        selectStage(prefs.stage || 's1');
+    })();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+})();
+</script>
+</body>
+</html>

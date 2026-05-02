@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Vollflaechiger Hintergrund (kein border-radius - wird vom OS maskiert) -->
+  <rect width="512" height="512" fill="#6a1b9a"/>
+  <!-- Inhalt innerhalb 80% Safe-Zone (Mitte 256, Radius ~155, Bereich 100..412) -->
+  <!-- Linker Fluegel -->
+  <path d="M 256 196
+           C 216 156, 156 156, 142 216
+           C 134 256, 162 296, 210 308
+           C 240 316, 250 308, 256 290 Z"
+        fill="#e75480"/>
+  <path d="M 256 290
+           C 250 316, 232 348, 198 360
+           C 158 368, 134 348, 142 314
+           C 156 284, 210 274, 256 290 Z"
+        fill="#3aa6dc"/>
+  <!-- Rechter Fluegel -->
+  <path d="M 256 196
+           C 296 156, 356 156, 370 216
+           C 378 256, 350 296, 302 308
+           C 272 316, 262 308, 256 290 Z"
+        fill="#e75480"/>
+  <path d="M 256 290
+           C 262 316, 280 348, 314 360
+           C 354 368, 378 348, 370 314
+           C 356 284, 302 274, 256 290 Z"
+        fill="#3aa6dc"/>
+  <!-- Mittellinie -->
+  <line x1="256" y1="156" x2="256" y2="380" stroke="white" stroke-width="5" stroke-linecap="round" stroke-dasharray="9 12"/>
+  <!-- Koerper -->
+  <ellipse cx="256" cy="266" rx="11" ry="58" fill="#3a1657"/>
+  <circle cx="256" cy="208" r="11" fill="#3a1657"/>
+</svg>
