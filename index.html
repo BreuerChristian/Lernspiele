@@ -125,11 +125,53 @@
             margin: 0 2px;
         }
 
+        /* ---- Altersstufen-Filter ---- */
+        .age-filter {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 6px 0 22px;
+        }
+        .age-filter .pill {
+            min-width: 52px;
+            min-height: 44px;
+            padding: 0 16px;
+            border: 2px solid #d3c4e8;
+            background: white;
+            color: #764ba2;
+            border-radius: 22px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+        }
+        .age-filter .pill:hover { background: #f3eef9; }
+        .age-filter .pill.active {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            border-color: #764ba2;
+            color: white;
+        }
+
+        .cat {
+            color: #764ba2;
+            font-size: 1.25rem;
+            margin: 28px 0 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #ece4f4;
+            text-align: left;
+        }
+        .cat:first-of-type { margin-top: 14px; }
+        .cat-section.cat-empty { display: none; }
+
         .games {
             display: grid;
-            gap: 18px;
-            margin-bottom: 35px;
+            gap: 14px;
+            margin-bottom: 8px;
         }
+        .games:last-of-type { margin-bottom: 28px; }
+        .game-card.filtered-out { display: none; }
 
         .game-card {
             display: block;
@@ -200,100 +242,107 @@
             </div>
         </div>
 
-        <nav class="games">
-            <a class="game-card" href="buchstaben/">
-                Buchstaben-Spiel
-                <span class="desc">Buchstaben hören und erkennen</span>
-            </a>
-            <a class="game-card" href="zahlen-parade/">
-                Zahlen-Parade
-                <span class="desc">Rechnen mit einer wandernden Kindergruppe</span>
-            </a>
-            <a class="game-card" href="hauptstaedte-lernen/">
-                Hauptstädte lernen
-                <span class="desc">In drei Stufen: deutsche Bundesländer, Europa, weltweit</span>
-            </a>
-            <a class="game-card" href="uhr-lesen/">
-                Uhr lesen
-                <span class="desc">Analog-Uhr in drei Stufen: voll, halb, viertel</span>
-            </a>
-            <a class="game-card" href="was-passt-nicht/">
-                Was passt nicht?
-                <span class="desc">Vier Bilder, eines fällt aus der Kategorie</span>
-            </a>
-            <a class="game-card" href="schatten-finden/">
-                Schatten finden
-                <span class="desc">Tier oben, passender Schatten unten</span>
-            </a>
-            <a class="game-card" href="tier-geraeusche/">
-                Tier-Geräusche
-                <span class="desc">Hör zu und finde das passende Tier</span>
-            </a>
-            <a class="game-card" href="jahreszeiten-sortieren/">
-                Jahreszeiten-Sortieren
-                <span class="desc">Bilder den vier Jahreszeiten zuordnen</span>
-            </a>
-            <a class="game-card" href="muster-fortsetzen/">
-                Muster fortsetzen
-                <span class="desc">Welches Symbol kommt als Nächstes?</span>
-            </a>
-            <a class="game-card" href="mengen-erfassen/">
-                Mengen erfassen
-                <span class="desc">Punktwolke kurz sehen, Anzahl erkennen</span>
-            </a>
-            <a class="game-card" href="zahlenreihen/">
-                Zahlenreihen
-                <span class="desc">Was fehlt? 2, 4, _, 8, 10</span>
-            </a>
-            <a class="game-card" href="farben-mischen/">
-                Farben mischen
-                <span class="desc">Rot, Gelb, Blau — was passiert beim Mischen?</span>
-            </a>
-            <a class="game-card" href="symmetrie/">
-                Symmetrie
-                <span class="desc">Linke Hälfte vorgegeben — Spiegel ergänzen</span>
-            </a>
-            <a class="game-card" href="muenzen/">
-                Münzen
-                <span class="desc">Beträge mit Euro-Münzen legen</span>
-            </a>
-            <a class="game-card" href="plus-tuermchen/">
-                Plus-Türmchen
-                <span class="desc">Visuelle Addition mit Klötzchen-Stapeln</span>
-            </a>
-            <a class="game-card" href="silben-klatschen/">
-                Silben klatschen
-                <span class="desc">Wort hören und pro Silbe einmal tippen</span>
-            </a>
-            <a class="game-card" href="anlaute/">
-                Anlaut-Spiel
-                <span class="desc">Mit welchem Buchstaben beginnt das Wort?</span>
-            </a>
-            <a class="game-card" href="reim-paare/">
-                Reim-Paare
-                <span class="desc">Reimt sich? Haus und Maus — oder doch nicht?</span>
-            </a>
-            <a class="game-card" href="wort-bild/">
-                Wort-Bild-Memory
-                <span class="desc">Wort lesen und passendes Bild antippen</span>
-            </a>
-            <a class="game-card" href="englisch-erste-woerter/">
-                Erste englische Wörter
-                <span class="desc">Bild + Wort hören, ohne Test</span>
-            </a>
-            <a class="game-card" href="bundeslaender/">
-                Bundesländer-Spiel
-                <span class="desc">Die 16 Bundesländer auf der Karte finden</span>
-            </a>
-            <a class="game-card" href="flaggen/">
-                Länder-Flaggen
-                <span class="desc">Welche Flagge gehört zu welchem Land?</span>
-            </a>
-            <a class="game-card" href="planeten/">
-                Planeten der Reihe nach
-                <span class="desc">Sonnensystem erkunden und ordnen</span>
-            </a>
-        </nav>
+        <div class="age-filter" id="age-filter" role="group" aria-label="Filter nach Alter">
+            <button class="pill active" data-age="all" aria-pressed="true">Alle</button>
+            <button class="pill" data-age="4" aria-pressed="false">4</button>
+            <button class="pill" data-age="6" aria-pressed="false">6</button>
+            <button class="pill" data-age="8" aria-pressed="false">8</button>
+            <button class="pill" data-age="10" aria-pressed="false">10</button>
+            <button class="pill" data-age="12" aria-pressed="false">12</button>
+        </div>
+
+        <section class="cat-section">
+            <h2 class="cat">Sprache &amp; Lesen</h2>
+            <nav class="games">
+                <a class="game-card" href="buchstaben/" data-age-min="4" data-age-max="7">
+                    Buchstaben-Spiel
+                    <span class="desc">Buchstaben hören und erkennen</span>                </a>
+                <a class="game-card" href="anlaute/" data-age-min="5" data-age-max="8">
+                    Anlaut-Spiel
+                    <span class="desc">Mit welchem Buchstaben beginnt das Wort?</span>                </a>
+                <a class="game-card" href="silben-klatschen/" data-age-min="5" data-age-max="8">
+                    Silben klatschen
+                    <span class="desc">Wort hören und pro Silbe einmal tippen</span>                </a>
+                <a class="game-card" href="reim-paare/" data-age-min="5" data-age-max="8">
+                    Reim-Paare
+                    <span class="desc">Reimt sich? Haus und Maus — oder doch nicht?</span>                </a>
+                <a class="game-card" href="wort-bild/" data-age-min="6" data-age-max="9">
+                    Wort-Bild-Memory
+                    <span class="desc">Wort lesen und passendes Bild antippen</span>                </a>
+                <a class="game-card" href="englisch-erste-woerter/" data-age-min="6" data-age-max="10">
+                    Erste englische Wörter
+                    <span class="desc">Bild + Wort hören, ohne Test</span>                </a>
+            </nav>
+        </section>
+
+        <section class="cat-section">
+            <h2 class="cat">Mathe &amp; Zahlen</h2>
+            <nav class="games">
+                <a class="game-card" href="zahlen-parade/" data-age-min="5" data-age-max="9">
+                    Zahlen-Parade
+                    <span class="desc">Rechnen mit einer wandernden Kindergruppe</span>                </a>
+                <a class="game-card" href="mengen-erfassen/" data-age-min="4" data-age-max="7">
+                    Mengen erfassen
+                    <span class="desc">Punktwolke kurz sehen, Anzahl erkennen</span>                </a>
+                <a class="game-card" href="zahlenreihen/" data-age-min="6" data-age-max="10">
+                    Zahlenreihen
+                    <span class="desc">Was fehlt? 2, 4, _, 8, 10</span>                </a>
+                <a class="game-card" href="plus-tuermchen/" data-age-min="5" data-age-max="8">
+                    Plus-Türmchen
+                    <span class="desc">Visuelle Addition mit Klötzchen-Stapeln</span>                </a>
+                <a class="game-card" href="muenzen/" data-age-min="6" data-age-max="10">
+                    Münzen
+                    <span class="desc">Beträge mit Euro-Münzen legen</span>                </a>
+                <a class="game-card" href="uhr-lesen/" data-age-min="7" data-age-max="10">
+                    Uhr lesen
+                    <span class="desc">Analog-Uhr in drei Stufen: voll, halb, viertel</span>                </a>
+            </nav>
+        </section>
+
+        <section class="cat-section">
+            <h2 class="cat">Welt &amp; Sachkunde</h2>
+            <nav class="games">
+                <a class="game-card" href="tier-geraeusche/" data-age-min="3" data-age-max="6">
+                    Tier-Geräusche
+                    <span class="desc">Hör zu und finde das passende Tier</span>                </a>
+                <a class="game-card" href="jahreszeiten-sortieren/" data-age-min="3" data-age-max="6">
+                    Jahreszeiten-Sortieren
+                    <span class="desc">Bilder den vier Jahreszeiten zuordnen</span>                </a>
+                <a class="game-card" href="bundeslaender/" data-age-min="7" data-age-max="11">
+                    Bundesländer-Spiel
+                    <span class="desc">Die 16 Bundesländer auf der Karte finden</span>                </a>
+                <a class="game-card" href="hauptstaedte-lernen/" data-age-min="8" data-age-max="12">
+                    Hauptstädte lernen
+                    <span class="desc">In drei Stufen: deutsche Bundesländer, Europa, weltweit</span>                </a>
+                <a class="game-card" href="flaggen/" data-age-min="8" data-age-max="12">
+                    Länder-Flaggen
+                    <span class="desc">Welche Flagge gehört zu welchem Land?</span>                </a>
+                <a class="game-card" href="planeten/" data-age-min="7" data-age-max="12">
+                    Planeten der Reihe nach
+                    <span class="desc">Sonnensystem erkunden und ordnen</span>                </a>
+            </nav>
+        </section>
+
+        <section class="cat-section">
+            <h2 class="cat">Wahrnehmung &amp; Logik</h2>
+            <nav class="games">
+                <a class="game-card" href="schatten-finden/" data-age-min="3" data-age-max="6">
+                    Schatten finden
+                    <span class="desc">Tier oben, passender Schatten unten</span>                </a>
+                <a class="game-card" href="was-passt-nicht/" data-age-min="4" data-age-max="7">
+                    Was passt nicht?
+                    <span class="desc">Vier Bilder, eines fällt aus der Kategorie</span>                </a>
+                <a class="game-card" href="muster-fortsetzen/" data-age-min="5" data-age-max="9">
+                    Muster fortsetzen
+                    <span class="desc">Welches Symbol kommt als Nächstes?</span>                </a>
+                <a class="game-card" href="symmetrie/" data-age-min="6" data-age-max="10">
+                    Symmetrie
+                    <span class="desc">Linke Hälfte vorgegeben — Spiegel ergänzen</span>                </a>
+                <a class="game-card" href="farben-mischen/" data-age-min="4" data-age-max="8">
+                    Farben mischen
+                    <span class="desc">Rot, Gelb, Blau — was passiert beim Mischen?</span>                </a>
+            </nav>
+        </section>
 
         <footer>
             Keine Werbung &middot; Keine Tracker &middot; Offline spielbar<br>
@@ -356,7 +405,51 @@
             desc.textContent = DESC_IOS;
         }
 
-        // Service Worker registrieren
+        // ----------------------------------------------------------------
+        // Altersstufen-Filter
+        // ----------------------------------------------------------------
+        const AGE_KEY = 'lernspiele-age-filter';
+        const pills = document.querySelectorAll('#age-filter .pill');
+
+        function applyAgeFilter(age /* 'all' | number-string */) {
+            const target = (age && age !== 'all') ? parseInt(age, 10) : null;
+            document.querySelectorAll('.game-card').forEach(card => {
+                if (target === null) {
+                    card.classList.remove('filtered-out');
+                    return;
+                }
+                const min = parseInt(card.dataset.ageMin || '0', 10);
+                const max = parseInt(card.dataset.ageMax || '99', 10);
+                const inRange = target >= min && target <= max;
+                card.classList.toggle('filtered-out', !inRange);
+            });
+            // Leere Kategorien ausblenden
+            document.querySelectorAll('.cat-section').forEach(sec => {
+                const visible = sec.querySelector('.game-card:not(.filtered-out)');
+                sec.classList.toggle('cat-empty', !visible);
+            });
+            // Pill-State
+            pills.forEach(p => {
+                const active = p.dataset.age === (target === null ? 'all' : String(target));
+                p.classList.toggle('active', active);
+                p.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+            try { localStorage.setItem(AGE_KEY, target === null ? 'all' : String(target)); }
+            catch (e) { /* ignore */ }
+        }
+
+        pills.forEach(p => {
+            p.addEventListener('click', () => applyAgeFilter(p.dataset.age));
+        });
+
+        try {
+            const saved = localStorage.getItem(AGE_KEY);
+            if (saved && (saved === 'all' || /^\d+$/.test(saved))) applyAgeFilter(saved);
+        } catch (e) { /* ignore */ }
+
+        // ----------------------------------------------------------------
+        // Service Worker
+        // ----------------------------------------------------------------
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js').catch(() => {});
