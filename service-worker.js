@@ -1,4 +1,4 @@
-const CACHE = 'lernspiele-landing-v17';
+const CACHE = 'lernspiele-landing-v18';
 const ASSETS = [
   './',
   './index.html',

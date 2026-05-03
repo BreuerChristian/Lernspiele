@@ -82,19 +82,66 @@ PATTERNS = [
 ]
 
 
+def _split_path_objects(paths_body: str) -> list[str]:
+    """Splittet einen paths-Array-Body in einzelne Objekt-Inhalte."""
+    objects: list[str] = []
+    depth = 0
+    start: int | None = None
+    for i, ch in enumerate(paths_body):
+        if ch == "{":
+            if depth == 0:
+                start = i + 1
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0 and start is not None:
+                objects.append(paths_body[start:i])
+                start = None
+    return objects
+
+
+# Erkennt Key-Value-Paare wie:  d: 'M ...', fill: '#abc', 'stroke-width': '6'
+# Keys: \w+ optional mit - (z.B. stroke-width), Werte in '...' oder "..."
+_KV_RE = re.compile(
+    r"""(?:^|,)\s*
+        (?:(\w+(?:-\w+)*)|['"]([\w-]+)['"])
+        \s*:\s*
+        ['"]([^'"]*)['"]""",
+    re.VERBOSE,
+)
+
+
+def _parse_path_attrs(obj_body: str) -> dict[str, str]:
+    """Extrahiert alle Attribut-Key-Value-Paare aus einem Path-Objekt-Body."""
+    attrs: dict[str, str] = {}
+    for m in _KV_RE.finditer(obj_body):
+        key = m.group(1) or m.group(2)
+        attrs[key] = m.group(3)
+    return attrs
+
+
 def paths_array_to_svg(paths_body: str, viewbox: str = "0 0 200 200") -> str:
     """
     Wandelt einen JS-paths-Array-Body in vollstaendiges SVG.
-    Iteriert ueber jedes { d: '...', fill: '#...' } Element.
+    Beruecksichtigt ALLE Attribute pro Path (d, fill, stroke, stroke-width,
+    stroke-linecap, stroke-linejoin, opacity, ...) — nicht nur d und fill.
     """
-    item_re = re.compile(
-        r"""\{\s*d\s*:\s*['"]([^'"]+)['"][^}]*?fill\s*:\s*['"]([^'"]+)['"][^}]*?\}""",
-        re.DOTALL,
-    )
-    items = item_re.findall(paths_body)
-    if not items:
+    objs = _split_path_objects(paths_body)
+    if not objs:
         return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{viewbox}">\n</svg>\n'
-    body = "\n".join(f'  <path d="{d}" fill="{fill}"/>' for d, fill in items)
+    parts: list[str] = []
+    # SVG-Attribut-Reihenfolge: d zuerst, dann der Rest in stabiler Reihenfolge
+    preferred_order = ["d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "opacity"]
+    for obj in objs:
+        attrs = _parse_path_attrs(obj)
+        if not attrs:
+            continue
+        ordered = [(k, attrs[k]) for k in preferred_order if k in attrs]
+        # Restliche unbekannte Attribute hinten anstellen
+        ordered.extend((k, v) for k, v in attrs.items() if k not in preferred_order)
+        attr_str = " ".join(f'{k}="{v}"' for k, v in ordered)
+        parts.append(f"  <path {attr_str}/>")
+    body = "\n".join(parts)
     return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{viewbox}">\n{body}\n</svg>\n'
 
 
@@ -452,10 +499,16 @@ def update_markers_in(content: str, icons_dir: Path) -> tuple[str, int, list[str
         nonlocal count
         indent = m.group(1)
         name = m.group(2)
+        # Lib-Lookup: erst exakt, dann lowercase-Fallback (z.B. wort-bild
+        # nutzt UPPERCASE-Properties wie AUTO, Lib hat aber lowercase auto.svg)
         svg_path = icons_dir / f"{name}.svg"
         if not svg_path.exists():
-            missing.append(name)
-            return m.group(0)
+            svg_path_lower = icons_dir / f"{name.lower()}.svg"
+            if svg_path_lower.exists():
+                svg_path = svg_path_lower
+            else:
+                missing.append(name)
+                return m.group(0)
         try:
             svg_text = svg_path.read_text(encoding="utf-8")
         except OSError as e:
@@ -558,8 +611,14 @@ def update_verwendet_in_field(spiele: list[str]) -> None:
             continue
         for m in re.finditer(r"// ICON:(\w+) START", content):
             used.setdefault(m.group(1), []).append(spiel)
+    # Auch UPPERCASE-Marker mappen auf lowercase Lib-Eintrag (z.B. wort-bild)
+    used_lower: dict[str, set[str]] = {}
+    for marker_name, spiele_list in used.items():
+        used_lower.setdefault(marker_name, set()).update(spiele_list)
+        if marker_name != marker_name.lower():
+            used_lower.setdefault(marker_name.lower(), set()).update(spiele_list)
     for icon in d["icons"]:
-        icon["verwendet-in"] = sorted(set(used.get(icon["name"], [])))
+        icon["verwendet-in"] = sorted(used_lower.get(icon["name"], set()))
     INDEX_FILE.write_text(
         json.dumps(d, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
@@ -597,9 +656,10 @@ def cmd_verify(args: argparse.Namespace) -> int:
 
     have = {p.stem for p in ICONS_DIR.glob("*.svg")}
 
-    # Verwendete Namen ohne Lib-Icon
+    # Verwendete Namen ohne Lib-Icon (mit lowercase-Fallback)
+    have_lower = {n.lower() for n in have}
     for name, spiele_list in used_names.items():
-        if name not in have:
+        if name not in have and name.lower() not in have_lower:
             issues.append(f"Icon '{name}' wird in {spiele_list} verwendet, aber _lib/icons/{name}.svg fehlt")
 
     # Lib-Icons ohne Verwendung

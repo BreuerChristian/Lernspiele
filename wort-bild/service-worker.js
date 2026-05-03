@@ -1,4 +1,4 @@
-const CACHE = 'wort-bild-v3';
+const CACHE = 'wort-bild-v4';
 const ASSETS = [
   './',
   './index.html',

@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <!-- Quelle: schatten-finden (extract-icons.py) -->
-  <path d="M 45 130 Q 35 100 75 95 Q 130 92 150 110 Q 158 130 145 150 Q 100 158 65 152 Q 42 145 45 130 Z" fill="#f0e070"/>
-  <path d="M 75 110 Q 90 105 115 115 Q 125 130 110 138 Q 88 140 75 130 Z" fill="#d8c050"/>
-  <path d="M 135 95 Q 138 70 158 65 Q 175 65 175 85 Q 172 100 158 102 Q 145 102 142 95 Z" fill="#f0e070"/>
-  <path d="M 168 80 Q 188 78 188 92 Q 185 100 170 98 Z" fill="#e88a30"/>
-  <path d="M 165 80 a 2.5 2.5 0 1 0 0.1 0 Z" fill="#2c3e50"/>
-</svg>

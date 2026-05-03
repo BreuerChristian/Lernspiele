@@ -30,14 +30,9 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
-    },
-    {
-      "name": "apfel-openmoji",
-      "kategorie": "essen",
-      "quelle": "OpenMoji 1F34E (CC-BY-SA 4.0)",
-      "verwendet-in": []
     },
     {
       "name": "apple",
@@ -56,6 +51,14 @@
       ]
     },
     {
+      "name": "auge",
+      "kategorie": "koerper",
+      "quelle": "OpenMoji 1F441 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
+      ]
+    },
+    {
       "name": "australien",
       "kategorie": "flaggen",
       "quelle": "flaggen",
@@ -70,14 +73,9 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
-    },
-    {
-      "name": "auto-openmoji",
-      "kategorie": "verkehr",
-      "quelle": "OpenMoji 1F697 (CC-BY-SA 4.0)",
-      "verwendet-in": []
     },
     {
       "name": "baby",
@@ -100,7 +98,8 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -117,7 +116,16 @@
       "quelle": "OpenMoji 1F34C (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
+      ]
+    },
+    {
+      "name": "bank",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 1F3E6 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
       ]
     },
     {
@@ -127,7 +135,8 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -151,7 +160,8 @@
       "kategorie": "haushalt",
       "quelle": "was-passt-nicht",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -175,7 +185,8 @@
       "kategorie": "essen",
       "quelle": "was-passt-nicht",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -215,7 +226,8 @@
       "kategorie": "natur",
       "quelle": "was-passt-nicht",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -243,11 +255,20 @@
       ]
     },
     {
+      "name": "brille",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 1F453 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
+      ]
+    },
+    {
       "name": "brot",
       "kategorie": "essen",
       "quelle": "was-passt-nicht",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -263,7 +284,8 @@
       "kategorie": "haushalt",
       "quelle": "OpenMoji 1F4D6 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -355,6 +377,14 @@
       ]
     },
     {
+      "name": "ei",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F95A (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
+      ]
+    },
+    {
       "name": "eis",
       "kategorie": "essen",
       "quelle": "OpenMoji 1F366 (CC-BY-SA 4.0)",
@@ -364,17 +394,12 @@
       ]
     },
     {
-      "name": "eis-jahreszeiten",
-      "kategorie": "essen",
-      "quelle": "jahreszeiten-sortieren",
-      "verwendet-in": []
-    },
-    {
       "name": "elefant",
       "kategorie": "tiere",
       "quelle": "schatten-finden",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -387,10 +412,12 @@
       ]
     },
     {
-      "name": "ente-schatten",
-      "kategorie": "tiere",
-      "quelle": "schatten-finden",
-      "verwendet-in": []
+      "name": "erdbeere",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F353 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
+      ]
     },
     {
       "name": "esel",
@@ -407,12 +434,6 @@
       "verwendet-in": [
         "anlaute"
       ]
-    },
-    {
-      "name": "eule-schatten",
-      "kategorie": "tiere",
-      "quelle": "schatten-finden",
-      "verwendet-in": []
     },
     {
       "name": "fahrrad",
@@ -445,14 +466,9 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
-    },
-    {
-      "name": "fisch-schatten",
-      "kategorie": "tiere",
-      "quelle": "schatten-finden",
-      "verwendet-in": []
     },
     {
       "name": "fish",
@@ -491,7 +507,8 @@
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F438 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -506,7 +523,9 @@
       "name": "giraffe",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F992 (CC-BY-SA 4.0)",
-      "verwendet-in": []
+      "verwendet-in": [
+        "wort-bild"
+      ]
     },
     {
       "name": "glas",
@@ -543,7 +562,8 @@
       "kategorie": "koerper",
       "quelle": "OpenMoji 270B (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "reim-paare"
+        "reim-paare",
+        "wort-bild"
       ]
     },
     {
@@ -559,7 +579,16 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
+      ]
+    },
+    {
+      "name": "herz",
+      "kategorie": "sonstige",
+      "quelle": "OpenMoji 2764 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
       ]
     },
     {
@@ -586,27 +615,17 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
-    },
-    {
-      "name": "hund-openmoji",
-      "kategorie": "tiere",
-      "quelle": "OpenMoji 1F415 (CC-BY-SA 4.0)",
-      "verwendet-in": []
-    },
-    {
-      "name": "hund-schatten",
-      "kategorie": "tiere",
-      "quelle": "schatten-finden",
-      "verwendet-in": []
     },
     {
       "name": "igel",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F994 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "anlaute"
+        "anlaute",
+        "wort-bild"
       ]
     },
     {
@@ -664,20 +683,9 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
-    },
-    {
-      "name": "katze-openmoji",
-      "kategorie": "tiere",
-      "quelle": "OpenMoji 1F408 (CC-BY-SA 4.0)",
-      "verwendet-in": []
-    },
-    {
-      "name": "katze-schatten",
-      "kategorie": "tiere",
-      "quelle": "schatten-finden",
-      "verwendet-in": []
     },
     {
       "name": "keks",
@@ -736,6 +744,22 @@
       ]
     },
     {
+      "name": "krokodil",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F40A (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
+      ]
+    },
+    {
+      "name": "krone",
+      "kategorie": "sonstige",
+      "quelle": "OpenMoji 1F451 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
+      ]
+    },
+    {
       "name": "kuerbis",
       "kategorie": "essen",
       "quelle": "OpenMoji 1F383 (CC-BY-SA 4.0)",
@@ -749,7 +773,8 @@
       "quelle": "OpenMoji 1F404 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -791,7 +816,8 @@
       "quelle": "OpenMoji 1F401 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
-        "reim-paare"
+        "reim-paare",
+        "wort-bild"
       ]
     },
     {
@@ -903,7 +929,8 @@
       "kategorie": "haushalt",
       "quelle": "anlaute",
       "verwendet-in": [
-        "anlaute"
+        "anlaute",
+        "wort-bild"
       ]
     },
     {
@@ -955,10 +982,12 @@
       ]
     },
     {
-      "name": "pilz-jahreszeiten",
-      "kategorie": "natur",
-      "quelle": "jahreszeiten-sortieren",
-      "verwendet-in": []
+      "name": "pirat",
+      "kategorie": "sonstige",
+      "quelle": "OpenMoji 1F3F4-200D-2620-FE0F (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
+      ]
     },
     {
       "name": "polen",
@@ -1005,7 +1034,8 @@
       "kategorie": "natur",
       "quelle": "OpenMoji 2614 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "jahreszeiten-sortieren"
+        "jahreszeiten-sortieren",
+        "wort-bild"
       ]
     },
     {
@@ -1052,7 +1082,8 @@
       "kategorie": "verkehr",
       "quelle": "OpenMoji 1F6A2 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -1069,7 +1100,8 @@
       "quelle": "OpenMoji 1F98B (CC-BY-SA 4.0)",
       "verwendet-in": [
         "jahreszeiten-sortieren",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -1094,7 +1126,8 @@
       "quelle": "reim-paare",
       "verwendet-in": [
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -1161,32 +1194,9 @@
         "anlaute",
         "jahreszeiten-sortieren",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
-    },
-    {
-      "name": "sonne-jahreszeiten",
-      "kategorie": "natur",
-      "quelle": "jahreszeiten-sortieren (viewBox 100x100, duenne Strahlen)",
-      "verwendet-in": []
-    },
-    {
-      "name": "sonne-openmoji",
-      "kategorie": "natur",
-      "quelle": "OpenMoji 2600 (CC-BY-SA 4.0)",
-      "verwendet-in": []
-    },
-    {
-      "name": "sonne-reim-paare",
-      "kategorie": "natur",
-      "quelle": "reim-paare (viewBox 100x100, ROTE Outlines #6e1f41 statt orange)",
-      "verwendet-in": []
-    },
-    {
-      "name": "sonne-was-passt-nicht",
-      "kategorie": "natur",
-      "quelle": "was-passt-nicht (viewBox 100x100, minimal ohne Gesicht)",
-      "verwendet-in": []
     },
     {
       "name": "sonnenblume",
@@ -1235,6 +1245,14 @@
       ]
     },
     {
+      "name": "stern",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 2B50 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "wort-bild"
+      ]
+    },
+    {
       "name": "sterne",
       "kategorie": "natur",
       "quelle": "was-passt-nicht",
@@ -1263,7 +1281,8 @@
       "kategorie": "haushalt",
       "quelle": "OpenMoji 2615 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "anlaute"
+        "anlaute",
+        "wort-bild"
       ]
     },
     {
@@ -1281,7 +1300,8 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -1362,14 +1382,9 @@
       "quelle": "OpenMoji 1F426 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
-    },
-    {
-      "name": "vogel-schatten",
-      "kategorie": "tiere",
-      "quelle": "schatten-finden",
-      "verwendet-in": []
     },
     {
       "name": "wasser",
@@ -1409,7 +1424,8 @@
       "quelle": "OpenMoji 2601 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     },
     {
@@ -1457,7 +1473,8 @@
       "kategorie": "verkehr",
       "quelle": "OpenMoji 1F686 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "was-passt-nicht"
+        "was-passt-nicht",
+        "wort-bild"
       ]
     }
   ]
