@@ -1,37 +1,127 @@
 [
-  { "spiel": "jahreszeiten-sortieren", "name": "bluete",        "kategorie": "natur" },
-  { "spiel": "jahreszeiten-sortieren", "name": "tulpe",         "kategorie": "natur" },
-  { "spiel": "jahreszeiten-sortieren", "name": "schmetterling", "kategorie": "tiere" },
-  { "spiel": "jahreszeiten-sortieren", "name": "ostereier",     "kategorie": "sonstige" },
-  { "spiel": "jahreszeiten-sortieren", "name": "sonnenblume",   "kategorie": "natur" },
-  { "spiel": "jahreszeiten-sortieren", "name": "eis",           "kategorie": "essen",     "ausgabe": "eis-jahreszeiten" },
-  { "spiel": "jahreszeiten-sortieren", "name": "wassermelone",  "kategorie": "essen" },
-  { "spiel": "jahreszeiten-sortieren", "name": "drache",        "kategorie": "sonstige" },
-  { "spiel": "jahreszeiten-sortieren", "name": "blatt",         "kategorie": "natur" },
-  { "spiel": "jahreszeiten-sortieren", "name": "pilz",          "kategorie": "natur",     "ausgabe": "pilz-jahreszeiten" },
-  { "spiel": "jahreszeiten-sortieren", "name": "kuerbis",       "kategorie": "essen" },
-  { "spiel": "jahreszeiten-sortieren", "name": "regenschirm",   "kategorie": "sonstige" },
-  { "spiel": "jahreszeiten-sortieren", "name": "schneeflocke",  "kategorie": "natur" },
-  { "spiel": "jahreszeiten-sortieren", "name": "schneemann",    "kategorie": "sonstige" },
-  { "spiel": "jahreszeiten-sortieren", "name": "schlitten",     "kategorie": "sonstige" },
-  { "spiel": "jahreszeiten-sortieren", "name": "lebkuchen",     "kategorie": "essen" },
-
-  { "spiel": "schatten-finden", "name": "hase",    "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "schwein", "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "affe",    "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "frosch",  "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "elefant", "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "giraffe", "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "pferd",   "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "baer",    "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "schaf",   "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "hahn",    "kategorie": "tiere" },
-  { "spiel": "schatten-finden", "name": "spatz",   "kategorie": "tiere" },
-
-  { "spiel": "schatten-finden", "name": "hund",  "kategorie": "tiere", "ausgabe": "hund-schatten" },
-  { "spiel": "schatten-finden", "name": "katze", "kategorie": "tiere", "ausgabe": "katze-schatten" },
-  { "spiel": "schatten-finden", "name": "eule",  "kategorie": "tiere", "ausgabe": "eule-schatten" },
-  { "spiel": "schatten-finden", "name": "ente",  "kategorie": "tiere", "ausgabe": "ente-schatten" },
-  { "spiel": "schatten-finden", "name": "fisch", "kategorie": "tiere", "ausgabe": "fisch-schatten" },
-  { "spiel": "schatten-finden", "name": "vogel", "kategorie": "tiere", "ausgabe": "vogel-schatten" }
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "bluete",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "tulpe",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "schmetterling",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "ostereier",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "sonnenblume",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "wassermelone",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "drache",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "blatt",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "kuerbis",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "regenschirm",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "schneeflocke",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "schneemann",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "schlitten",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "jahreszeiten-sortieren",
+    "name": "lebkuchen",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "hase",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "schwein",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "affe",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "frosch",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "elefant",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "giraffe",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "pferd",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "baer",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "schaf",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "hahn",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "schatten-finden",
+    "name": "spatz",
+    "kategorie": "tiere"
+  }
 ]

@@ -93,10 +93,11 @@ Liste der genutzten OpenMoji-Codepoints (Stand: Mai 2026):
 Folgende Icons stammen **nicht** aus OpenMoji, sondern wurden manuell aus
 existierenden Spielen extrahiert (eigenes Werk, MIT-Lizenz wie das Repo):
 
-- `lebkuchen`, `ofen`, `ostereier`, `quark`, `tisch`, `vase`, `zaun`
-- Sowie alle Icons mit Suffix `-jahreszeiten`, `-reim-paare`, `-was-passt-nicht`,
-  `-schatten` (sind Vergleichs-Varianten zur Soll-/Ist-Bewertung — werden im
-  Zuge der Migration in Phase C aufgeräumt).
+- `lebkuchen`, `ofen`, `ostereier`, `quark`, `tisch`, `vase`, `zaun` (aus
+  jahreszeiten-sortieren bzw. anlaute)
+- Alle 31 Flaggen (aus dem `flaggen`-Spiel; eigene Vektor-Definitionen)
+- Verschiedene Pattern-B/Pattern-C-Icons aus `was-passt-nicht` und
+  `reim-paare` (siehe `quelle`-Feld in INDEX.json pro Icon)
 
 ## Bei Modifikationen
 

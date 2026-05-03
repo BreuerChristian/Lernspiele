@@ -1,4 +1,4 @@
-const CACHE = 'flaggen-v4';
+const CACHE = 'flaggen-v5';
 const ASSETS = [
   './',
   './index.html',

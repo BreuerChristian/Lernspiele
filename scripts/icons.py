@@ -49,11 +49,13 @@ DEFAULT_MANIFEST = REPO_ROOT / "scripts" / "extract-manifest.json"
 # Jedes Pattern hat einen Capture-Group der den SVG-Inhalt liefert.
 # {NAME} wird vor der Kompilierung durch re.escape(name) ersetzt.
 PATTERNS = [
-    # A) Klassisches Template-Literal mit <svg>-Wrapper
+    # A) Klassisches Template-Literal mit <svg>-Wrapper.
+    #    Akzeptiert auch mehrzeilige Defs (Whitespace nach Backtick erlaubt):
     #    apfel: `<svg viewBox="0 0 200 200">...</svg>`,
+    #    deutschland: `\n            <svg viewBox="0 0 300 200">...</svg>\n        `,
     {
         "name": "template-literal-with-svg",
-        "regex": r"\b{NAME}\s*:\s*`(<svg[^`]+?</svg>)`",
+        "regex": r"\b{NAME}\s*:\s*`\s*(<svg[\s\S]+?</svg>)\s*`",
         "wrap": False,
     },
     # B) Function-Style mit <svg>-Wrapper
@@ -168,6 +170,12 @@ def normalize_svg(svg_text: str, *, wrap: bool, viewbox_default: str = "0 0 100 
     Schoenheits-Whitespace wird beibehalten.
     """
     text = svg_text.strip()
+    if wrap:
+        # Defensiver Check: wenn der "innere" Inhalt schon mit <svg> beginnt,
+        # NICHT nochmal wrappen (verhindert doppelte Wrapper, siehe Pattern-A
+        # vs. Pattern-C-Konflikt bei mehrzeiligen Definitionen).
+        if text.lstrip().startswith("<svg"):
+            wrap = False
     if wrap:
         # Inner-only -> wrap in vollstaendiges SVG
         return (

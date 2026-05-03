@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Quelle: flaggen (extract-icons.py) -->
 <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: flaggen (eigene Vektor-Definition aus dem Spiel) -->
                 <rect width="300" height="200" fill="#007a4d"/>
                 <!-- Y-Form vereinfacht -->
                 <polygon points="0,0 300,0 300,40 130,100 300,160 300,200 0,200" fill="#007a4d"/>
@@ -12,4 +11,3 @@
                 <polygon points="80,35 300,35 300,55 130,100 300,145 300,165 80,165 175,100" fill="white"/>
                 <polygon points="90,40 300,40 300,55 140,100 300,145 300,160 90,160 165,100" fill="#007a4d"/>
             </svg>
-</svg>

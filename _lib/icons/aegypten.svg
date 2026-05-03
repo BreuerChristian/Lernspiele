@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Quelle: flaggen (extract-icons.py) -->
 <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: flaggen (eigene Vektor-Definition aus dem Spiel) -->
                 <rect width="300" height="200" fill="white"/>
                 <rect width="300" height="66.7" fill="#ce1126"/>
                 <rect y="133.3" width="300" height="66.7" fill="#000000"/>
@@ -8,4 +7,3 @@
                 <circle cx="150" cy="100" r="14" fill="#c09300"/>
                 <path d="M138,100 L162,100 M150,90 L150,110" stroke="#c09300" stroke-width="2"/>
             </svg>
-</svg>
