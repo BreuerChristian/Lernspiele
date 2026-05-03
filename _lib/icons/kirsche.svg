@@ -1,0 +1,11 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: was-passt-nicht (extract-icons.py) -->
+                <path d="M 38 28 Q 60 32 64 56" stroke="#5b8c3e" stroke-width="2.5" fill="none"/>
+                <path d="M 38 28 Q 50 36 36 60" stroke="#5b8c3e" stroke-width="2.5" fill="none"/>
+                <path d="M 28 26 Q 38 22 46 28" stroke="#5b8c3e" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <ellipse cx="48" cy="20" rx="10" ry="4" fill="#7cbd5b" transform="rotate(-10 48 20)"/>
+                <circle cx="36" cy="68" r="14" fill="#c0182e"/>
+                <circle cx="64" cy="64" r="14" fill="#c0182e"/>
+                <ellipse cx="32" cy="64" rx="3" ry="4" fill="#fff" opacity="0.45"/>
+                <ellipse cx="60" cy="60" rx="3" ry="4" fill="#fff" opacity="0.45"/>
+            </svg>

@@ -1,0 +1,10 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: was-passt-nicht (extract-icons.py) -->
+                <path d="M 10 50 L 70 42 L 88 50 L 70 58 Z" fill="#dadfe1"/>
+                <path d="M 38 42 L 28 22 L 36 22 L 50 42 Z" fill="#bcc1c5"/>
+                <path d="M 38 58 L 28 78 L 36 78 L 50 58 Z" fill="#bcc1c5"/>
+                <path d="M 72 46 L 70 36 L 78 36 L 80 46 Z" fill="#bcc1c5"/>
+                <circle cx="78" cy="50" r="2" fill="#3498db"/>
+                <circle cx="68" cy="50" r="2" fill="#3498db"/>
+                <circle cx="58" cy="50" r="2" fill="#3498db"/>
+            </svg>

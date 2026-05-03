@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: flaggen (extract-icons.py) -->
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#aa151b"/>
+                <rect y="50" width="300" height="100" fill="#f1bf00"/>
+                <!-- Stilisiertes Wappen-Oval -->
+                <ellipse cx="90" cy="100" rx="22" ry="28" fill="#aa151b" stroke="#7a0f15" stroke-width="2"/>
+                <rect x="80" y="92" width="20" height="16" fill="#f1bf00"/>
+            </svg>
+</svg>

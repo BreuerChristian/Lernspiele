@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: flaggen (extract-icons.py) -->
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="300" height="66.7" fill="#ff9933"/>
+                <rect y="133.3" width="300" height="66.7" fill="#138808"/>
+                <!-- Ashoka-Chakra: blauer Kreis -->
+                <circle cx="150" cy="100" r="22" fill="none" stroke="#000088" stroke-width="2.5"/>
+                <g stroke="#000088" stroke-width="1.4">
+                    <line x1="150" y1="80" x2="150" y2="120"/>
+                    <line x1="130" y1="100" x2="170" y2="100"/>
+                    <line x1="136" y1="86" x2="164" y2="114"/>
+                    <line x1="164" y1="86" x2="136" y2="114"/>
+                </g>
+            </svg>
+</svg>

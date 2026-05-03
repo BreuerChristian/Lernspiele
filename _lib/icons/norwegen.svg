@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: flaggen (extract-icons.py) -->
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#ed2939"/>
+                <!-- Weisses Kreuz -->
+                <rect x="80" width="30" height="200" fill="white"/>
+                <rect y="85" width="300" height="30" fill="white"/>
+                <!-- Blaues Kreuz innen -->
+                <rect x="86" width="18" height="200" fill="#002664"/>
+                <rect y="91" width="300" height="18" fill="#002664"/>
+            </svg>
+</svg>

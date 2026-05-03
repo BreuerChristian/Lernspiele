@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: jahreszeiten-sortieren (extract-icons.py) -->
+            <ellipse cx="36" cy="58" rx="16" ry="22" fill="#81d4fa"/>
+            <path d="M 22 54 Q 28 50 34 54 Q 40 58 46 54" fill="none" stroke="#fff" stroke-width="2.5"/>
+            <path d="M 22 64 Q 28 60 34 64 Q 40 68 46 64" fill="none" stroke="#f06292" stroke-width="2.5"/>
+            <ellipse cx="64" cy="50" rx="16" ry="22" fill="#fff59d"/>
+            <circle cx="60" cy="46" r="3" fill="#f06292"/>
+            <circle cx="68" cy="54" r="3" fill="#9ccc65"/>
+            <circle cx="64" cy="38" r="3" fill="#81d4fa"/>
+            <ellipse cx="80" cy="64" rx="3" ry="2" fill="#ce93d8"/>
+            <path d="M 18 84 Q 50 76 84 84" fill="none" stroke="#9ccc65" stroke-width="3" stroke-linecap="round"/>
+        </svg>

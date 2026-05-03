@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: reim-paare (extract-icons.py) -->
+<path d="M 14 64 L 14 50 Q 14 38 26 38 L 60 38 Q 78 40 82 56 L 86 64 L 86 78 L 14 78 Z" fill="#d32f2f" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+                <line x1="40" y1="44" x2="40" y2="62" stroke="#6e1f41" stroke-width="2"/>
+                <line x1="50" y1="44" x2="50" y2="62" stroke="#6e1f41" stroke-width="2"/>
+                <line x1="60" y1="46" x2="60" y2="62" stroke="#6e1f41" stroke-width="2"/>
+                <rect x="14" y="74" width="72" height="6" fill="#3a1a26"/>
+</svg>

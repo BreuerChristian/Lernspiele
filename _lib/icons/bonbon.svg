@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: was-passt-nicht (extract-icons.py) -->
+                <ellipse cx="50" cy="50" rx="22" ry="14" fill="#e63946"/>
+                <ellipse cx="50" cy="50" rx="14" ry="10" fill="#fff5d6"/>
+                <polygon points="22,50 6,38 12,50 6,62" fill="#e63946"/>
+                <polygon points="78,50 94,38 88,50 94,62" fill="#e63946"/>
+            </svg>

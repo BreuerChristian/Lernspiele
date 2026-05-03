@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: flaggen (extract-icons.py) -->
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#d52b1e"/>
+                <!-- Schweizer Kreuz: Inhalt zentriert, etwa 1/3 der Hoehe -->
+                <rect x="135" y="55" width="30" height="90" fill="white"/>
+                <rect x="105" y="85" width="90" height="30" fill="white"/>
+            </svg>
+</svg>

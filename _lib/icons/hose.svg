@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: reim-paare (extract-icons.py) -->
+<path d="M 22 18 L 78 18 L 76 88 L 56 88 L 50 50 L 44 88 L 24 88 Z" fill="#1976d2" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+               <line x1="50" y1="18" x2="50" y2="46" stroke="#6e1f41" stroke-width="2"/>
+               <circle cx="32" cy="26" r="2" fill="#fff"/>
+</svg>

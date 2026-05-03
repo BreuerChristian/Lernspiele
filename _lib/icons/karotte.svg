@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: was-passt-nicht (extract-icons.py) -->
+                <path d="M 50 36 L 30 80 L 70 80 Z" fill="#e87a1d"/>
+                <line x1="40" y1="56" x2="44" y2="56" stroke="#a04e0d" stroke-width="2"/>
+                <line x1="48" y1="68" x2="52" y2="68" stroke="#a04e0d" stroke-width="2"/>
+                <line x1="56" y1="56" x2="60" y2="56" stroke="#a04e0d" stroke-width="2"/>
+                <path d="M 40 36 Q 36 18 44 24 Q 50 14 56 24 Q 64 18 60 36 Z" fill="#5b8c3e"/>
+            </svg>

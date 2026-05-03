@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: reim-paare (extract-icons.py) -->
+<path d="M 18 42 Q 18 28 34 28 Q 38 18 50 18 Q 62 18 66 28 Q 82 28 82 42 Q 82 56 66 56 L 34 56 Q 18 56 18 42 Z" fill="white" stroke="#6e1f41" stroke-width="3"/>
+                <text x="50" y="48" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="20" font-weight="bold" fill="#6e1f41">Z z</text>
+                <circle cx="36" cy="68" r="3" fill="#6e1f41"/>
+                <circle cx="42" cy="76" r="2.5" fill="#6e1f41"/>
+                <circle cx="48" cy="84" r="2" fill="#6e1f41"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: reim-paare (extract-icons.py) -->
+<rect x="14" y="34" width="72" height="50" fill="#ffcc80" stroke="#6e1f41" stroke-width="3"/>
+                 <polygon points="10,34 50,12 90,34" fill="#e57373" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round"/>
+                 <rect x="42" y="58" width="16" height="26" fill="#6e1f41"/>
+                 <rect x="22" y="44" width="14" height="14" fill="#fff59d" stroke="#6e1f41" stroke-width="2"/>
+                 <rect x="64" y="44" width="14" height="14" fill="#fff59d" stroke="#6e1f41" stroke-width="2"/>
+                 <text x="50" y="32" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-size="10" font-weight="bold" fill="#fff">ABC</text>
+</svg>

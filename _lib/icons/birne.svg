@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: was-passt-nicht (extract-icons.py) -->
+                <path d="M 50 32 Q 36 32 34 48 Q 30 72 50 84 Q 70 72 66 48 Q 64 32 50 32 Z" fill="#d4d04e"/>
+                <rect x="48" y="22" width="4" height="12" fill="#7f5a32"/>
+                <ellipse cx="56" cy="22" rx="6" ry="3" fill="#27ae60" transform="rotate(20 56 22)"/>
+                <ellipse cx="40" cy="50" rx="4" ry="8" fill="#fff" opacity="0.25"/>
+            </svg>

@@ -1,23 +1,1464 @@
 {
-  "_comment": "Auflistung aller Icons in _lib/icons/. 'kategorie' gruppiert in der Galerie. 'verwendet-in' wird (spaeter) von scripts/update-icons.js automatisch gepflegt. Manuell aktualisieren wenn ein neues Icon hinzukommt.",
+  "_comment": "Auflistung aller Icons in _lib/icons/. 'kategorie' gruppiert in der Galerie. 'verwendet-in' wird (spaeter) von scripts/update-icons.js automatisch gepflegt. 'quelle' nennt das Spiel aus dem das Icon extrahiert wurde, ggf. mit Anmerkung. Mehrere Varianten desselben Motivs (z.B. sonne) zum Vergleich.",
   "icons": [
+    {
+      "name": "aegypten",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "affe",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F412 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "ananas",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F34D (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
     {
       "name": "apfel",
       "kategorie": "essen",
-      "quelle": "anlaute (Form runder gemacht — Original war oval)",
+      "quelle": "OpenMoji 1F34E (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "apfel-openmoji",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F34E (CC-BY-SA 4.0)",
       "verwendet-in": []
+    },
+    {
+      "name": "apple",
+      "kategorie": "essen",
+      "quelle": "Kopie von apfel.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "argentinien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "australien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "auto",
+      "kategorie": "verkehr",
+      "quelle": "OpenMoji 1F697 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "auto-openmoji",
+      "kategorie": "verkehr",
+      "quelle": "OpenMoji 1F697 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "baby",
+      "kategorie": "menschen",
+      "quelle": "OpenMoji 1F476 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "baer",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F43B (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "ball",
+      "kategorie": "sonstige",
+      "quelle": "OpenMoji 26BD (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "banana",
+      "kategorie": "essen",
+      "quelle": "Kopie von banane.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "banane",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F34C (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "baum",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F333 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "bein",
+      "kategorie": "koerper",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "belgien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "bett",
+      "kategorie": "haushalt",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "biene",
+      "kategorie": "tiere",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "bird",
+      "kategorie": "tiere",
+      "quelle": "Kopie von vogel.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "birne",
+      "kategorie": "essen",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "black",
+      "kategorie": "farben",
+      "quelle": "OpenMoji 2B1B (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "blatt",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F343 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "blue",
+      "kategorie": "farben",
+      "quelle": "OpenMoji 1F7E6 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "bluete",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F33C (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "blume",
+      "kategorie": "natur",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "bonbon",
+      "kategorie": "essen",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "brasilien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "bread",
+      "kategorie": "essen",
+      "quelle": "Kopie von brot.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "brot",
+      "kategorie": "essen",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "brother",
+      "kategorie": "menschen",
+      "quelle": "OpenMoji 1F466 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "buch",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 1F4D6 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "bus",
+      "kategorie": "verkehr",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "cat",
+      "kategorie": "tiere",
+      "quelle": "Kopie von katze.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "cheese",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F9C0 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "chile",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "china",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "cow",
+      "kategorie": "tiere",
+      "quelle": "Kopie von kuh.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "daenemark",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "deutschland",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "dog",
+      "kategorie": "tiere",
+      "quelle": "Kopie von hund.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "dose",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 1F96B (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "drache",
+      "kategorie": "sonstige",
+      "quelle": "OpenMoji 1FA81 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "eis",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F366 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "eis-jahreszeiten",
+      "kategorie": "essen",
+      "quelle": "jahreszeiten-sortieren",
+      "verwendet-in": []
+    },
+    {
+      "name": "elefant",
+      "kategorie": "tiere",
+      "quelle": "schatten-finden",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "ente",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F986 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "ente-schatten",
+      "kategorie": "tiere",
+      "quelle": "schatten-finden",
+      "verwendet-in": []
+    },
+    {
+      "name": "esel",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1FACF (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "eule",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F989 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "eule-schatten",
+      "kategorie": "tiere",
+      "quelle": "schatten-finden",
+      "verwendet-in": []
+    },
+    {
+      "name": "fahrrad",
+      "kategorie": "verkehr",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "father",
+      "kategorie": "menschen",
+      "quelle": "OpenMoji 1F468 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "finnland",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "fisch",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F41F (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "fisch-schatten",
+      "kategorie": "tiere",
+      "quelle": "schatten-finden",
+      "verwendet-in": []
+    },
+    {
+      "name": "fish",
+      "kategorie": "tiere",
+      "quelle": "Kopie von fisch.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "flugzeug",
+      "kategorie": "verkehr",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "frankreich",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "frog",
+      "kategorie": "tiere",
+      "quelle": "Kopie von frosch.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "frosch",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F438 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "gabel",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 1F374 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "giraffe",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F992 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "glas",
+      "kategorie": "haushalt",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "green",
+      "kategorie": "farben",
+      "quelle": "OpenMoji 1F7E9 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "grossbritannien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "hahn",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F413 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "hand",
+      "kategorie": "koerper",
+      "quelle": "OpenMoji 270B (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "hase",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F407 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "haus",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 1F3E0 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "horse",
+      "kategorie": "tiere",
+      "quelle": "Kopie von pferd.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "hose",
+      "kategorie": "haushalt",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "hund",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F415 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "hund-openmoji",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F415 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "hund-schatten",
+      "kategorie": "tiere",
+      "quelle": "schatten-finden",
+      "verwendet-in": []
+    },
+    {
+      "name": "igel",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F994 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "indien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "insel",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F3DD (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "italien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "japan",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "kanada",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "karotte",
+      "kategorie": "sonstige",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "katze",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F408 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "katze-openmoji",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F408 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "katze-schatten",
+      "kategorie": "tiere",
+      "quelle": "schatten-finden",
+      "verwendet-in": []
+    },
+    {
+      "name": "keks",
+      "kategorie": "essen",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "kenia",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "kirsche",
+      "kategorie": "essen",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "kiste",
+      "kategorie": "haushalt",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "klein",
+      "kategorie": "sonstige",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "koffer",
+      "kategorie": "haushalt",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "kolumbien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "kuerbis",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F383 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
     },
     {
       "name": "kuh",
       "kategorie": "tiere",
-      "quelle": "schatten-finden (Original ohne Outlines, Flat-Color-Stil)",
+      "quelle": "OpenMoji 1F404 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "lampe",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 1F4A1 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "lebkuchen",
+      "kategorie": "essen",
+      "quelle": "jahreszeiten-sortieren",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "loewe",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F981 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "marokko",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "maus",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F401 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "mexiko",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "milch",
+      "kategorie": "essen",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "milk",
+      "kategorie": "essen",
+      "quelle": "Kopie von milch.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "mond",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F319 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "mother",
+      "kategorie": "menschen",
+      "quelle": "OpenMoji 1F469 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "mouse",
+      "kategorie": "tiere",
+      "quelle": "Kopie von maus.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "muenze",
+      "kategorie": "haushalt",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "muetze",
+      "kategorie": "haushalt",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "mund",
+      "kategorie": "koerper",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "nase",
+      "kategorie": "koerper",
+      "quelle": "OpenMoji 1F443 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "niederlande",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "norwegen",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "oesterreich",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "ofen",
+      "kategorie": "haushalt",
+      "quelle": "anlaute",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "ohr",
+      "kategorie": "koerper",
+      "quelle": "OpenMoji 1F442 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "orange",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F34A (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "ostereier",
+      "kategorie": "sonstige",
+      "quelle": "jahreszeiten-sortieren",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "pferd",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F40E (CC-BY-SA 4.0)",
       "verwendet-in": []
+    },
+    {
+      "name": "pig",
+      "kategorie": "tiere",
+      "quelle": "Kopie von schwein.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "pilz",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F344 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "pilz-jahreszeiten",
+      "kategorie": "natur",
+      "quelle": "jahreszeiten-sortieren",
+      "verwendet-in": []
+    },
+    {
+      "name": "polen",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "quark",
+      "kategorie": "essen",
+      "quelle": "anlaute",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "rabbit",
+      "kategorie": "tiere",
+      "quelle": "Kopie von hase.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "rad",
+      "kategorie": "verkehr",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "red",
+      "kategorie": "farben",
+      "quelle": "OpenMoji 1F7E5 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "regenschirm",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 2614 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "rose",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F339 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "russland",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "saft",
+      "kategorie": "essen",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "sand",
+      "kategorie": "natur",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "schaf",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F411 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "schiff",
+      "kategorie": "verkehr",
+      "quelle": "OpenMoji 1F6A2 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "schlitten",
+      "kategorie": "sonstige",
+      "quelle": "OpenMoji 1F6F7 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "schmetterling",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F98B (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "schneeflocke",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 2744 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "schneemann",
+      "kategorie": "sonstige",
+      "quelle": "OpenMoji 26C4 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "schuh",
+      "kategorie": "haushalt",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "schule",
+      "kategorie": "ort",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "schweden",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "schwein",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F416 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "schweiz",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "sheep",
+      "kategorie": "tiere",
+      "quelle": "Kopie von schaf.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "sister",
+      "kategorie": "menschen",
+      "quelle": "OpenMoji 1F467 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "sofa",
+      "kategorie": "haushalt",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
     },
     {
       "name": "sonne",
       "kategorie": "natur",
-      "quelle": "jahreszeiten-sortieren (Original viewBox 100x100, abweichend vom Soll 200x200)",
+      "quelle": "OpenMoji 2600 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "jahreszeiten-sortieren",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "sonne-jahreszeiten",
+      "kategorie": "natur",
+      "quelle": "jahreszeiten-sortieren (viewBox 100x100, duenne Strahlen)",
       "verwendet-in": []
+    },
+    {
+      "name": "sonne-openmoji",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 2600 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "sonne-reim-paare",
+      "kategorie": "natur",
+      "quelle": "reim-paare (viewBox 100x100, ROTE Outlines #6e1f41 statt orange)",
+      "verwendet-in": []
+    },
+    {
+      "name": "sonne-was-passt-nicht",
+      "kategorie": "natur",
+      "quelle": "was-passt-nicht (viewBox 100x100, minimal ohne Gesicht)",
+      "verwendet-in": []
+    },
+    {
+      "name": "sonnenblume",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F33B (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "spanien",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "spatz",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F426 (CC-BY-SA 4.0)",
+      "verwendet-in": []
+    },
+    {
+      "name": "stall",
+      "kategorie": "haushalt",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "steg",
+      "kategorie": "natur",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "stein",
+      "kategorie": "natur",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "sterne",
+      "kategorie": "natur",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "stuhl",
+      "kategorie": "haushalt",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "suedafrika",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "tasse",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 2615 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "tatze",
+      "kategorie": "koerper",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "tisch",
+      "kategorie": "haushalt",
+      "quelle": "anlaute",
+      "verwendet-in": [
+        "anlaute",
+        "reim-paare",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "tonne",
+      "kategorie": "haushalt",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "traube",
+      "kategorie": "essen",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "traum",
+      "kategorie": "natur",
+      "quelle": "reim-paare",
+      "verwendet-in": [
+        "reim-paare"
+      ]
+    },
+    {
+      "name": "tuerkei",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "tulpe",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 1F337 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "uhr",
+      "kategorie": "haushalt",
+      "quelle": "OpenMoji 23F0 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "uhu",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F989 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "usa",
+      "kategorie": "flaggen",
+      "quelle": "flaggen",
+      "verwendet-in": [
+        "flaggen"
+      ]
+    },
+    {
+      "name": "vase",
+      "kategorie": "haushalt",
+      "quelle": "anlaute",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "vogel",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F426 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "vogel-schatten",
+      "kategorie": "tiere",
+      "quelle": "schatten-finden",
+      "verwendet-in": []
+    },
+    {
+      "name": "wasser",
+      "kategorie": "natur",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "wassermelone",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F349 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "jahreszeiten-sortieren"
+      ]
+    },
+    {
+      "name": "water",
+      "kategorie": "natur",
+      "quelle": "Kopie von wasser.svg (englisch-erste-woerter Mapping)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "white",
+      "kategorie": "farben",
+      "quelle": "OpenMoji 2B1C (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "wolke",
+      "kategorie": "natur",
+      "quelle": "OpenMoji 2601 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute",
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "wuerfel",
+      "kategorie": "haushalt",
+      "quelle": "was-passt-nicht",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
+    },
+    {
+      "name": "yellow",
+      "kategorie": "farben",
+      "quelle": "OpenMoji 1F7E8 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "englisch-erste-woerter"
+      ]
+    },
+    {
+      "name": "zaun",
+      "kategorie": "sonstige",
+      "quelle": "anlaute",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "zebra",
+      "kategorie": "tiere",
+      "quelle": "OpenMoji 1F993 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "zitrone",
+      "kategorie": "essen",
+      "quelle": "OpenMoji 1F34B (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "anlaute"
+      ]
+    },
+    {
+      "name": "zug",
+      "kategorie": "verkehr",
+      "quelle": "OpenMoji 1F686 (CC-BY-SA 4.0)",
+      "verwendet-in": [
+        "was-passt-nicht"
+      ]
     }
   ]
 }

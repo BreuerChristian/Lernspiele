@@ -1,0 +1,6 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: was-passt-nicht (extract-icons.py) -->
+                <path d="M 32 30 L 68 30 L 64 84 L 36 84 Z" fill="#bde0fe" opacity="0.6" stroke="#5dade2" stroke-width="1.6"/>
+                <path d="M 36 50 L 64 50 L 62 80 L 38 80 Z" fill="#e87a1d"/>
+                <rect x="48" y="14" width="3" height="22" fill="#e63946" transform="rotate(15 49 25)"/>
+            </svg>

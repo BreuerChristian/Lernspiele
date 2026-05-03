@@ -1,0 +1,722 @@
+[
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "apple",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "baby",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "banana",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "bird",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "black",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "blue",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "bread",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "brother",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "cat",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "cheese",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "cow",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "dog",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "father",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "fish",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "frog",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "green",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "horse",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "milk",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "mother",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "mouse",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "pig",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "rabbit",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "red",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "sheep",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "sister",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "water",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "white",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "englisch-erste-woerter",
+    "name": "yellow",
+    "kategorie": "englisch"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "birne",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "bonbon",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "brot",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "keks",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "kirsche",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "milch",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "saft",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "traube",
+    "kategorie": "essen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "aegypten",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "argentinien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "australien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "belgien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "brasilien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "chile",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "china",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "daenemark",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "deutschland",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "finnland",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "frankreich",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "grossbritannien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "indien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "italien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "japan",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "kanada",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "kenia",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "kolumbien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "marokko",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "mexiko",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "niederlande",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "norwegen",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "oesterreich",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "polen",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "russland",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "schweden",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "schweiz",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "spanien",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "suedafrika",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "tuerkei",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "flaggen",
+    "name": "usa",
+    "kategorie": "flaggen"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "bett",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "glas",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "hose",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "kiste",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "koffer",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "muenze",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "muetze",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "schuh",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "sofa",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "stall",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "stuhl",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "tonne",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "wuerfel",
+    "kategorie": "haushalt"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "bein",
+    "kategorie": "koerper"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "mund",
+    "kategorie": "koerper"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "tatze",
+    "kategorie": "koerper"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "blume",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "sand",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "steg",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "stein",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "sterne",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "traum",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "wasser",
+    "kategorie": "natur"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "schule",
+    "kategorie": "ort"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "APFEL",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "AUGE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "AUTO",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BALL",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BANANE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BANK",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BAUM",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BETT",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BIRNE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BLUME",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BRILLE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BROT",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "BUCH",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "EI",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "ELEFANT",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "ERDBEERE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "FISCH",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "FROSCH",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "GIRAFFE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "HAND",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "HAUS",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "HERZ",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "HUND",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "IGEL",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "KATZE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "KROKODIL",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "KRONE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "KUH",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "MAUS",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "OFEN",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "PIRAT",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "REGENSCHIRM",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "SCHIFF",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "SCHMETTERLING",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "SCHUH",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "SONNE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "STERN",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "TASSE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "TISCH",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "VOGEL",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "WOLKE",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "wort-bild",
+    "name": "ZUG",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "buch",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "hand",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "karotte",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "reim-paare",
+    "name": "klein",
+    "kategorie": "sonstige"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "biene",
+    "kategorie": "tiere"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "bus",
+    "kategorie": "verkehr"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "fahrrad",
+    "kategorie": "verkehr"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "flugzeug",
+    "kategorie": "verkehr"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "rad",
+    "kategorie": "verkehr"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "schiff",
+    "kategorie": "verkehr"
+  },
+  {
+    "spiel": "was-passt-nicht",
+    "name": "zug",
+    "kategorie": "verkehr"
+  }
+]

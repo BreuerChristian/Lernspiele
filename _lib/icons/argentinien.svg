@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: flaggen (extract-icons.py) -->
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="300" height="66.7" fill="#74acdf"/>
+                <rect y="133.3" width="300" height="66.7" fill="#74acdf"/>
+                <!-- Sonne vereinfacht -->
+                <circle cx="150" cy="100" r="16" fill="#f6b40e"/>
+                <g stroke="#f6b40e" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="150" y1="78" x2="150" y2="84"/>
+                    <line x1="150" y1="116" x2="150" y2="122"/>
+                    <line x1="128" y1="100" x2="134" y2="100"/>
+                    <line x1="166" y1="100" x2="172" y2="100"/>
+                    <line x1="135" y1="85" x2="139" y2="89"/>
+                    <line x1="161" y1="111" x2="165" y2="115"/>
+                    <line x1="135" y1="115" x2="139" y2="111"/>
+                    <line x1="161" y1="89" x2="165" y2="85"/>
+                </g>
+            </svg>
+</svg>

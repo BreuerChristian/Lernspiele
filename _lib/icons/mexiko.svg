@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: flaggen (extract-icons.py) -->
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="100" height="200" fill="#006847"/>
+                <rect x="200" width="100" height="200" fill="#ce1126"/>
+                <!-- vereinfachtes Symbol: Adler/Schild als kleiner Kreis -->
+                <circle cx="150" cy="100" r="22" fill="none" stroke="#7a4a14" stroke-width="3"/>
+                <path d="M138,100 Q150,88 162,100 Q150,112 138,100 Z" fill="#7a4a14"/>
+                <rect x="148" y="100" width="4" height="14" fill="#006847"/>
+            </svg>
+</svg>

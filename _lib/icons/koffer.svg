@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Quelle: was-passt-nicht (extract-icons.py) -->
+                <rect x="18" y="32" width="64" height="48" rx="4" fill="#9c6b3c"/>
+                <rect x="18" y="32" width="64" height="48" rx="4" fill="none" stroke="#7a4f24" stroke-width="2"/>
+                <rect x="38" y="22" width="24" height="12" rx="2" fill="none" stroke="#7a4f24" stroke-width="3"/>
+                <rect x="44" y="46" width="12" height="6" rx="1" fill="#5d4a2e"/>
+                <line x1="18" y1="56" x2="82" y2="56" stroke="#7a4f24" stroke-width="2"/>
+            </svg>

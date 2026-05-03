@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: reim-paare (extract-icons.py) -->
+<path d="M 30 18 L 70 18 L 64 84 Q 64 90 50 90 Q 36 90 36 84 Z" fill="#b3e5fc" stroke="#6e1f41" stroke-width="3" stroke-linejoin="round" opacity="0.85"/>
+               <path d="M 36 30 L 64 30" stroke="#6e1f41" stroke-width="2" opacity="0.5"/>
+               <ellipse cx="44" cy="36" rx="3" ry="6" fill="white" opacity="0.7"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: flaggen (extract-icons.py) -->
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <!-- 7 rote Streifen -->
+                <rect y="0"   width="300" height="15.4" fill="#b22234"/>
+                <rect y="30.8" width="300" height="15.4" fill="#b22234"/>
+                <rect y="61.5" width="300" height="15.4" fill="#b22234"/>
+                <rect y="92.3" width="300" height="15.4" fill="#b22234"/>
+                <rect y="123.1" width="300" height="15.4" fill="#b22234"/>
+                <rect y="153.8" width="300" height="15.4" fill="#b22234"/>
+                <rect y="184.6" width="300" height="15.4" fill="#b22234"/>
+                <!-- Blaues Sternenfeld -->
+                <rect width="120" height="107.7" fill="#3c3b6e"/>
+                <!-- Vereinfachte Sterne (5x4 Grid) -->
+                <g fill="white" font-family="Verdana" font-size="14" text-anchor="middle">
+                    <text x="20" y="22">★</text><text x="44" y="22">★</text><text x="68" y="22">★</text><text x="92" y="22">★</text>
+                    <text x="20" y="44">★</text><text x="44" y="44">★</text><text x="68" y="44">★</text><text x="92" y="44">★</text>
+                    <text x="20" y="66">★</text><text x="44" y="66">★</text><text x="68" y="66">★</text><text x="92" y="66">★</text>
+                    <text x="20" y="88">★</text><text x="44" y="88">★</text><text x="68" y="88">★</text><text x="92" y="88">★</text>
+                </g>
+            </svg>
+</svg>

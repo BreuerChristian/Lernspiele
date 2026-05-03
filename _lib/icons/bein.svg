@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: reim-paare (extract-icons.py) -->
+<rect x="40" y="14" width="20" height="40" rx="6" fill="#ffccbc" stroke="#6e1f41" stroke-width="3"/>
+               <ellipse cx="50" cy="58" rx="14" ry="6" fill="#ffab91" stroke="#6e1f41" stroke-width="3"/>
+               <rect x="36" y="60" width="28" height="20" rx="4" fill="#ffccbc" stroke="#6e1f41" stroke-width="3"/>
+               <ellipse cx="50" cy="84" rx="20" ry="6" fill="#3a1a26"/>
+</svg>

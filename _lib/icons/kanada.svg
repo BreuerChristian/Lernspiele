@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Quelle: flaggen (extract-icons.py) -->
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="white"/>
+                <rect width="75" height="200" fill="#ff0000"/>
+                <rect x="225" width="75" height="200" fill="#ff0000"/>
+                <!-- Vereinfachtes Ahornblatt: zentrales Polygon -->
+                <polygon points="150,55 158,85 188,82 168,102 178,135 150,118 122,135 132,102 112,82 142,85" fill="#ff0000"/>
+                <polygon points="150,140 145,150 155,150" fill="#ff0000"/>
+            </svg>
+</svg>
