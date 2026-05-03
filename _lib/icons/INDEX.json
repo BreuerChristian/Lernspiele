@@ -13,7 +13,9 @@
       "name": "affe",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F412 (CC-BY-SA 4.0)",
-      "verwendet-in": []
+      "verwendet-in": [
+        "schatten-finden"
+      ]
     },
     {
       "name": "ananas",
@@ -89,7 +91,9 @@
       "name": "baer",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F43B (CC-BY-SA 4.0)",
-      "verwendet-in": []
+      "verwendet-in": [
+        "schatten-finden"
+      ]
     },
     {
       "name": "ball",
@@ -398,6 +402,7 @@
       "kategorie": "tiere",
       "quelle": "schatten-finden",
       "verwendet-in": [
+        "schatten-finden",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -408,6 +413,7 @@
       "quelle": "OpenMoji 1F986 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "schatten-finden",
         "was-passt-nicht"
       ]
     },
@@ -432,7 +438,8 @@
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F989 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "anlaute"
+        "anlaute",
+        "schatten-finden"
       ]
     },
     {
@@ -466,6 +473,7 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
+        "schatten-finden",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -507,6 +515,7 @@
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F438 (CC-BY-SA 4.0)",
       "verwendet-in": [
+        "schatten-finden",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -524,6 +533,7 @@
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F992 (CC-BY-SA 4.0)",
       "verwendet-in": [
+        "schatten-finden",
         "wort-bild"
       ]
     },
@@ -555,7 +565,9 @@
       "name": "hahn",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F413 (CC-BY-SA 4.0)",
-      "verwendet-in": []
+      "verwendet-in": [
+        "schatten-finden"
+      ]
     },
     {
       "name": "hand",
@@ -570,7 +582,9 @@
       "name": "hase",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F407 (CC-BY-SA 4.0)",
-      "verwendet-in": []
+      "verwendet-in": [
+        "schatten-finden"
+      ]
     },
     {
       "name": "haus",
@@ -615,6 +629,7 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
+        "schatten-finden",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -683,6 +698,7 @@
       "verwendet-in": [
         "anlaute",
         "reim-paare",
+        "schatten-finden",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -773,6 +789,7 @@
       "quelle": "OpenMoji 1F404 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "reim-paare",
+        "schatten-finden",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -962,7 +979,9 @@
       "name": "pferd",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F40E (CC-BY-SA 4.0)",
-      "verwendet-in": []
+      "verwendet-in": [
+        "schatten-finden"
+      ]
     },
     {
       "name": "pig",
@@ -1075,7 +1094,9 @@
       "name": "schaf",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F411 (CC-BY-SA 4.0)",
-      "verwendet-in": []
+      "verwendet-in": [
+        "schatten-finden"
+      ]
     },
     {
       "name": "schiff",
@@ -1151,6 +1172,7 @@
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F416 (CC-BY-SA 4.0)",
       "verwendet-in": [
+        "schatten-finden",
         "was-passt-nicht"
       ]
     },
@@ -1218,7 +1240,9 @@
       "name": "spatz",
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F426 (CC-BY-SA 4.0)",
-      "verwendet-in": []
+      "verwendet-in": [
+        "schatten-finden"
+      ]
     },
     {
       "name": "stall",
@@ -1382,6 +1406,7 @@
       "quelle": "OpenMoji 1F426 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "schatten-finden",
         "was-passt-nicht",
         "wort-bild"
       ]
