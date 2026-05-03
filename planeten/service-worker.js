@@ -1,4 +1,4 @@
-const CACHE = 'planeten-v2';
+const CACHE = 'planeten-v3';
 const ASSETS = [
   './',
   './index.html',

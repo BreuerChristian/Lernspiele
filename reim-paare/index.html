@@ -852,10 +852,15 @@
     //  AUDIO (Erfolg-Ton)
     // ====================================================
     let audioCtx = null;
+    let pendingNextRound = null;
     function ensureAudioCtx() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
@@ -1028,7 +1033,11 @@
                 if (b !== btn) b.classList.add('locked');
             });
             sfx.correct();
-            setTimeout(() => nextRound(), 1100);
+            if (pendingNextRound) clearTimeout(pendingNextRound);
+            pendingNextRound = setTimeout(() => {
+                pendingNextRound = null;
+                nextRound();
+            }, 1100);
         } else {
             btn.classList.remove('wiggle');
             void btn.offsetWidth;
@@ -1094,7 +1103,11 @@
             });
             sfx.correct();
             speakWord(word);
-            setTimeout(() => nextRound(), 1300);
+            if (pendingNextRound) clearTimeout(pendingNextRound);
+            pendingNextRound = setTimeout(() => {
+                pendingNextRound = null;
+                nextRound();
+            }, 1300);
         } else {
             btn.classList.remove('wiggle');
             void btn.offsetWidth;
@@ -1127,18 +1140,21 @@
 
     function startGame() {
         if (!state.stage) return;
+        if (pendingNextRound) { clearTimeout(pendingNextRound); pendingNextRound = null; }
         savePrefs();
         $('hud-stage').textContent = STAGES[state.stage].label;
         switchScreen('game');
         state.recentIdx = [];
+        state.locked = false;
         nextRound();
     }
 
     function backToStart() {
-        // Sprache abbrechen
+        // Sprache + pending Timer abbrechen
         if (speech.supported) {
             try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
         }
+        if (pendingNextRound) { clearTimeout(pendingNextRound); pendingNextRound = null; }
         state.locked = false;
         switchScreen('start');
     }

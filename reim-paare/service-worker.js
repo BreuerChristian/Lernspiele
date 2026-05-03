@@ -1,4 +1,4 @@
-const CACHE = 'reim-paare-v1';
+const CACHE = 'reim-paare-v2';
 const ASSETS = [
   './',
   './index.html',

@@ -434,10 +434,10 @@
             <line x1="58" y1="69" x2="68" y2="73" stroke="#444" stroke-width="0.8"/>
         </svg>`,
         BALL: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="36" fill="white" stroke="#222" stroke-width="2.5"/>
-            <path d="M 50 14 L 50 86 M 14 50 L 86 50" stroke="#222" stroke-width="2"/>
-            <path d="M 24 24 L 76 76 M 76 24 L 24 76" stroke="#222" stroke-width="2"/>
-            <circle cx="50" cy="50" r="6" fill="#222"/>
+            <circle cx="50" cy="50" r="36" fill="#e94e77" stroke="#222" stroke-width="2.5"/>
+            <path d="M 50 14 Q 28 50 50 86" stroke="white" stroke-width="6" fill="none"/>
+            <path d="M 50 14 Q 72 50 50 86" stroke="white" stroke-width="6" fill="none"/>
+            <ellipse cx="42" cy="36" rx="10" ry="5" fill="white" opacity="0.55"/>
         </svg>`,
         KUH: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <rect x="20" y="42" width="60" height="32" rx="10" fill="white" stroke="#222" stroke-width="2"/>
@@ -885,11 +885,31 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
+
+    // Visuell aehnliche Wort-Paare: in einem Distraktor-Set sollten nicht
+    // gleichzeitig APFEL+BIRNE oder KATZE+HUND auftauchen, weil das Kind
+    // sonst nach Form raten kann statt das Wort zu lesen.
+    const VISUAL_SIMILAR = {
+        APFEL: ['BIRNE', 'ERDBEERE'],
+        BIRNE: ['APFEL', 'ERDBEERE'],
+        ERDBEERE: ['APFEL', 'BIRNE'],
+        KATZE: ['HUND'],
+        HUND: ['KATZE', 'KUH'],
+        KUH: ['HUND'],
+        SONNE: ['STERN'],
+        STERN: ['SONNE'],
+        FISCH: ['SCHIFF'],
+        SCHIFF: ['FISCH'],
+    };
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
         const ctx = ensureAudio();
         if (!ctx) return;
@@ -926,10 +946,17 @@
 
     function buildOptions(correct) {
         const cfg = STAGES[state.stage];
+        const blacklist = VISUAL_SIMILAR[correct] || [];
         // Distraktoren bevorzugt aus derselben Stufe; auffüllen aus allen verfügbaren Bildern
-        const sameStage = cfg.words.filter(w => w !== correct && PICS[w]);
-        const allOthers = Object.keys(PICS).filter(w => w !== correct);
-        const pool = sameStage.length >= cfg.optionCount - 1 ? sameStage : allOthers;
+        // visuell sehr aehnliche Bilder werden ausgefiltert (sonst Raten ueber Form moeglich)
+        const sameStage = cfg.words.filter(w => w !== correct && PICS[w] && !blacklist.includes(w));
+        const allOthers = Object.keys(PICS).filter(w => w !== correct && !blacklist.includes(w));
+        let pool = sameStage.length >= cfg.optionCount - 1 ? sameStage : allOthers;
+        // Falls Pool trotz Blacklist immer noch zu klein: Blacklist verwerfen
+        if (pool.length < cfg.optionCount - 1) {
+            pool = cfg.words.filter(w => w !== correct && PICS[w]);
+            if (pool.length < cfg.optionCount - 1) pool = Object.keys(PICS).filter(w => w !== correct);
+        }
         const distractors = shuffle(pool).slice(0, cfg.optionCount - 1);
         return shuffle([correct, ...distractors]);
     }

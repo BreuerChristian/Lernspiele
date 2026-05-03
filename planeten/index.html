@@ -672,10 +672,15 @@
     //  AUDIO
     // ====================================================
     let audioCtx = null;
+    let hintTimer = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.07) {
@@ -997,7 +1002,7 @@
             hit.setAttribute('class', 'planet-hit');
             hit.setAttribute('cx', pos.x);
             hit.setAttribute('cy', pos.y);
-            hit.setAttribute('r', Math.max(p.r + 8, 18));
+            hit.setAttribute('r', Math.max(p.r + 10, 24));
             hit.setAttribute('fill', 'transparent');
             hit.setAttribute('data-id', p.id);
             hit.setAttribute('tabindex', '0');
@@ -1176,7 +1181,9 @@
                 ? `Hmm, magst du nochmal schauen? <span class="small">Welcher Planet kommt nach <b>${lastPlaced}</b>?</span>`
                 : `Hmm, magst du nochmal schauen? <span class="small">Welcher Planet ist der Sonne am naechsten?</span>`;
             $('prompt').innerHTML = hint;
-            setTimeout(() => {
+            if (hintTimer) clearTimeout(hintTimer);
+            hintTimer = setTimeout(() => {
+                hintTimer = null;
                 if (state.order.done) return;
                 $('prompt').textContent = 'Welcher Planet kommt als naechstes?';
             }, 2200);

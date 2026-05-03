@@ -469,7 +469,7 @@
         apple:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M100,55 Q70,55 60,80 Q50,120 80,160 Q100,175 120,160 Q150,120 140,80 Q130,55 100,55 Z" fill="#e53935"/><path d="M100,55 Q105,40 120,38" stroke="#5a3820" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="118" cy="42" rx="10" ry="4" fill="#7cc26b" transform="rotate(-25 118 42)"/><ellipse cx="78" cy="80" rx="10" ry="6" fill="#fbb4ae"/></svg>`,
         banana: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M40,140 Q40,40 130,40 Q140,42 138,52 Q90,55 60,100 Q40,140 40,140 Z" fill="#fdd835"/><path d="M40,140 Q40,40 130,40 Q140,42 138,52 Q90,55 60,100 Q40,140 40,140 Z" fill="none" stroke="#a07a00" stroke-width="2.5"/><ellipse cx="132" cy="46" rx="6" ry="4" fill="#5a3820"/><path d="M40,140 Q60,150 80,142" stroke="#a07a00" stroke-width="2.5" fill="none"/></svg>`,
         bread:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M30,130 Q30,80 70,70 Q90,55 110,65 Q140,55 160,80 Q175,100 165,130 Q165,160 130,165 Q90,170 60,165 Q30,160 30,130 Z" fill="#d4a574"/><path d="M50,110 Q70,100 90,108" stroke="#a07a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M110,108 Q130,98 150,110" stroke="#a07a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M70,130 Q100,138 130,130" stroke="#a07a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
-        milk:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M70,55 L70,40 L130,40 L130,55 L145,80 L145,170 L55,170 L55,80 Z" fill="white" stroke="#1565c0" stroke-width="3"/><rect x="65" y="90" width="70" height="40" fill="#1565c0"/><text x="100" y="118" text-anchor="middle" font-family="Verdana,Tahoma,sans-serif" font-size="22" font-weight="bold" fill="white">MILK</text></svg>`,
+        milk:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M70,55 L70,40 L130,40 L130,55 L145,80 L145,170 L55,170 L55,80 Z" fill="white" stroke="#1565c0" stroke-width="3"/><rect x="65" y="90" width="70" height="40" fill="#1565c0"/><circle cx="85" cy="110" r="5" fill="white"/><circle cx="100" cy="110" r="5" fill="white"/><circle cx="115" cy="110" r="5" fill="white"/></svg>`,
         cheese: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><polygon points="30,160 170,160 170,110 30,140" fill="#fdd835"/><polygon points="30,140 170,110 100,60" fill="#ffe97a"/><polygon points="30,160 30,140 100,60 170,110 170,160" fill="none" stroke="#a07a00" stroke-width="3"/><circle cx="80" cy="135" r="6" fill="#a07a00"/><circle cx="125" cy="125" r="5" fill="#a07a00"/><circle cx="105" cy="148" r="4" fill="#a07a00"/></svg>`,
         water:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%"><path d="M100,30 Q60,90 60,130 Q60,170 100,170 Q140,170 140,130 Q140,90 100,30 Z" fill="#4fa3d9"/><path d="M100,30 Q60,90 60,130 Q60,170 100,170 Q140,170 140,130 Q140,90 100,30 Z" fill="none" stroke="#0d47a1" stroke-width="3"/><ellipse cx="85" cy="120" rx="12" ry="20" fill="white" opacity="0.4"/></svg>`,
     };
@@ -648,10 +648,15 @@
         pendingSpeechTimer = setTimeout(() => {
             pendingSpeechTimer = null;
             try {
+                // Wenn KEINE englische Voice verfuegbar ist: gar nicht erst sprechen,
+                // sonst gibt das deutsche TTS-Engine-Output ("Det Ket" statt "Cat").
+                if (!englishVoice) {
+                    showVisualHint(card);
+                    return;
+                }
                 const u = new SpeechSynthesisUtterance(card.en);
                 u.lang = 'en-US';
-                if (englishVoice) u.voice = englishVoice;
-                else { showVisualHint(card); /* zusaetzlich Wort sichtbar zeigen */ }
+                u.voice = englishVoice;
                 u.rate = 0.85;
                 u.pitch = 1.0;
                 u.volume = 1.0;
