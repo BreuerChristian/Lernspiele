@@ -23,16 +23,22 @@ lernspiele/
 ├── icon-maskable.svg
 ├── _lib/                ← geteilte Ressourcen (Audio + Icon-Sammlung)
 │   ├── audio.js         ← Lernspiele.Audio.{correct,wrong,tap,tone,sequence}
-│   ├── icons/           ← Spiel-Icons als Source-of-Truth (.svg-Einzeldateien)
-│   ├── icons/INDEX.json ← Auflistung aller Icons mit Kategorie + Verwendung
-│   ├── icons-gallery.html ← Browser-Review-Seite
+│   ├── icons/           ← 178 Spiel-Icons (ueberw. OpenMoji CC-BY-SA 4.0)
+│   ├── icons/INDEX.json ← Auflistung mit Kategorie + Quelle + verwendet-in
+│   ├── icons/NOTICE.md  ← Attribution + Codepoint-Tabelle
+│   ├── icons/LICENSE-OPENMOJI.md ← Lizenz-Erklaerung
+│   ├── icons-gallery.html ← Browser-Review-Seite (Filter + 24/64/128px + Schatten)
 │   └── README.md        ← SVG-Stilrichtlinie + Marker-Pattern
 ├── _templates/
 │   └── new-game/        ← Vorlage fuer neue Spiele (alle Standard-Patterns)
 ├── scripts/
 │   ├── scaffold-game.sh ← bash scripts/scaffold-game.sh <id> "Name" "#hex"
-│   ├── update-icons.js  ← (geplant) Icon-Updates in alte Spiele propagieren
-│   └── verify-icons.js  ← (geplant) Konsistenz-Check
+│   ├── icons.py         ← Subkommandos: extract / discover / update / verify
+│   ├── download-openmoji.py ← OpenMoji-SVGs nach _lib/icons/ holen
+│   ├── cleanup-icons.py ← One-Shot-Aufraeumen (Englisch->Deutsch, etc.)
+│   ├── extract-manifest.json    ← Welche SVGs aus welchen Spielen ziehen
+│   ├── openmoji-manifest.json   ← Welche Codepoints in die Lib
+│   └── discover-manifest.json   ← Auto-generiert von `discover --write-manifest`
 └── <spiel>/             ← jedes Spiel als eigenständige PWA
     ├── index.html
     ├── manifest.json    ← scope: "./", start_url: "./"
@@ -95,22 +101,39 @@ Eigene Töne für Spielmechanik (zählen, stapeln, fliegen) sind erlaubt — üb
 
 ### `_lib/icons/` — Spiel-Icons als Source-of-Truth
 
-Wiederkehrende Spiel-Inhalte (Tiere, Pflanzen, Haushalt, Verkehr) liegen als
-Einzel-`.svg`-Dateien in `_lib/icons/`. Stilrichtlinie und Marker-Pattern siehe
-[_lib/README.md](_lib/README.md).
+178 Icons in `_lib/icons/`, ueberwiegend aus **OpenMoji** (CC-BY-SA 4.0,
+siehe [_lib/icons/NOTICE.md](_lib/icons/NOTICE.md)). 8 Spiele nutzen bereits
+das Marker-Pattern: anlaute, was-passt-nicht, jahreszeiten-sortieren,
+englisch-erste-woerter, reim-paare, flaggen, wort-bild, schatten-finden.
 
-Beim Einbinden in ein Spiel gilt das Marker-Pattern:
+**Galerie-Browser:** `python -m http.server 8000` im Repo-Wurzel, dann
+http://localhost:8000/_lib/icons-gallery.html — zeigt alle Icons mit
+Filter, 24/64/128 px + Silhouette, Such-Feld.
+
+**Marker-Pattern in Spielen:**
 
 ```javascript
 const ICONS = {
   // ICON:kuh START
-  kuh: `<svg viewBox="0 0 200 200">...</svg>`,
+  kuh: `<svg viewBox="0 0 72 72">...</svg>`,
   // ICON:kuh END
 };
 ```
 
-Damit kann `scripts/update-icons.js` Icon-Updates in alle nutzenden Spiele
-propagieren.
+**Workflow:**
+
+| Aufgabe | Befehl |
+|---|---|
+| Icon-Inhalt in der Lib aendern und in alle nutzenden Spiele propagieren | `python scripts/icons.py update` (bumpt SW-Cache automatisch) |
+| Konsistenz pruefen (Marker-Paare, fehlende Lib-Files, INDEX vs FS) | `python scripts/icons.py verify` |
+| Neue Spiele scannen, Icon-Kandidaten finden | `python scripts/icons.py discover --write-manifest` |
+| Icons aus existierenden Spielen extrahieren (4 Patterns A/B/C/D) | `python scripts/icons.py extract --manifest <pfad>` |
+| OpenMoji-Codepoints nachladen | `python scripts/download-openmoji.py` |
+
+**Lizenz-Hinweis:** Bei Modifikation eines OpenMoji-Icons im SVG-Header
+einen Kommentar setzen (`<!-- Modified from OpenMoji XXXX (CC BY-SA 4.0) -->`)
+und das geaenderte Icon bleibt unter CC BY-SA 4.0. Der Repo-Code ist MIT
+und davon unbeeinflusst (siehe [_lib/icons/LICENSE-OPENMOJI.md](_lib/icons/LICENSE-OPENMOJI.md)).
 
 ### CSS-Custom-Properties für Theme-Color
 
@@ -199,9 +222,14 @@ function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p))
 3. Eigene Icons (`icon.svg`, `icon-maskable.svg`) zeichnen
    (Maskable: 80% Safe-Zone — Inhalt zwischen ~10% und 90% beider Achsen,
    Hintergrund vollflächig ohne `rx`).
-4. Wenn Spiel-Inhalt-Icons gebraucht werden: erst `_lib/icons/` prüfen, dann
-   neue per Marker-Pattern (`// ICON:<name> START/END`) einbauen und in
-   `_lib/icons/INDEX.json` registrieren. Stil siehe [_lib/README.md](_lib/README.md).
+4. Wenn Spiel-Inhalt-Icons gebraucht werden: erst Galerie ansehen
+   (`http://localhost:8000/_lib/icons-gallery.html`). Wenn das passende Icon
+   schon da ist → mit `// ICON:<name> START/END` umrahmen und SVG-Inhalt aus
+   `_lib/icons/<name>.svg` einsetzen. Wenn nicht da → entweder neuen
+   OpenMoji-Codepoint in `scripts/openmoji-manifest.json` ergänzen und
+   `python scripts/download-openmoji.py` laufen lassen, oder eigenes SVG
+   anlegen + INDEX.json-Eintrag (Stil siehe [_lib/README.md](_lib/README.md)).
+   Konsistenz prüfen: `python scripts/icons.py verify`.
 5. In Wurzel-`index.html` die Spielkarte ergänzen.
 6. Wurzel-`service-worker.js`: Cache-Version bumpen
    (`lernspiele-landing-vXX` → `vXX+1`), neue `_lib/`-Pfade in `ASSETS` ergänzen
