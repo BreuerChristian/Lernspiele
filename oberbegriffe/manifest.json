@@ -1,0 +1,26 @@
+{
+  "name": "Wohin passt das?",
+  "short_name": "Wohin passt ",
+  "description": "Klassifikation: Icon zeigen, in passende Kategorie einsortieren",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fce9e7",
+  "theme_color": "#e74c3c",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

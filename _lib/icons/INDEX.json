@@ -31,6 +31,7 @@
       "quelle": "OpenMoji 1F34E (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "reim-paare",
         "was-passt-nicht",
         "wort-bild"
@@ -74,6 +75,7 @@
       "quelle": "OpenMoji 1F697 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "reim-paare",
         "was-passt-nicht",
         "wort-bild"
@@ -120,6 +122,7 @@
       "quelle": "OpenMoji 1F34C (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -138,6 +141,7 @@
       "quelle": "OpenMoji 1F333 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "reim-paare",
         "was-passt-nicht",
         "wort-bild"
@@ -230,6 +234,7 @@
       "kategorie": "natur",
       "quelle": "was-passt-nicht",
       "verwendet-in": [
+        "oberbegriffe",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -271,6 +276,7 @@
       "kategorie": "essen",
       "quelle": "was-passt-nicht",
       "verwendet-in": [
+        "oberbegriffe",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -297,6 +303,7 @@
       "kategorie": "verkehr",
       "quelle": "was-passt-nicht",
       "verwendet-in": [
+        "oberbegriffe",
         "was-passt-nicht"
       ]
     },
@@ -394,7 +401,8 @@
       "quelle": "OpenMoji 1F366 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
-        "jahreszeiten-sortieren"
+        "jahreszeiten-sortieren",
+        "oberbegriffe"
       ]
     },
     {
@@ -447,6 +455,7 @@
       "kategorie": "verkehr",
       "quelle": "was-passt-nicht",
       "verwendet-in": [
+        "oberbegriffe",
         "was-passt-nicht"
       ]
     },
@@ -472,6 +481,7 @@
       "quelle": "OpenMoji 1F41F (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "reim-paare",
         "schatten-finden",
         "was-passt-nicht",
@@ -592,6 +602,7 @@
       "quelle": "OpenMoji 1F3E0 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "reim-paare",
         "was-passt-nicht",
         "wort-bild"
@@ -628,6 +639,7 @@
       "quelle": "OpenMoji 1F415 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "reim-paare",
         "schatten-finden",
         "was-passt-nicht",
@@ -697,6 +709,7 @@
       "quelle": "OpenMoji 1F408 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "reim-paare",
         "schatten-finden",
         "was-passt-nicht",
@@ -780,7 +793,8 @@
       "kategorie": "essen",
       "quelle": "OpenMoji 1F383 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "jahreszeiten-sortieren"
+        "jahreszeiten-sortieren",
+        "oberbegriffe"
       ]
     },
     {
@@ -788,6 +802,7 @@
       "kategorie": "tiere",
       "quelle": "OpenMoji 1F404 (CC-BY-SA 4.0)",
       "verwendet-in": [
+        "oberbegriffe",
         "reim-paare",
         "schatten-finden",
         "was-passt-nicht",
@@ -800,6 +815,7 @@
       "quelle": "OpenMoji 1F4A1 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "was-passt-nicht"
       ]
     },
@@ -866,7 +882,8 @@
       "kategorie": "natur",
       "quelle": "OpenMoji 1F319 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "anlaute"
+        "anlaute",
+        "oberbegriffe"
       ]
     },
     {
@@ -1103,6 +1120,7 @@
       "kategorie": "verkehr",
       "quelle": "OpenMoji 1F6A2 (CC-BY-SA 4.0)",
       "verwendet-in": [
+        "oberbegriffe",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -1215,6 +1233,7 @@
       "verwendet-in": [
         "anlaute",
         "jahreszeiten-sortieren",
+        "oberbegriffe",
         "reim-paare",
         "was-passt-nicht",
         "wort-bild"
@@ -1306,6 +1325,7 @@
       "quelle": "OpenMoji 2615 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "wort-bild"
       ]
     },
@@ -1323,6 +1343,7 @@
       "quelle": "anlaute",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "reim-paare",
         "was-passt-nicht",
         "wort-bild"
@@ -1373,7 +1394,8 @@
       "kategorie": "haushalt",
       "quelle": "OpenMoji 23F0 (CC-BY-SA 4.0)",
       "verwendet-in": [
-        "anlaute"
+        "anlaute",
+        "oberbegriffe"
       ]
     },
     {
@@ -1406,6 +1428,7 @@
       "quelle": "OpenMoji 1F426 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "schatten-finden",
         "was-passt-nicht",
         "wort-bild"
@@ -1449,6 +1472,7 @@
       "quelle": "OpenMoji 2601 (CC-BY-SA 4.0)",
       "verwendet-in": [
         "anlaute",
+        "oberbegriffe",
         "was-passt-nicht",
         "wort-bild"
       ]
@@ -1498,6 +1522,7 @@
       "kategorie": "verkehr",
       "quelle": "OpenMoji 1F686 (CC-BY-SA 4.0)",
       "verwendet-in": [
+        "oberbegriffe",
         "was-passt-nicht",
         "wort-bild"
       ]
