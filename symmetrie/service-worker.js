@@ -1,4 +1,4 @@
-const CACHE = 'symmetrie-v2';
+const CACHE = 'symmetrie-v3';
 const ASSETS = [
   './',
   './index.html',

@@ -544,9 +544,13 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
     function tone(freq, dur = 0.15, type = 'sine', vol = 0.08) {
@@ -587,14 +591,15 @@
         // Filter: keine Duplikate, keine Werte die in der sichtbaren Reihe vorkommen
         // (sonst verraet sich die Antwort durch eine Zahl die schon im Strang steht).
         const visible = numbers.filter((_, i) => i !== gapIndex);
+        // Strahl geht 0..20, also Distraktoren ebenfalls auf diesen Bereich begrenzen.
         const candidates = [answer - 2, answer - 1, answer + 1, answer + 2]
-            .filter(v => v >= 0 && v !== answer && !visible.includes(v));
+            .filter(v => v >= 0 && v <= 20 && v !== answer && !visible.includes(v));
         const distractors = shuffle(candidates).slice(0, 3);
         // Falls weniger als 3 verfuegbar (z.B. bei answer=0/1), mit weiteren auffuellen
         let extra = 3;
         while (distractors.length < 3) {
             const cand = answer + (extra * (Math.random() < 0.5 ? -1 : 1));
-            if (cand >= 0 && cand !== answer && !visible.includes(cand) && !distractors.includes(cand)) {
+            if (cand >= 0 && cand <= 20 && cand !== answer && !visible.includes(cand) && !distractors.includes(cand)) {
                 distractors.push(cand);
             }
             extra++;

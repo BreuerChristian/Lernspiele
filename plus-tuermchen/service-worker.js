@@ -1,4 +1,4 @@
-const CACHE = 'plus-tuermchen-v3';
+const CACHE = 'plus-tuermchen-v4';
 const ASSETS = [
   './',
   './index.html',

@@ -1,4 +1,4 @@
-const CACHE = 'anlaute-v2';
+const CACHE = 'anlaute-v3';
 const ASSETS = [
   './',
   './index.html',

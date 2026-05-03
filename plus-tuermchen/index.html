@@ -860,6 +860,7 @@
     //  Merge-Phase: rechter Turm rutscht auf linken
     // -----------------------------------------------------
     let mergeTimer = null;
+    let answerTimer = null;
     function startMerge() {
         if (state.phase !== 'build') return; // Tap-Race-Schutz: Phase prüfen UND ändern bevor Animation läuft
         if (state.builtA !== state.problem.a || state.builtB !== state.problem.b) return;
@@ -982,7 +983,10 @@
                 if (b !== btn) b.classList.add('locked');
             });
             sfx.correct();
-            setTimeout(() => {
+            if (answerTimer) clearTimeout(answerTimer);
+            answerTimer = setTimeout(() => {
+                answerTimer = null;
+                if (state.phase !== 'locked') return; // Back-Tap-Schutz
                 state.roundIndex++;
                 if (state.roundIndex >= ROUNDS_PER_GAME) {
                     showEnd();
@@ -1059,6 +1063,7 @@
 
     function backToStart() {
         if (mergeTimer) { clearTimeout(mergeTimer); mergeTimer = null; }
+        if (answerTimer) { clearTimeout(answerTimer); answerTimer = null; }
         setPhase('done');
         switchScreen('start');
     }

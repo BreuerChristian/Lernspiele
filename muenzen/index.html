@@ -288,6 +288,9 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.1s;
+            /* Mindest-Tap-Flaeche fuer Kinder, auch bei kleinen Muenzen (1c/2c) */
+            min-width: 44px;
+            min-height: 44px;
         }
         .coin:active { transform: translateY(1px) scale(0.96); }
         .coin svg {
@@ -560,11 +563,16 @@
     // ====================================================
     let audioCtx = null;
     function ensureAudio() {
-        if (audioCtx) return audioCtx;
-        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        catch (e) { audioCtx = null; }
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch (e) { audioCtx = null; }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            try { audioCtx.resume(); } catch (e) { /* ignore */ }
+        }
         return audioCtx;
     }
+    let nextTaskTimer = null;
     function tone(freq, dur = 0.12, type = 'sine', vol = 0.06) {
         const ctx = ensureAudio();
         if (!ctx) return;
@@ -816,7 +824,9 @@
             hideHint();
             showMatchBanner('Genau! ' + formatAmount(target) + '.');
             sfx.match();
-            setTimeout(() => {
+            if (nextTaskTimer) clearTimeout(nextTaskTimer);
+            nextTaskTimer = setTimeout(() => {
+                nextTaskTimer = null;
                 if (state.taskQueue.length === 0) {
                     // Runde fertig — neue Runde starten (ohne Bewertungsdruck)
                     startRound();
@@ -869,6 +879,8 @@
 
     function startGame() {
         if (!state.stage) return;
+        if (nextTaskTimer) { clearTimeout(nextTaskTimer); nextTaskTimer = null; }
+        state.locked = false;
         savePrefs();
         const cfg = STAGES[state.stage];
         state.availableCoins = cfg.coins.slice();
@@ -879,6 +891,8 @@
     }
 
     function backToStart() {
+        if (nextTaskTimer) { clearTimeout(nextTaskTimer); nextTaskTimer = null; }
+        state.locked = false;
         switchScreen('start');
     }
 
