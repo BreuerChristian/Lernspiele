@@ -8,23 +8,62 @@ Werbefreie, datensparsame Open-Source-Lernspiele für Kinder.
 
 Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann auf GitHub gestellt, damit andere Eltern sie nutzen, forken oder anpassen können. Ohne Werbung, ohne Tracker, ohne Belohnungs-Loops, ohne Account. Pädagogisch am Montessori-Prinzip orientiert: das Spiel endet, wenn das Kind fertig ist — nicht wenn der nächste Dopamin-Hit greift.
 
+23 Spiele, sortiert nach vier Kategorien, mit Altersfilter (4 / 6 / 8 / 10 / 12 Jahre) auf der Landing-Seite.
+
 ## Spiele
 
-| Spiel | Inhalt |
-|-------|--------|
-| [**Buchstaben-Spiel**](buchstaben/) | Buchstaben hören und erkennen |
-| [**Zahlen-Parade**](zahlen-parade/) | Rechnen mit einer wandernden Kindergruppe — Count-Masters-inspiriert, aber ohne Wettbewerb und Zeitdruck |
-| [**Hauptstädte lernen**](hauptstaedte-lernen/) | Hauptstädte in drei Stufen: deutsche Bundesländer, Europa, weltweit |
+### Sprache & Lesen
+
+| Spiel | Inhalt | Alter |
+|-------|--------|-------|
+| [Buchstaben-Spiel](buchstaben/) | Buchstaben hören und erkennen | 4–7 |
+| [Anlaut-Spiel](anlaute/) | Mit welchem Buchstaben beginnt das Wort? | 5–8 |
+| [Silben klatschen](silben-klatschen/) | Wort hören und pro Silbe einmal tippen | 5–8 |
+| [Reim-Paare](reim-paare/) | Reimt sich? Haus und Maus — oder doch nicht? | 5–8 |
+| [Wort-Bild-Memory](wort-bild/) | Wort lesen und passendes Bild antippen | 6–9 |
+| [Erste englische Wörter](englisch-erste-woerter/) | Bild + Wort hören, ohne Test | 6–10 |
+
+### Mathe & Zahlen
+
+| Spiel | Inhalt | Alter |
+|-------|--------|-------|
+| [Zahlen-Parade](zahlen-parade/) | Rechnen mit einer wandernden Kindergruppe — Count-Masters-inspiriert, aber ohne Wettbewerb und Zeitdruck | 5–9 |
+| [Mengen erfassen](mengen-erfassen/) | Punktwolke kurz sehen, Anzahl erkennen | 4–7 |
+| [Zahlenreihen](zahlenreihen/) | Was fehlt? 2, 4, _, 8, 10 | 6–10 |
+| [Plus-Türmchen](plus-tuermchen/) | Visuelle Addition mit Klötzchen-Stapeln | 5–8 |
+| [Münzen](muenzen/) | Beträge mit Euro-Münzen legen | 6–10 |
+| [Uhr lesen](uhr-lesen/) | Analog-Uhr in drei Stufen: voll, halb, viertel | 7–10 |
+
+### Welt & Sachkunde
+
+| Spiel | Inhalt | Alter |
+|-------|--------|-------|
+| [Tier-Geräusche](tier-geraeusche/) | Hör zu und finde das passende Tier | 3–6 |
+| [Jahreszeiten-Sortieren](jahreszeiten-sortieren/) | Bilder den vier Jahreszeiten zuordnen | 3–6 |
+| [Bundesländer-Spiel](bundeslaender/) | Die 16 Bundesländer auf der Karte finden | 7–11 |
+| [Hauptstädte lernen](hauptstaedte-lernen/) | Drei Stufen: deutsche Bundesländer, Europa, weltweit | 8–12 |
+| [Länder-Flaggen](flaggen/) | Welche Flagge gehört zu welchem Land? | 8–12 |
+| [Planeten der Reihe nach](planeten/) | Sonnensystem erkunden und ordnen | 7–12 |
+
+### Wahrnehmung & Logik
+
+| Spiel | Inhalt | Alter |
+|-------|--------|-------|
+| [Schatten finden](schatten-finden/) | Tier oben, passender Schatten unten | 3–6 |
+| [Was passt nicht?](was-passt-nicht/) | Vier Bilder, eines fällt aus der Kategorie | 4–7 |
+| [Muster fortsetzen](muster-fortsetzen/) | Welches Symbol kommt als Nächstes? | 5–9 |
+| [Symmetrie](symmetrie/) | Linke Hälfte vorgegeben — Spiegel ergänzen | 6–10 |
+| [Farben mischen](farben-mischen/) | Rot, Gelb, Blau — was passiert beim Mischen? | 4–8 |
 
 ## Auf dem Handy installieren
 
-Die Sammlung ist als PWA installierbar. Ein Icon auf dem Startbildschirm, beide Spiele drin.
+Die Sammlung ist als PWA installierbar. Ein Icon auf dem Startbildschirm, alle Spiele drin.
 
 **Android (Chrome / Edge):** [Live-URL](https://breuerchristian.github.io/Lernspiele/) öffnen → der gelbe **Installieren**-Banner oben → tippen.
 
 **iPhone (Safari):** [Live-URL](https://breuerchristian.github.io/Lernspiele/) öffnen → Teilen-Icon unten → **Zum Home-Bildschirm**.
 
-Beide Spiele sind danach offline spielbar.
+Alle Spiele sind danach offline spielbar.
 
 ## Werte (nicht verhandelbar)
 
@@ -34,6 +73,8 @@ Beide Spiele sind danach offline spielbar.
 - **Keine Engagement-Hooks** — keine Streaks, keine Push-Notifications, keine "spiel weiter um X freizuschalten"-Mechanik, keine Casino-Sounds bei richtiger Antwort.
 - **Keine In-App-Käufe** — alles oder nichts, immer kostenlos.
 - **Lokal-first** — Spielstände (falls überhaupt) im LocalStorage. Kein Account, kein Login, kein Backend.
+- **Keine Bewertungs-Sprache** — kein "X daneben", kein "leider falsch". Warm formuliert ohne Wettbewerbs-Vokabular.
+- **Lesbare Schrift** — Verdana/Tahoma, keine Schnörkel- oder Cursive-Schriften (Comic Sans, Chalkboard) — Kinder lesen sie schwer.
 
 ## Technik
 
@@ -41,17 +82,24 @@ Vanilla HTML/CSS/JS, jedes Spiel in einer einzigen `index.html` (inline CSS+JS) 
 
 ```
 lernspiele/
-├── index.html              ← Landing (Sammlung-PWA)
+├── index.html              ← Landing (Sammlung-PWA mit Altersfilter)
 ├── manifest.json
-├── service-worker.js
+├── service-worker.js       ← delegiert Spiel-Pfade an Spiel-SWs
 ├── icon.svg / icon-maskable.svg
-├── buchstaben/             ← Spiel 1 (eigene PWA)
+├── _lib/                   ← geteilte Ressourcen
+│   ├── audio.js            ← Lernspiele.Audio.{correct,wrong,tap,tone,sequence}
+│   ├── icons/              ← Spiel-Icons als Source-of-Truth (.svg)
+│   └── icons-gallery.html  ← Browser-Review-Seite
+├── _templates/
+│   └── new-game/           ← Vorlage für neue Spiele
+├── scripts/
+│   └── scaffold-game.sh    ← bash scripts/scaffold-game.sh <id> "Name" "#hex"
+├── buchstaben/             ← Spiel (eigene PWA)
 │   ├── index.html
 │   ├── manifest.json
 │   ├── service-worker.js
 │   └── icon*.svg
-└── zahlen-parade/          ← Spiel 2 (eigene PWA)
-    └── ...
+└── ...                     ← weitere 22 Spiele nach gleichem Muster
 ```
 
 ## Lokal entwickeln
@@ -64,12 +112,15 @@ Dann http://localhost:8000/ im Browser öffnen. Service Worker und Manifest funk
 
 ## Neues Spiel hinzufügen
 
-Detaillierte Checkliste in [CLAUDE.md](CLAUDE.md). Kurzfassung:
+Es gibt ein Scaffold-Script, das den Boilerplate (Manifest, SW mit eindeutigem Cache-Präfix, Icons, Theme-Color) aus `_templates/new-game/` kopiert:
 
-1. Neuen Unterordner anlegen, z.B. `formen/`
-2. `index.html`, `manifest.json` (mit `scope: "./"` und eigenem Cache-Namen), `service-worker.js`, `icon.svg`, `icon-maskable.svg` (mit 80% Safe-Zone)
-3. Spielkarte in der Root-[`index.html`](index.html) ergänzen
-4. Lokal testen, Commit, Push
+```sh
+bash scripts/scaffold-game.sh formen "Formen erkennen" "#5fa867"
+```
+
+Danach `<spiel>/index.html` mit der eigentlichen Spiel-Logik füllen, die Spielkarte in der Root-[`index.html`](index.html) in der passenden Kategorie ergänzen und die Cache-Version in der Root-[`service-worker.js`](service-worker.js) bumpen (`lernspiele-landing-vXX` → `vXX+1`) — sonst zeigt der Browser die alte Landing tagelang aus dem Cache und das neue Spiel taucht nicht auf.
+
+Detaillierte Checkliste, Fallstricke (rAF-Loops, Tap-Races, SW-Scope) und Stilrichtlinien in [CLAUDE.md](CLAUDE.md).
 
 ## Inspiration
 

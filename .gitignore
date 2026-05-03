@@ -1,0 +1,16 @@
+# Claude Code
+.claude/worktrees/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs
+*.log
