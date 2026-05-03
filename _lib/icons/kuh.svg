@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Quelle: schatten-finden/index.html (Original im Flat-Color-Stil ohne Outlines) -->
+  <!-- Schwanz -->
+  <path d="M 50 100 Q 38 90 40 75 L 45 75 Q 48 90 55 105 Z" fill="#d8d8d8"/>
+  <!-- Beine -->
+  <path d="M 60 130 L 58 168 L 72 168 L 74 130 Z" fill="#3a3a3a"/>
+  <path d="M 82 130 L 82 168 L 94 168 L 94 130 Z" fill="#3a3a3a"/>
+  <path d="M 112 130 L 112 168 L 124 168 L 124 130 Z" fill="#3a3a3a"/>
+  <path d="M 132 130 L 132 168 L 144 168 L 144 130 Z" fill="#3a3a3a"/>
+  <!-- Koerper -->
+  <path d="M 50 100 Q 55 80 92 78 L 138 80 Q 152 82 154 105 L 154 132 Q 138 138 90 138 Q 55 138 50 122 Z" fill="#f0f0f0"/>
+  <!-- Flecken -->
+  <path d="M 70 92 Q 80 88 90 92 Q 92 102 82 105 Q 70 105 68 100 Z" fill="#2c3e50"/>
+  <path d="M 110 100 Q 130 95 140 110 Q 140 125 125 128 Q 105 125 105 115 Z" fill="#2c3e50"/>
+  <!-- Kopf -->
+  <path d="M 145 78 Q 175 75 178 100 Q 178 120 158 122 Q 142 120 140 102 Z" fill="#f0f0f0"/>
+  <!-- Schnauze -->
+  <path d="M 156 105 Q 178 108 178 120 Q 175 128 158 126 Z" fill="#e0c0b0"/>
+  <!-- Hoerner -->
+  <path d="M 148 75 Q 142 65 138 68 Q 142 75 148 80 Z" fill="#e8d8b0"/>
+  <path d="M 175 75 Q 180 65 184 68 Q 180 75 174 80 Z" fill="#e8d8b0"/>
+  <!-- Auge -->
+  <circle cx="152" cy="100" r="2.5" fill="#2c3e50"/>
+  <!-- Nasenloch -->
+  <ellipse cx="168" cy="115" rx="1.5" ry="2" fill="#2c3e50"/>
+</svg>

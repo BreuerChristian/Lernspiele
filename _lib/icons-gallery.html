@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icon-Galerie · Lernspiele</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Verdana', 'Tahoma', sans-serif;
+      background: #f5f3ef;
+      color: #2a2a2a;
+      padding: 28px 20px 60px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      color: #4a2a6a;
+      margin-bottom: 6px;
+    }
+    .sub {
+      color: #6a5a7a;
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding: 14px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .toolbar input {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px 14px;
+      border: 2px solid #d0c8d8;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .toolbar input:focus { border-color: #764ba2; }
+
+    .toolbar button {
+      padding: 10px 16px;
+      border: 2px solid #d0c8d8;
+      background: white;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #4a2a6a;
+    }
+    .toolbar button.active {
+      background: #764ba2;
+      color: white;
+      border-color: #764ba2;
+    }
+
+    .category {
+      margin-bottom: 32px;
+    }
+    .category h2 {
+      color: #4a2a6a;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e0d8eb;
+    }
+    .category-count {
+      color: #8a7a9a;
+      font-weight: normal;
+      font-size: 0.85rem;
+      margin-left: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: box-shadow 0.15s;
+    }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+
+    .card .name {
+      font-weight: bold;
+      color: #2a2a2a;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .card .meta {
+      font-size: 0.78rem;
+      color: #8a7a9a;
+      margin-bottom: 10px;
+    }
+
+    .sizes {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      gap: 8px;
+      padding: 10px 4px;
+      background: #f8f6fa;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+    .sizes .col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .sizes .col .label {
+      font-size: 0.7rem;
+      color: #8a7a9a;
+    }
+    .sizes svg.s24 { width: 24px; height: 24px; }
+    .sizes svg.s64 { width: 64px; height: 64px; }
+    .sizes svg.s128 { width: 128px; height: 128px; }
+    .sizes svg.silhouette {
+      width: 64px;
+      height: 64px;
+      filter: brightness(0) saturate(100%);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #8a7a9a;
+    }
+    .empty code {
+      background: #ece6f0;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .error {
+      background: #ffe5e5;
+      color: #8a1a1a;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .error code {
+      background: #f5d5d5;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #8a7a9a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Icon-Galerie</h1>
+  <p class="sub">Alle SVG-Icons aus <code>_lib/icons/</code> in 24 / 64 / 128 px + Silhouette.</p>
+
+  <div class="toolbar">
+    <input id="search" type="text" placeholder="Filter (z.B. kuh, tier, …)" autocomplete="off">
+    <button id="filter-all" class="active" data-cat="">Alle</button>
+  </div>
+
+  <div id="content">
+    <div class="loading">Lade Icons …</div>
+  </div>
+
+  <script>
+    'use strict';
+
+    async function loadIndex() {
+      try {
+        const res = await fetch('icons/INDEX.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return await res.json();
+      } catch (e) {
+        return { error: e.message };
+      }
+    }
+
+    async function loadIconSvg(name) {
+      try {
+        const res = await fetch('icons/' + name + '.svg', { cache: 'no-store' });
+        if (!res.ok) return null;
+        return await res.text();
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function svgWithSizeClass(svgText, cls) {
+      return svgText.replace(/<svg([^>]*)>/, function (m, attrs) {
+        const cleaned = attrs
+          .replace(/\swidth="[^"]*"/g, '')
+          .replace(/\sheight="[^"]*"/g, '');
+        return '<svg' + cleaned + ' class="' + cls + '">';
+      });
+    }
+
+    function renderCard(icon, svgText) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.name = icon.name;
+      card.dataset.kategorie = icon.kategorie || 'sonstige';
+
+      const verwendung = (icon['verwendet-in'] || []).length;
+      card.innerHTML = `
+        <div class="name">${icon.name}</div>
+        <div class="meta">
+          ${icon.kategorie || 'sonstige'}
+          ${verwendung ? '· in ' + verwendung + ' Spiel' + (verwendung === 1 ? '' : 'en') : '· nicht eingebunden'}
+        </div>
+        <div class="sizes">
+          <div class="col"><div class="label">24</div>${svgWithSizeClass(svgText, 's24')}</div>
+          <div class="col"><div class="label">64</div>${svgWithSizeClass(svgText, 's64')}</div>
+          <div class="col"><div class="label">128</div>${svgWithSizeClass(svgText, 's128')}</div>
+          <div class="col"><div class="label">Schatten</div>${svgWithSizeClass(svgText, 'silhouette')}</div>
+        </div>
+      `;
+      return card;
+    }
+
+    function renderCategoryButtons(categories) {
+      const toolbar = document.querySelector('.toolbar');
+      categories.sort().forEach(function (cat) {
+        const btn = document.createElement('button');
+        btn.dataset.cat = cat;
+        btn.textContent = cat;
+        toolbar.appendChild(btn);
+      });
+    }
+
+    function applyFilter() {
+      const q = document.getElementById('search').value.trim().toLowerCase();
+      const activeCat = document.querySelector('.toolbar button.active').dataset.cat;
+      document.querySelectorAll('.card').forEach(function (card) {
+        const matchCat = !activeCat || card.dataset.kategorie === activeCat;
+        const matchQ = !q || card.dataset.name.toLowerCase().includes(q);
+        card.style.display = (matchCat && matchQ) ? '' : 'none';
+      });
+      document.querySelectorAll('.category').forEach(function (cat) {
+        const visible = cat.querySelectorAll('.card:not([style*="none"])').length;
+        cat.style.display = visible ? '' : 'none';
+      });
+    }
+
+    async function init() {
+      const content = document.getElementById('content');
+      const data = await loadIndex();
+
+      if (data.error) {
+        content.innerHTML = `
+          <div class="error">
+            Konnte <code>icons/INDEX.json</code> nicht laden: ${data.error}.<br>
+            Bitte über einen lokalen Webserver öffnen — z.B.<br>
+            <code>python -m http.server 8000</code> im Repo-Wurzel,<br>
+            dann <code>http://localhost:8000/_lib/icons-gallery.html</code>
+          </div>`;
+        return;
+      }
+
+      const icons = data.icons || [];
+      if (!icons.length) {
+        content.innerHTML = `
+          <div class="empty">
+            Noch keine Icons in der Bibliothek.<br>
+            SVGs in <code>_lib/icons/</code> ablegen und in
+            <code>_lib/icons/INDEX.json</code> registrieren.
+          </div>`;
+        return;
+      }
+
+      const byCat = {};
+      const allCats = new Set();
+      for (const icon of icons) {
+        const cat = icon.kategorie || 'sonstige';
+        allCats.add(cat);
+        if (!byCat[cat]) byCat[cat] = [];
+        byCat[cat].push(icon);
+      }
+      renderCategoryButtons(Array.from(allCats));
+
+      content.innerHTML = '';
+      const cats = Array.from(allCats).sort();
+      for (const cat of cats) {
+        const section = document.createElement('div');
+        section.className = 'category';
+        section.dataset.kategorie = cat;
+        section.innerHTML = `<h2>${cat}<span class="category-count">${byCat[cat].length}</span></h2><div class="grid"></div>`;
+        const grid = section.querySelector('.grid');
+
+        for (const icon of byCat[cat]) {
+          const svg = await loadIconSvg(icon.name);
+          if (svg) {
+            grid.appendChild(renderCard(icon, svg));
+          } else {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.name = icon.name;
+            card.dataset.kategorie = cat;
+            card.innerHTML = `<div class="name">${icon.name}</div><div class="meta error">Datei fehlt: <code>icons/${icon.name}.svg</code></div>`;
+            grid.appendChild(card);
+          }
+        }
+        content.appendChild(section);
+      }
+
+      document.getElementById('search').addEventListener('input', applyFilter);
+      document.querySelector('.toolbar').addEventListener('click', function (e) {
+        if (e.target.tagName === 'BUTTON') {
+          document.querySelectorAll('.toolbar button').forEach(function (b) { b.classList.remove('active'); });
+          e.target.classList.add('active');
+          applyFilter();
+        }
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

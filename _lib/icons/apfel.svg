@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Quelle: anlaute (Form runder gemacht: 40-160 x 65-180 statt 50-150 x 60-180) -->
+  <path d="M 100 65 C 70 65 40 90 40 120 C 40 160 75 180 100 180 C 125 180 160 160 160 120 C 160 90 130 65 100 65 Z"
+        fill="#e74c3c" stroke="#a83227" stroke-width="3"/>
+  <path d="M 100 65 C 100 45 110 33 124 31"
+        fill="none" stroke="#7d4f1d" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="115" cy="43" rx="14" ry="9" fill="#5fa867" transform="rotate(-25 115 43)"/>
+  <ellipse cx="78" cy="95" rx="11" ry="9" fill="#ffffff" opacity="0.5"/>
+</svg>

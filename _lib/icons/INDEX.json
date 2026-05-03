@@ -1,0 +1,23 @@
+{
+  "_comment": "Auflistung aller Icons in _lib/icons/. 'kategorie' gruppiert in der Galerie. 'verwendet-in' wird (spaeter) von scripts/update-icons.js automatisch gepflegt. Manuell aktualisieren wenn ein neues Icon hinzukommt.",
+  "icons": [
+    {
+      "name": "apfel",
+      "kategorie": "essen",
+      "quelle": "anlaute (Form runder gemacht — Original war oval)",
+      "verwendet-in": []
+    },
+    {
+      "name": "kuh",
+      "kategorie": "tiere",
+      "quelle": "schatten-finden (Original ohne Outlines, Flat-Color-Stil)",
+      "verwendet-in": []
+    },
+    {
+      "name": "sonne",
+      "kategorie": "natur",
+      "quelle": "jahreszeiten-sortieren (Original viewBox 100x100, abweichend vom Soll 200x200)",
+      "verwendet-in": []
+    }
+  ]
+}
