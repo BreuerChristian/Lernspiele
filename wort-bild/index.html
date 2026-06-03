@@ -12,6 +12,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="mobile-web-app-capable" content="yes">
     <style>
+    :root {
+      --color-primary: #00838f;
+      --color-light:   #99cdd2;
+      --color-dark:    #00555c;
+      --color-bg:      #e0f0f1;
+    }
+
+    
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         html, body {
@@ -323,7 +331,29 @@
             color: #00697a;
         }
         .end-btn:active { transform: translateY(1px); }
-    </style>
+    
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+    
+  
+        @keyframes correct-pulse {
+          0%, 100% { transform: scale(1); }
+          50%      { transform: scale(1.08); }
+        }
+
+        @keyframes wrong-wiggle {
+          0%, 100% { transform: translateX(0); }
+          20% { transform: translateX(-6px); } 40% { transform: translateX(6px); }
+          60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
+        }
+
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  </style>
 </head>
 <body>
 

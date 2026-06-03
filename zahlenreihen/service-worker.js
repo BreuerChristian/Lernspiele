@@ -1,4 +1,4 @@
-const CACHE = 'zahlenreihen-v2';
+const CACHE = 'zahlenreihen-v3';
 const ASSETS = [
   './',
   './index.html',

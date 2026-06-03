@@ -1,4 +1,4 @@
-const CACHE = 'jahreszeiten-v4';
+const CACHE = 'jahreszeiten-v5';
 const ASSETS = [
   './',
   './index.html',
