@@ -76,30 +76,19 @@
       font-size: 1.05rem; margin-bottom: 10px;
       font-weight: bold; text-align: center;
     }
-    .group-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
+    .stage-list { display: flex; flex-direction: column; gap: 10px; }
+    .choice {
+      background: var(--color-bg); border: 3px solid transparent;
+      border-radius: var(--radius-btn); padding: 14px 16px;
+      font-family: inherit; font-size: 1rem; color: var(--color-dark);
+      cursor: pointer; text-align: left;
+      transition: border-color 0.15s, transform 0.1s;
     }
-    .group-btn {
-      border: none; border-radius: 18px;
-      padding: 18px 8px;
-      font-family: inherit; font-size: 1rem; font-weight: bold;
-      color: white; cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.18);
-      transition: transform 0.15s;
-    }
-    .group-btn:active { transform: scale(0.96); }
-    .group-btn:nth-child(1)  { background: linear-gradient(145deg, #ff6b6b, #ee5a5a); }
-    .group-btn:nth-child(2)  { background: linear-gradient(145deg, #feca57, #ff9f43); }
-    .group-btn:nth-child(3)  { background: linear-gradient(145deg, #48dbfb, #0abde3); }
-    .group-btn:nth-child(4)  { background: linear-gradient(145deg, #1dd1a1, #10ac84); }
-    .group-btn:nth-child(5)  { background: linear-gradient(145deg, #5f27cd, #341f97); }
-    .group-btn:nth-child(6)  { background: linear-gradient(145deg, #ff9ff3, #f368e0); }
-    .group-btn:nth-child(7)  { background: linear-gradient(145deg, #54a0ff, #2e86de); }
-    .group-btn:nth-child(8)  { background: linear-gradient(145deg, #ff6b6b, #c0392b); }
-    .group-btn:nth-child(9)  { background: linear-gradient(145deg, #26de81, #20bf6b); }
-    .group-btn:nth-child(10) { background: linear-gradient(145deg, #a55eea, #8854d0); }
+    .choice:hover, .choice:focus { border-color: var(--color-primary); }
+    .choice.selected { border-color: var(--color-primary); background: var(--color-light); }
+    .choice:active { transform: scale(0.98); }
+
+    #screen-start .btn-primary { margin-top: 8px; }
 
     /* ---------- Game-Screen ---------- */
     #screen-game {
@@ -263,7 +252,6 @@
     }
     @media (max-width: 420px) {
       #screen-start h1 { font-size: 1.7rem; }
-      .group-grid { grid-template-columns: repeat(2, 1fr); }
       .image-display { font-size: 90px; }
       .letter-slot { width: 42px; height: 52px; font-size: 1.6rem; }
       .letter-btn { width: 50px; height: 50px; font-size: 1.4rem; }
@@ -280,18 +268,22 @@
       <p class="sub">Tippe die Buchstaben in der richtigen Reihenfolge.</p>
 
       <div class="group">
-        <h2>Gruppe waehlen</h2>
-        <div class="group-grid" id="group-buttons">
-          <!-- via JS -->
+        <h2>Stufe waehlen</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Schwierigkeitsstufe">
+          <button class="choice selected" data-stage="leicht" role="radio" aria-checked="true">Leicht — kurze Woerter (2-4 Buchstaben)</button>
+          <button class="choice"          data-stage="mittel" role="radio" aria-checked="false">Mittel — mittlere Woerter (4-6 Buchstaben)</button>
+          <button class="choice"          data-stage="schwer" role="radio" aria-checked="false">Schwer — lange Woerter (5+ Buchstaben)</button>
         </div>
       </div>
+
+      <button id="btn-start" class="btn-primary">Los geht's</button>
     </div>
   </div>
 
   <!-- ====================== GAME-SCREEN ====================== -->
   <div id="screen-game" class="screen hidden">
     <div class="hud">
-      <span class="stage" id="hud-stage">Gruppe 1</span>
+      <span class="stage" id="hud-stage">Leicht</span>
       <span class="progress" id="hud-progress">Aufgabe 1/10</span>
       <button class="hud-btn" id="hud-close" aria-label="Spiel beenden, zurueck zum Start">×</button>
     </div>
@@ -307,10 +299,10 @@
   <div id="screen-end" class="screen hidden">
     <div class="card">
       <h2>Schoene Runde!</h2>
-      <p id="end-message">Alle Woerter dieser Gruppe sind durch.</p>
+      <p id="end-message">Alle Woerter dieser Runde sind durch.</p>
       <div class="actions">
         <button class="btn-primary" id="btn-replay">Nochmal spielen</button>
-        <button class="btn-secondary" id="btn-restage">Andere Gruppe</button>
+        <button class="btn-secondary" id="btn-restage">Andere Stufe</button>
         <a class="btn-secondary" href="../">Zur Uebersicht</a>
       </div>
     </div>
@@ -388,9 +380,18 @@
       { word: "REGENSCHIRM", emoji: "☔" }
     ];
 
+    // 3 Stufen-Pools (Indizes in allWords)
+    // Leicht = Gruppen 1-3 (kurze), Mittel = 4-6, Schwer = 7-10
+    const STAGE_CONFIG = {
+      leicht: { label: 'Leicht', pool: allWords.slice( 0, 30), runde: 10 },
+      mittel: { label: 'Mittel', pool: allWords.slice(30, 60), runde: 10 },
+      schwer: { label: 'Schwer', pool: allWords.slice(60, 100), runde: 10 }
+    };
+
     const state = {
-      group: 0,
+      stage: 'leicht',
       taskIdx: 0,
+      runWords: [],
       currentWord: '',
       currentEmoji: '',
       entered: [],
@@ -410,29 +411,38 @@
     }
 
     function initStartScreen() {
-      const container = document.getElementById('group-buttons');
-      container.innerHTML = '';
-      for (let i = 1; i <= 10; i++) {
-        const btn = document.createElement('button');
-        btn.className = 'group-btn';
-        btn.textContent = 'Gruppe ' + i;
-        btn.setAttribute('aria-label', 'Gruppe ' + i + ' starten');
-        btn.addEventListener('click', () => startGroup(i - 1));
-        container.appendChild(btn);
-      }
+      const prefs = loadPrefs();
+      if (prefs.stage && STAGE_CONFIG[prefs.stage]) state.stage = prefs.stage;
+
+      document.querySelectorAll('#screen-start .choice').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.stage === state.stage);
+        btn.setAttribute('aria-checked', String(btn.dataset.stage === state.stage));
+        btn.addEventListener('click', () => {
+          state.stage = btn.dataset.stage;
+          document.querySelectorAll('#screen-start .choice').forEach(b => {
+            b.classList.toggle('selected', b === btn);
+            b.setAttribute('aria-checked', String(b === btn));
+          });
+          savePrefs({ stage: state.stage });
+        });
+      });
+
+      document.getElementById('btn-start').addEventListener('click', startStage);
     }
 
-    function startGroup(idx) {
-      state.group = idx;
+    function startStage() {
+      const cfg = STAGE_CONFIG[state.stage];
       state.taskIdx = 0;
-      savePrefs({ lastGroup: idx });
+      // 10 zufaellige Woerter aus dem Pool (ohne Wiederholung innerhalb der Runde)
+      state.runWords = cfg.pool.slice().sort(() => Math.random() - 0.5).slice(0, cfg.runde);
       showScreen('screen-game');
-      document.getElementById('hud-stage').textContent = 'Gruppe ' + (idx + 1);
+      document.getElementById('hud-stage').textContent = cfg.label;
       loadWord();
     }
 
     function loadWord() {
-      const wordData = allWords[state.group * 10 + state.taskIdx];
+      const cfg = STAGE_CONFIG[state.stage];
+      const wordData = state.runWords[state.taskIdx];
       state.currentWord = wordData.word;
       state.currentEmoji = wordData.emoji;
       state.entered = [];
@@ -440,7 +450,7 @@
       state.locked = false;
 
       document.getElementById('hud-progress').textContent =
-        'Aufgabe ' + (state.taskIdx + 1) + '/10';
+        'Aufgabe ' + (state.taskIdx + 1) + '/' + cfg.runde;
       document.getElementById('image-display').textContent = state.currentEmoji;
 
       renderWordSlots();
@@ -522,18 +532,15 @@
 
     function nextWord() {
       state.taskIdx++;
-      if (state.taskIdx >= 10) endGroup();
+      if (state.taskIdx >= STAGE_CONFIG[state.stage].runde) endRun();
       else loadWord();
     }
 
-    function endGroup() {
+    function endRun() {
       showScreen('screen-end');
-      const next = state.group < 9 ? 'Nächste Gruppe: ' + (state.group + 2) : 'Du hast alle 10 Gruppen geschafft!';
-      document.getElementById('end-message').textContent =
-        'Alle 10 Woerter dieser Gruppe sind durch.';
     }
 
-    document.getElementById('btn-replay').onclick = () => startGroup(state.group);
+    document.getElementById('btn-replay').onclick = () => startStage();
     document.getElementById('btn-restage').onclick = () => showScreen('screen-start');
     document.getElementById('hud-close').addEventListener('click', () => showScreen('screen-start'));
 
