@@ -154,6 +154,81 @@
             color: white;
         }
 
+        /* Favoriten-Filter (eigene Pill-Reihe darunter) */
+        .fav-filter {
+            display: flex;
+            justify-content: center;
+            margin: -10px 0 22px;
+        }
+        .fav-filter .fav-pill {
+            min-height: 44px;
+            padding: 0 18px;
+            border: 2px solid #d3c4e8;
+            background: white;
+            color: #764ba2;
+            border-radius: 22px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+        }
+        .fav-filter .fav-pill .star { font-size: 1.15rem; line-height: 1; }
+        .fav-filter .fav-pill:hover { background: #fff8e7; }
+        .fav-filter .fav-pill.active {
+            background: linear-gradient(145deg, #fde68a, #f59e0b);
+            border-color: #d97706;
+            color: white;
+        }
+
+        /* Stern auf jeder Spielkarte */
+        .game-card { position: relative; padding-right: 64px; }
+        .fav-btn {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border: 2px solid rgba(255,255,255,0.45);
+            background: rgba(255,255,255,0.12);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, transform 0.1s, color 0.15s, border-color 0.15s;
+        }
+        .fav-btn:hover { background: rgba(255,255,255,0.25); }
+        .fav-btn:active { transform: translateY(-50%) scale(0.9); }
+        .fav-btn:focus-visible { outline: 3px solid #fde68a; outline-offset: 2px; }
+        .fav-btn.active {
+            background: #fde68a;
+            color: #d97706;
+            border-color: #f59e0b;
+        }
+
+        /* Empty-State wenn Filter aktiv und 0 Karten sichtbar */
+        .fav-empty {
+            display: none;
+            background: #f8f6fa;
+            border: 2px dashed #d3c4e8;
+            border-radius: 20px;
+            padding: 28px 22px;
+            margin-bottom: 22px;
+            color: #764ba2;
+            text-align: center;
+            font-size: 0.98rem;
+        }
+        .fav-empty .star { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+        .fav-empty.show { display: block; }
+
         .cat {
             color: #764ba2;
             font-size: 1.25rem;
@@ -265,6 +340,20 @@
             <button class="pill" data-age="12" aria-pressed="false">12</button>
         </div>
 
+        <div class="fav-filter" id="fav-filter">
+            <button class="fav-pill" id="btn-fav-filter" aria-pressed="false"
+                    aria-label="Nur Favoriten anzeigen">
+                <span class="star">★</span>
+                <span class="label">Nur Favoriten</span>
+            </button>
+        </div>
+
+        <div class="fav-empty" id="fav-empty" role="status">
+            <span class="star">★</span>
+            Noch keine Favoriten markiert.<br>
+            Tippe den Stern auf einer Spielkarte.
+        </div>
+
         <section class="cat-section">
             <h2 class="cat">Sprache &amp; Lesen</h2>
             <nav class="games">
@@ -338,6 +427,36 @@
                     <img class="preview" src="muenzen/icon.svg" alt="">
                     <span class="text">Münzen
                         <span class="desc">Beträge mit Euro-Münzen legen</span>
+                    </span>
+                </a>
+                <a class="game-card" href="minus-maschine/" data-age-min="5" data-age-max="9">
+                    <img class="preview" src="minus-maschine/icon.svg" alt="">
+                    <span class="text">Minus-Maschine
+                        <span class="desc">Visuelle Subtraktion: etwas wird weggenommen</span>
+                    </span>
+                </a>
+                <a class="game-card" href="zahlen-zerlegen/" data-age-min="5" data-age-max="9">
+                    <img class="preview" src="zahlen-zerlegen/icon.svg" alt="">
+                    <span class="text">Zahlen zerlegen
+                        <span class="desc">5 ist 2 und … ? Welcher Teil fehlt?</span>
+                    </span>
+                </a>
+                <a class="game-card" href="groesser-kleiner/" data-age-min="4" data-age-max="8">
+                    <img class="preview" src="groesser-kleiner/icon.svg" alt="">
+                    <span class="text">Größer oder kleiner
+                        <span class="desc">Mengen und Zahlen vergleichen: &lt;, =, &gt;</span>
+                    </span>
+                </a>
+                <a class="game-card" href="gerade-ungerade/" data-age-min="6" data-age-max="9">
+                    <img class="preview" src="gerade-ungerade/icon.svg" alt="">
+                    <span class="text">Gerade oder ungerade
+                        <span class="desc">Finden alle einen Partner — oder bleibt einer übrig?</span>
+                    </span>
+                </a>
+                <a class="game-card" href="verdoppeln-halbieren/" data-age-min="6" data-age-max="10">
+                    <img class="preview" src="verdoppeln-halbieren/icon.svg" alt="">
+                    <span class="text">Verdoppeln &amp; Halbieren
+                        <span class="desc">Doppelt so viele — oder die Hälfte davon?</span>
                     </span>
                 </a>
                 <a class="game-card" href="uhr-lesen/" data-age-min="7" data-age-max="10">
@@ -497,46 +616,133 @@
         }
 
         // ----------------------------------------------------------------
-        // Altersstufen-Filter
+        // Filter (Alter + Favoriten kombiniert)
         // ----------------------------------------------------------------
         const AGE_KEY = 'lernspiele-age-filter';
-        const pills = document.querySelectorAll('#age-filter .pill');
+        const FAV_KEY = 'lernspiele-favorites';
+        const FAV_FILTER_KEY = 'lernspiele-fav-filter';
 
-        function applyAgeFilter(age /* 'all' | number-string */) {
-            const target = (age && age !== 'all') ? parseInt(age, 10) : null;
+        const pills = document.querySelectorAll('#age-filter .pill');
+        const favFilterBtn = $('btn-fav-filter');
+        const favEmpty = $('fav-empty');
+
+        // game-id aus href ableiten ("buchstaben/" -> "buchstaben")
+        function gameIdFromCard(card) {
+            return (card.getAttribute('href') || '').replace(/\/$/, '');
+        }
+
+        // Favoriten laden
+        function loadFavs() {
+            try {
+                const raw = localStorage.getItem(FAV_KEY);
+                if (!raw) return new Set();
+                const arr = JSON.parse(raw);
+                return new Set(Array.isArray(arr) ? arr : []);
+            } catch (e) { return new Set(); }
+        }
+        function saveFavs(set) {
+            try { localStorage.setItem(FAV_KEY, JSON.stringify([...set])); }
+            catch (e) { /* ignore */ }
+        }
+        const favSet = loadFavs();
+
+        // Filter-State
+        let ageState = 'all';
+        let favFilter = false;
+        try {
+            const a = localStorage.getItem(AGE_KEY);
+            if (a && (a === 'all' || /^\d+$/.test(a))) ageState = a;
+            const f = localStorage.getItem(FAV_FILTER_KEY);
+            if (f === 'on') favFilter = true;
+        } catch (e) { /* ignore */ }
+
+        // Stern in jede Karte injizieren
+        function buildFavButton(gameId, card) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'fav-btn' + (favSet.has(gameId) ? ' active' : '');
+            btn.setAttribute('aria-pressed', favSet.has(gameId) ? 'true' : 'false');
+            btn.setAttribute('aria-label',
+                (favSet.has(gameId) ? 'Favorit entfernen: ' : 'Als Favorit markieren: ') + gameId);
+            btn.textContent = '★';
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (favSet.has(gameId)) favSet.delete(gameId);
+                else favSet.add(gameId);
+                saveFavs(favSet);
+                btn.classList.toggle('active', favSet.has(gameId));
+                btn.setAttribute('aria-pressed', favSet.has(gameId) ? 'true' : 'false');
+                btn.setAttribute('aria-label',
+                    (favSet.has(gameId) ? 'Favorit entfernen: ' : 'Als Favorit markieren: ') + gameId);
+                applyFilters();
+            });
+            card.appendChild(btn);
+        }
+        document.querySelectorAll('.game-card').forEach(card => {
+            const id = gameIdFromCard(card);
+            if (id) buildFavButton(id, card);
+        });
+
+        // Bereinigung: gespeicherte Favoriten die nicht mehr existieren
+        (function cleanStaleFavs() {
+            const known = new Set();
+            document.querySelectorAll('.game-card').forEach(c => {
+                const id = gameIdFromCard(c);
+                if (id) known.add(id);
+            });
+            let changed = false;
+            [...favSet].forEach(f => { if (!known.has(f)) { favSet.delete(f); changed = true; } });
+            if (changed) saveFavs(favSet);
+        })();
+
+        // Kombiniertes Filter-Update
+        function applyFilters() {
+            const target = (ageState && ageState !== 'all') ? parseInt(ageState, 10) : null;
+            let visible = 0;
             document.querySelectorAll('.game-card').forEach(card => {
-                if (target === null) {
-                    card.classList.remove('filtered-out');
-                    return;
-                }
+                const id = gameIdFromCard(card);
                 const min = parseInt(card.dataset.ageMin || '0', 10);
                 const max = parseInt(card.dataset.ageMax || '99', 10);
-                const inRange = target >= min && target <= max;
-                card.classList.toggle('filtered-out', !inRange);
+                const ageOK = (target === null) || (target >= min && target <= max);
+                const favOK = !favFilter || favSet.has(id);
+                const show = ageOK && favOK;
+                card.classList.toggle('filtered-out', !show);
+                if (show) visible++;
             });
             // Leere Kategorien ausblenden
             document.querySelectorAll('.cat-section').forEach(sec => {
-                const visible = sec.querySelector('.game-card:not(.filtered-out)');
-                sec.classList.toggle('cat-empty', !visible);
+                const v = sec.querySelector('.game-card:not(.filtered-out)');
+                sec.classList.toggle('cat-empty', !v);
             });
-            // Pill-State
+            // Empty-State (nur wenn Fav-Filter aktiv + 0 sichtbar)
+            favEmpty.classList.toggle('show', favFilter && visible === 0);
+            // Alter-Pill-State
             pills.forEach(p => {
                 const active = p.dataset.age === (target === null ? 'all' : String(target));
                 p.classList.toggle('active', active);
                 p.setAttribute('aria-pressed', active ? 'true' : 'false');
             });
-            try { localStorage.setItem(AGE_KEY, target === null ? 'all' : String(target)); }
-            catch (e) { /* ignore */ }
+            // Fav-Pill-State
+            favFilterBtn.classList.toggle('active', favFilter);
+            favFilterBtn.setAttribute('aria-pressed', favFilter ? 'true' : 'false');
         }
 
+        // Pill-Bindings
         pills.forEach(p => {
-            p.addEventListener('click', () => applyAgeFilter(p.dataset.age));
+            p.addEventListener('click', () => {
+                ageState = p.dataset.age;
+                try { localStorage.setItem(AGE_KEY, ageState); } catch (e) {}
+                applyFilters();
+            });
+        });
+        favFilterBtn.addEventListener('click', () => {
+            favFilter = !favFilter;
+            try { localStorage.setItem(FAV_FILTER_KEY, favFilter ? 'on' : 'off'); } catch (e) {}
+            applyFilters();
         });
 
-        try {
-            const saved = localStorage.getItem(AGE_KEY);
-            if (saved && (saved === 'all' || /^\d+$/.test(saved))) applyAgeFilter(saved);
-        } catch (e) { /* ignore */ }
+        applyFilters();
 
         // ----------------------------------------------------------------
         // Service Worker
