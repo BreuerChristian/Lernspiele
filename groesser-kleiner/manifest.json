@@ -1,0 +1,26 @@
+{
+  "name": "Größer oder kleiner",
+  "short_name": "Größer",
+  "description": "Werbefreies Vergleichs-Lernspiel: groesser, kleiner, gleich",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e0eef7",
+  "theme_color": "#0277bd",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

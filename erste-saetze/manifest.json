@@ -1,0 +1,26 @@
+{
+  "name": "Erste Saetze",
+  "short_name": "Erste Saetze",
+  "description": "Woerter zum Satz in die richtige Reihenfolge",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f1e8f5",
+  "theme_color": "#8e44ad",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

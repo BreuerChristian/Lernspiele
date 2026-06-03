@@ -1,0 +1,26 @@
+{
+  "name": "Mal-Reihe",
+  "short_name": "Mal-Reihe",
+  "description": "Kleines Einmaleins ueben",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fdf3e2",
+  "theme_color": "#f39c12",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

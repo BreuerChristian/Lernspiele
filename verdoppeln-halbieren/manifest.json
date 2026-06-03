@@ -1,0 +1,26 @@
+{
+  "name": "Verdoppeln & Halbieren",
+  "short_name": "Doppeln",
+  "description": "Werbefreies Lernspiel: Verdoppeln und Halbieren",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fdede0",
+  "theme_color": "#ef6c00",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

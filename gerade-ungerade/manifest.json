@@ -1,0 +1,26 @@
+{
+  "name": "Gerade oder ungerade",
+  "short_name": "Gerade",
+  "description": "Werbefreies Lernspiel: gerade und ungerade Zahlen",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f1e4f4",
+  "theme_color": "#8e24aa",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: vollflaechiger Hintergrund, Inhalt im 80% Safe-Zone-Bereich (52-460) -->
+  <rect width="512" height="512" fill="#0277bd"/>
+  <circle cx="156" cy="192" r="24" fill="white"/>
+  <circle cx="156" cy="256" r="24" fill="white"/>
+  <circle cx="156" cy="320" r="24" fill="white"/>
+  <polyline points="278,170 354,256 278,342" fill="none" stroke="white" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="320" cy="216" r="13" fill="white"/>
+  <circle cx="404" cy="256" r="24" fill="white"/>
+</svg>

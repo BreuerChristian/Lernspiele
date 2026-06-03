@@ -1,0 +1,26 @@
+{
+  "name": "Fehler finden",
+  "short_name": "Fehler finde",
+  "description": "Wo ist der Unterschied im Bild?",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f0eaf9",
+  "theme_color": "#8854d0",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

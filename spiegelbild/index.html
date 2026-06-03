@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Spiegelbild</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#9b59b6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Spiegelbild">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    :root {
+      --color-primary: #9b59b6;
+      --color-light:   #d7bce1;
+      --color-dark:    #643976;
+      --color-bg:      #f3ebf6;
+      --color-success: #2e7d32;
+      --color-error:   #c62828;
+      --radius-card:   28px;
+      --radius-btn:    16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Verdana', 'Tahoma', sans-serif;
+      background: var(--color-bg);
+      color: #2a2a2a;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* ---------- Screens ---------- */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    .screen.hidden { display: none; }
+
+    /* ---------- Start-Screen ---------- */
+    #screen-start {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center;
+      align-items: center;
+      padding-top: 20px;
+      overflow-y: auto;
+    }
+    #screen-start .card {
+      background: white;
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    #screen-start h1 {
+      color: var(--color-primary);
+      font-size: 2.2rem;
+      margin-bottom: 6px;
+    }
+    #screen-start .sub {
+      color: var(--color-dark);
+      margin-bottom: 22px;
+      font-size: 1rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: bold;
+      margin-bottom: 14px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: var(--color-light);
+      transition: background 0.15s;
+    }
+    .back-link:hover, .back-link:focus { background: var(--color-bg); }
+
+    .group { margin-bottom: 22px; text-align: left; }
+    .group h2 {
+      color: var(--color-primary);
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .choice {
+      background: var(--color-bg);
+      border: 3px solid transparent;
+      border-radius: var(--radius-btn);
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--color-dark);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .choice:hover, .choice:focus {
+      border-color: var(--color-primary);
+    }
+    .choice.selected {
+      border-color: var(--color-primary);
+      background: var(--color-light);
+    }
+    .choice:active { transform: scale(0.98); }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-btn);
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.1s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ---------- Game-Screen ---------- */
+    #screen-game {
+      background: var(--color-bg);
+      padding-top: max(14px, env(safe-area-inset-top));
+    }
+
+    /* HUD: links Stufe | Mitte Fortschritt | rechts Schliessen */
+    .hud {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 4px 14px;
+    }
+    .hud .stage {
+      color: var(--color-dark);
+      font-size: 0.9rem;
+      font-weight: bold;
+      justify-self: start;
+    }
+    .hud .progress {
+      color: var(--color-primary);
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 6px 14px;
+      background: white;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .hud .hud-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: white;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--color-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    .question {
+      font-size: 1.4rem;
+      color: var(--color-dark);
+      text-align: center;
+    }
+    .answers {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .answer {
+      width: 100px;
+      height: 100px;
+      border-radius: 22px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      transition: transform 0.1s;
+    }
+    .answer:active { transform: scale(0.96); }
+    .answer.correct { animation: correct-pulse 0.5s ease; }
+    .answer.wrong   { animation: wrong-wiggle 0.45s ease; }
+
+    /* ---------- End-Screen ---------- */
+    #screen-end {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center;
+      align-items: center;
+    }
+    #screen-end .card {
+      background: white;
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    #screen-end h2 {
+      color: var(--color-primary);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    #screen-end p {
+      color: var(--color-dark);
+      margin-bottom: 22px;
+    }
+    #screen-end .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #screen-end .btn-secondary {
+      padding: 14px;
+      background: white;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius-btn);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+
+    /* ---------- Standard-Animationen ---------- */
+    @keyframes correct-pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.12); }
+    }
+    @keyframes wrong-wiggle {
+      0%, 100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .fade-in { animation: fade-in 0.25s ease; }
+
+    /* ---------- Accessibility ---------- */
+    button:focus-visible, a:focus-visible {
+      outline: 3px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #screen-start h1 { font-size: 1.8rem; }
+      .answer { width: 80px; height: 80px; }
+    }
+  
+    .answer.answer-emoji {
+      width: auto !important; height: auto !important;
+      min-width: 88px;
+      background: white !important;
+      color: #2a2a2a; font-family: inherit;
+      font-size: 2.5rem; line-height: 1;
+      padding: 14px 18px; border: 3px solid var(--color-primary);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+    }
+    .answer.answer-text {
+      width: auto !important; height: auto !important;
+      background: white !important;
+      color: var(--color-dark); font-family: inherit;
+      font-size: 1.05rem; font-weight: bold;
+      padding: 16px 20px; border: 3px solid var(--color-primary);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+      border-radius: var(--radius-btn);
+    }
+    .answer.answer-emoji.correct, .answer.answer-text.correct {
+      background: var(--color-light) !important;
+      border-color: var(--color-dark) !important;
+    }
+    .answers { gap: 12px; flex-wrap: wrap; }
+    .icon-display {
+      width: 160px; height: 160px;
+      background: white; border-radius: 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 100px; line-height: 1; padding: 12px;
+      margin-bottom: 6px;
+    }
+    .question.q-big { font-size: 2rem; }
+
+  </style>
+</head>
+<body>
+
+  <!-- ====================== START-SCREEN ====================== -->
+  <div id="screen-start" class="screen">
+    <div class="card">
+      <a href="../" class="back-link" aria-label="Zurueck zur Spiele-Uebersicht">&larr; Übersicht</a>
+      <h1>Spiegelbild</h1>
+      <p class="sub">Welches Bild ist gespiegelt?</p>
+
+      <div class="group">
+        <h2>Stufe waehlen</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Schwierigkeitsstufe">
+          <button class="choice selected" data-stage="leicht" role="radio" aria-checked="true">Leicht — 3 Auswahlen</button>
+          <button class="choice"          data-stage="mittel" role="radio" aria-checked="false">Mittel — 4 Auswahlen</button>
+          <button class="choice"          data-stage="schwer" role="radio" aria-checked="false">Schwer — 5 Auswahlen</button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-primary">Los geht's</button>
+    </div>
+  </div>
+
+  <!-- ====================== GAME-SCREEN ====================== -->
+  <div id="screen-game" class="screen hidden">
+    <div class="hud">
+      <span class="stage" id="hud-stage">Leicht</span>
+      <span class="progress" id="hud-progress">Aufgabe 1/5</span>
+      <button class="hud-btn" id="hud-close" aria-label="Spiel beenden, zurueck zum Start">×</button>
+    </div>
+
+    <div class="play-area">
+<div class="icon-display" id="icon-display"></div>
+      <div class="question" id="question"></div>
+      <div class="answers" id="answers"></div>
+    </div>
+  </div>
+
+  <!-- ====================== END-SCREEN ====================== -->
+  <div id="screen-end" class="screen hidden">
+    <div class="card">
+      <h2 id="end-title">Schoene Runde!</h2>
+      <p id="end-message">Du hast alle Aufgaben gemacht.</p>
+      <div class="actions">
+        <button class="btn-primary" id="btn-replay">Nochmal spielen</button>
+        <button class="btn-secondary" id="btn-restage">Andere Stufe</button>
+        <a class="btn-secondary" href="../">Zur Uebersicht</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== AUDIO-LIB ====================== -->
+  <script src="../_lib/audio.js"></script>
+
+  <!-- ====================== SPIEL-LOGIK ====================== -->
+  <script>
+    'use strict';
+
+    const GAME_ID = 'spiegelbild';
+    const PREFS_KEY = GAME_ID + '-prefs';
+
+    const ITEMS = [
+      { key: 'a', label: 'A', display: 'A' },
+      { key: 'b', label: 'B', display: 'B' },
+      { key: 'e', label: 'E', display: 'E' },
+      { key: 'f', label: 'F', display: 'F' },
+      { key: 'p', label: 'P', display: 'P' },
+      { key: 'q', label: 'Q', display: 'Q' },
+      { key: 'r', label: 'R', display: 'R' },
+      { key: 's', label: 'S', display: 'S' }
+    ];
+    const STAGE_CONFIG = {
+      leicht: { label: 'Leicht', count: 3, runde: 8 },
+      mittel: { label: 'Mittel', count: 4, runde: 8 },
+      schwer: { label: 'Schwer', count: 5, runde: 10 }
+    };
+
+    const state = { stage: 'leicht', taskIdx: 0, target: null, locked: false, recent: [] };
+
+    function startGame() {
+      state.taskIdx = 0; state.recent = [];
+      showScreen('screen-game');
+      document.getElementById('hud-stage').textContent = STAGE_CONFIG[state.stage].label;
+      nextTask();
+    }
+
+    function nextTask() {
+      const cfg = STAGE_CONFIG[state.stage];
+      if (state.taskIdx >= cfg.runde) { endGame(); return; }
+      state.taskIdx++; state.locked = false;
+      document.getElementById('hud-progress').textContent = 'Aufgabe ' + state.taskIdx + '/' + cfg.runde;
+
+      let pool = ITEMS.filter(i => !state.recent.includes(i.key));
+      if (pool.length < cfg.count) pool = ITEMS;
+      const chosen = shuffle(pool).slice(0, cfg.count);
+      const target = pick(chosen);
+      state.target = target;
+      state.recent = [target.key, ...state.recent].slice(0, 5);
+
+      document.getElementById('icon-display').textContent = target.display;
+      document.getElementById('question').textContent = 'Welcher Buchstabe ist gespiegelt?';
+
+      const answersEl = document.getElementById('answers');
+      answersEl.innerHTML = '';
+      chosen.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'answer answer-text';
+        btn.textContent = item.label;
+        btn.setAttribute('aria-label', item.label);
+        btn.addEventListener('click', () => onAnswer(btn, item));
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function onAnswer(btn, item) {
+      if (state.locked) return;
+      if (item.key === state.target.key) {
+        state.locked = true;
+        btn.classList.add('correct');
+        Lernspiele.Audio.correct();
+        setTimeout(nextTask, 750);
+      } else {
+        btn.classList.add('wrong');
+        Lernspiele.Audio.wrong();
+        setTimeout(() => btn.classList.remove('wrong'), 500);
+      }
+    }
+
+    function loadPrefs() { try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (e) { return {}; } }
+    function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) {} }
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+      const el = document.getElementById(id);
+      el.classList.remove('hidden'); el.classList.add('fade-in');
+      setTimeout(() => el.classList.remove('fade-in'), 300);
+    }
+    function shuffle(a) { return a.slice().sort(() => Math.random() - 0.5); }
+    function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+    function initStartScreen() {
+      const prefs = loadPrefs();
+      if (prefs.stage && STAGE_CONFIG[prefs.stage]) state.stage = prefs.stage;
+      document.querySelectorAll('#screen-start .choice').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.stage === state.stage);
+        btn.setAttribute('aria-checked', String(btn.dataset.stage === state.stage));
+        btn.addEventListener('click', () => {
+          state.stage = btn.dataset.stage;
+          document.querySelectorAll('#screen-start .choice').forEach(b => {
+            b.classList.toggle('selected', b === btn);
+            b.setAttribute('aria-checked', String(b === btn));
+          });
+          savePrefs({ stage: state.stage });
+        });
+      });
+      document.getElementById('btn-start').addEventListener('click', startGame);
+    }
+
+    function endGame() {
+      showScreen('screen-end');
+      document.getElementById('btn-replay').onclick = startGame;
+      document.getElementById('btn-restage').onclick = () => showScreen('screen-start');
+    }
+
+    document.getElementById('hud-close').addEventListener('click', () => showScreen('screen-start'));
+    document.addEventListener('pointerdown', () => {
+      if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.ensure();
+    }, { once: true });
+
+    initStartScreen();
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(() => {});
+      });
+    }
+
+  </script>
+</body>
+</html>

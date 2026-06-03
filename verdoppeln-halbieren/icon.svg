@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#ef6c00"/>
+  <!-- aus einem wird das Doppelte -->
+  <circle cx="132" cy="256" r="56" fill="white"/>
+  <!-- Pfeil -->
+  <rect x="206" y="246" width="86" height="20" rx="10" fill="white"/>
+  <polygon points="288,224 336,256 288,288" fill="white"/>
+  <!-- zwei Punkte -->
+  <circle cx="406" cy="184" r="52" fill="white"/>
+  <circle cx="406" cy="328" r="52" fill="white"/>
+</svg>

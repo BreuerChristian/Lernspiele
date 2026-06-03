@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: vollflaechiger Hintergrund, Inhalt im 80% Safe-Zone-Bereich (52-460) -->
+  <rect width="512" height="512" fill="#00838f"/>
+  <circle cx="256" cy="256" r="100" fill="white" opacity="0.92"/>
+  <text x="256" y="290" text-anchor="middle"
+        font-family="Verdana, Tahoma, sans-serif" font-weight="bold"
+        font-size="120" fill="#00838f">A</text>
+</svg>

@@ -1,0 +1,26 @@
+{
+  "name": "Reim-Vervollstaendigen",
+  "short_name": "Reim-Vervoll",
+  "description": "Welches Wort reimt sich auf das Wort?",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ebf4ec",
+  "theme_color": "#5fa867",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

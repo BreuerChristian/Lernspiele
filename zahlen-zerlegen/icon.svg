@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#3949ab"/>
+  <!-- Zahlenbruecke (number bond): oben das Ganze, unten die zwei Teile -->
+  <line x1="256" y1="168" x2="160" y2="350" stroke="white" stroke-width="18" stroke-linecap="round"/>
+  <line x1="256" y1="168" x2="352" y2="350" stroke="white" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="256" cy="158" r="70" fill="white"/>
+  <circle cx="160" cy="368" r="58" fill="white"/>
+  <circle cx="352" cy="368" r="58" fill="white"/>
+  <text x="256" y="186" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-weight="bold" font-size="84" fill="#3949ab">5</text>
+  <text x="160" y="392" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-weight="bold" font-size="66" fill="#3949ab">2</text>
+  <text x="352" y="392" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-weight="bold" font-size="66" fill="#3949ab">3</text>
+</svg>

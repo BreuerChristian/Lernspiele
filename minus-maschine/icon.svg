@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#c0392b"/>
+  <!-- vier Zaehl-Punkte oben, zwei davon "weggenommen" (gestrichelt-blass) -->
+  <circle cx="148" cy="170" r="34" fill="white"/>
+  <circle cx="232" cy="170" r="34" fill="white"/>
+  <circle cx="316" cy="170" r="34" fill="white" opacity="0.4"/>
+  <circle cx="400" cy="170" r="34" fill="white" opacity="0.4"/>
+  <!-- grosser Minus-Balken -->
+  <rect x="136" y="316" width="240" height="56" rx="28" fill="white"/>
+</svg>

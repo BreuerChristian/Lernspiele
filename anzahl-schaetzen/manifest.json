@@ -1,0 +1,26 @@
+{
+  "name": "Anzahl schaetzen",
+  "short_name": "Anzahl schae",
+  "description": "Kurz schauen wie viele Punkte",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e0f0f1",
+  "theme_color": "#00838f",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

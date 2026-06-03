@@ -1,0 +1,26 @@
+{
+  "name": "Wo wohnt das Tier?",
+  "short_name": "Wo wohnt das",
+  "description": "Tiere ihrem Lebensraum zuordnen",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e3f3f0",
+  "theme_color": "#16a085",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

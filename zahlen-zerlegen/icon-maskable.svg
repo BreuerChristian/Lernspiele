@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: vollflaechiger Hintergrund, Inhalt im 80% Safe-Zone-Bereich (52-460) -->
+  <rect width="512" height="512" fill="#3949ab"/>
+  <line x1="256" y1="186" x2="180" y2="330" stroke="white" stroke-width="16" stroke-linecap="round"/>
+  <line x1="256" y1="186" x2="332" y2="330" stroke="white" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="256" cy="180" r="58" fill="white"/>
+  <circle cx="180" cy="344" r="48" fill="white"/>
+  <circle cx="332" cy="344" r="48" fill="white"/>
+  <text x="256" y="204" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-weight="bold" font-size="70" fill="#3949ab">5</text>
+  <text x="180" y="364" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-weight="bold" font-size="54" fill="#3949ab">2</text>
+  <text x="332" y="364" text-anchor="middle" font-family="Verdana, Tahoma, sans-serif" font-weight="bold" font-size="54" fill="#3949ab">3</text>
+</svg>

@@ -1,0 +1,26 @@
+{
+  "name": "Geld-Betraege",
+  "short_name": "Geld-Betraeg",
+  "description": "Welche Muenzen ergeben den Betrag?",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f9f3e3",
+  "theme_color": "#d4a017",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
