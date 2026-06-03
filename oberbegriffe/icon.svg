@@ -1,7 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="96" fill="#e74c3c"/>
-  <circle cx="256" cy="256" r="120" fill="white" opacity="0.92"/>
-  <text x="256" y="296" text-anchor="middle"
-        font-family="Verdana, Tahoma, sans-serif" font-weight="bold"
-        font-size="140" fill="#e74c3c">W</text>
+  <rect x="64" y="80" width="384" height="352" rx="40" fill="white" opacity="0.94"/>
+  <line x1="256" y1="100" x2="256" y2="412" stroke="#fbd7d2" stroke-width="6" stroke-linecap="round"/>
+  <line x1="84"  y1="256" x2="428" y2="256" stroke="#fbd7d2" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Oben links: Apfel (Essen) -->
+  <g transform="translate(108 116)">
+    <path d="M 60 14 C 38 14 22 30 22 56 C 22 86 44 116 60 116 C 76 116 98 86 98 56 C 98 30 82 14 60 14 Z"
+          fill="#e74c3c" stroke="#a83227" stroke-width="4"/>
+    <path d="M 60 14 C 60 4 68 -4 78 -4" fill="none" stroke="#7d4f1d" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="74" cy="2" rx="10" ry="6" fill="#5fa867" stroke="#3d7a3d" stroke-width="2" transform="rotate(-20 74 2)"/>
+  </g>
+
+  <!-- Oben rechts: Sonne (Natur) -->
+  <g transform="translate(308 130)" stroke="#f39c12" stroke-width="6" stroke-linecap="round">
+    <line x1="60" y1="6"  x2="60" y2="22"/>
+    <line x1="60" y1="98" x2="60" y2="114"/>
+    <line x1="6"  y1="60" x2="22" y2="60"/>
+    <line x1="98" y1="60" x2="114" y2="60"/>
+    <line x1="22" y1="22" x2="32" y2="32"/>
+    <line x1="88" y1="88" x2="98" y2="98"/>
+    <line x1="22" y1="98" x2="32" y2="88"/>
+    <line x1="88" y1="32" x2="98" y2="22"/>
+  </g>
+  <circle cx="368" cy="190" r="30" fill="#f1c40f" stroke="#a8741a" stroke-width="4"/>
+
+  <!-- Unten links: Kuh (Tiere) -->
+  <g transform="translate(96 280)">
+    <ellipse cx="60" cy="60" rx="50" ry="36" fill="#f0f0f0" stroke="#1a1a1a" stroke-width="4"/>
+    <ellipse cx="85" cy="44" rx="14" ry="10" fill="#f0f0f0" stroke="#1a1a1a" stroke-width="3"/>
+    <ellipse cx="36" cy="48" rx="10" ry="7" fill="#2c3e50"/>
+    <ellipse cx="76" cy="74" rx="14" ry="9" fill="#2c3e50"/>
+    <ellipse cx="93" cy="42" rx="2" ry="2.5" fill="#2c3e50"/>
+  </g>
+
+  <!-- Unten rechts: Auto (Verkehr) -->
+  <g transform="translate(308 296)">
+    <path d="M 14 64 L 26 36 L 92 36 L 104 64 L 104 80 L 14 80 Z"
+          fill="#3498db" stroke="#1f5d82" stroke-width="4"/>
+    <path d="M 32 38 L 38 56 L 80 56 L 86 38 Z" fill="#a8d8ec"/>
+    <circle cx="32" cy="84" r="11" fill="#2c2c2c" stroke="#1a1a1a" stroke-width="2"/>
+    <circle cx="32" cy="84" r="4" fill="#777"/>
+    <circle cx="86" cy="84" r="11" fill="#2c2c2c" stroke="#1a1a1a" stroke-width="2"/>
+    <circle cx="86" cy="84" r="4" fill="#777"/>
+  </g>
 </svg>

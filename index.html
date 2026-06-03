@@ -174,13 +174,15 @@
         .game-card.filtered-out { display: none; }
 
         .game-card {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 16px;
             background: linear-gradient(145deg, #667eea, #764ba2);
             color: white;
             text-decoration: none;
-            padding: 25px 20px;
+            padding: 16px 20px;
             border-radius: 20px;
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: bold;
             box-shadow: 0 8px 15px rgba(118, 75, 162, 0.3);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -193,12 +195,24 @@
             outline: none;
         }
 
+        .game-card img.preview {
+            flex: none;
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            background: white;
+            object-fit: contain;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+        }
+
+        .game-card .text { min-width: 0; flex: 1; }
+
         .game-card .desc {
             display: block;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: normal;
-            margin-top: 6px;
-            opacity: 0.9;
+            margin-top: 4px;
+            opacity: 0.92;
         }
 
         footer {
@@ -255,23 +269,41 @@
             <h2 class="cat">Sprache &amp; Lesen</h2>
             <nav class="games">
                 <a class="game-card" href="buchstaben/" data-age-min="4" data-age-max="7">
-                    Buchstaben-Spiel
-                    <span class="desc">Buchstaben hören und erkennen</span>                </a>
+                    <img class="preview" src="buchstaben/icon.svg" alt="">
+                    <span class="text">Buchstaben-Spiel
+                        <span class="desc">Buchstaben hören und erkennen</span>
+                    </span>
+                </a>
                 <a class="game-card" href="anlaute/" data-age-min="5" data-age-max="8">
-                    Anlaut-Spiel
-                    <span class="desc">Mit welchem Buchstaben beginnt das Wort?</span>                </a>
+                    <img class="preview" src="anlaute/icon.svg" alt="">
+                    <span class="text">Anlaut-Spiel
+                        <span class="desc">Mit welchem Buchstaben beginnt das Wort?</span>
+                    </span>
+                </a>
                 <a class="game-card" href="silben-klatschen/" data-age-min="5" data-age-max="8">
-                    Silben klatschen
-                    <span class="desc">Wort hören und pro Silbe einmal tippen</span>                </a>
+                    <img class="preview" src="silben-klatschen/icon.svg" alt="">
+                    <span class="text">Silben klatschen
+                        <span class="desc">Wort hören und pro Silbe einmal tippen</span>
+                    </span>
+                </a>
                 <a class="game-card" href="reim-paare/" data-age-min="5" data-age-max="8">
-                    Reim-Paare
-                    <span class="desc">Reimt sich? Haus und Maus — oder doch nicht?</span>                </a>
+                    <img class="preview" src="reim-paare/icon.svg" alt="">
+                    <span class="text">Reim-Paare
+                        <span class="desc">Reimt sich? Haus und Maus — oder doch nicht?</span>
+                    </span>
+                </a>
                 <a class="game-card" href="wort-bild/" data-age-min="6" data-age-max="9">
-                    Wort-Bild-Memory
-                    <span class="desc">Wort lesen und passendes Bild antippen</span>                </a>
+                    <img class="preview" src="wort-bild/icon.svg" alt="">
+                    <span class="text">Wort-Bild-Memory
+                        <span class="desc">Wort lesen und passendes Bild antippen</span>
+                    </span>
+                </a>
                 <a class="game-card" href="englisch-erste-woerter/" data-age-min="6" data-age-max="10">
-                    Erste englische Wörter
-                    <span class="desc">Bild + Wort hören, ohne Test</span>                </a>
+                    <img class="preview" src="englisch-erste-woerter/icon.svg" alt="">
+                    <span class="text">Erste englische Wörter
+                        <span class="desc">Bild + Wort hören, ohne Test</span>
+                    </span>
+                </a>
             </nav>
         </section>
 
@@ -279,23 +311,41 @@
             <h2 class="cat">Mathe &amp; Zahlen</h2>
             <nav class="games">
                 <a class="game-card" href="zahlen-parade/" data-age-min="5" data-age-max="9">
-                    Zahlen-Parade
-                    <span class="desc">Rechnen mit einer wandernden Kindergruppe</span>                </a>
+                    <img class="preview" src="zahlen-parade/icon.svg" alt="">
+                    <span class="text">Zahlen-Parade
+                        <span class="desc">Rechnen mit einer wandernden Kindergruppe</span>
+                    </span>
+                </a>
                 <a class="game-card" href="mengen-erfassen/" data-age-min="4" data-age-max="7">
-                    Mengen erfassen
-                    <span class="desc">Punktwolke kurz sehen, Anzahl erkennen</span>                </a>
+                    <img class="preview" src="mengen-erfassen/icon.svg" alt="">
+                    <span class="text">Mengen erfassen
+                        <span class="desc">Punktwolke kurz sehen, Anzahl erkennen</span>
+                    </span>
+                </a>
                 <a class="game-card" href="zahlenreihen/" data-age-min="6" data-age-max="10">
-                    Zahlenreihen
-                    <span class="desc">Was fehlt? 2, 4, _, 8, 10</span>                </a>
+                    <img class="preview" src="zahlenreihen/icon.svg" alt="">
+                    <span class="text">Zahlenreihen
+                        <span class="desc">Was fehlt? 2, 4, _, 8, 10</span>
+                    </span>
+                </a>
                 <a class="game-card" href="plus-tuermchen/" data-age-min="5" data-age-max="8">
-                    Plus-Türmchen
-                    <span class="desc">Visuelle Addition mit Klötzchen-Stapeln</span>                </a>
+                    <img class="preview" src="plus-tuermchen/icon.svg" alt="">
+                    <span class="text">Plus-Türmchen
+                        <span class="desc">Visuelle Addition mit Klötzchen-Stapeln</span>
+                    </span>
+                </a>
                 <a class="game-card" href="muenzen/" data-age-min="6" data-age-max="10">
-                    Münzen
-                    <span class="desc">Beträge mit Euro-Münzen legen</span>                </a>
+                    <img class="preview" src="muenzen/icon.svg" alt="">
+                    <span class="text">Münzen
+                        <span class="desc">Beträge mit Euro-Münzen legen</span>
+                    </span>
+                </a>
                 <a class="game-card" href="uhr-lesen/" data-age-min="7" data-age-max="10">
-                    Uhr lesen
-                    <span class="desc">Analog-Uhr in drei Stufen: voll, halb, viertel</span>                </a>
+                    <img class="preview" src="uhr-lesen/icon.svg" alt="">
+                    <span class="text">Uhr lesen
+                        <span class="desc">Analog-Uhr in drei Stufen: voll, halb, viertel</span>
+                    </span>
+                </a>
             </nav>
         </section>
 
@@ -303,23 +353,41 @@
             <h2 class="cat">Welt &amp; Sachkunde</h2>
             <nav class="games">
                 <a class="game-card" href="tier-geraeusche/" data-age-min="3" data-age-max="6">
-                    Tier-Geräusche
-                    <span class="desc">Hör zu und finde das passende Tier</span>                </a>
+                    <img class="preview" src="tier-geraeusche/icon.svg" alt="">
+                    <span class="text">Tier-Geräusche
+                        <span class="desc">Hör zu und finde das passende Tier</span>
+                    </span>
+                </a>
                 <a class="game-card" href="jahreszeiten-sortieren/" data-age-min="3" data-age-max="6">
-                    Jahreszeiten-Sortieren
-                    <span class="desc">Bilder den vier Jahreszeiten zuordnen</span>                </a>
+                    <img class="preview" src="jahreszeiten-sortieren/icon.svg" alt="">
+                    <span class="text">Jahreszeiten-Sortieren
+                        <span class="desc">Bilder den vier Jahreszeiten zuordnen</span>
+                    </span>
+                </a>
                 <a class="game-card" href="bundeslaender/" data-age-min="7" data-age-max="11">
-                    Bundesländer-Spiel
-                    <span class="desc">Die 16 Bundesländer auf der Karte finden</span>                </a>
+                    <img class="preview" src="bundeslaender/icon.svg" alt="">
+                    <span class="text">Bundesländer-Spiel
+                        <span class="desc">Die 16 Bundesländer auf der Karte finden</span>
+                    </span>
+                </a>
                 <a class="game-card" href="hauptstaedte-lernen/" data-age-min="8" data-age-max="12">
-                    Hauptstädte lernen
-                    <span class="desc">In drei Stufen: deutsche Bundesländer, Europa, weltweit</span>                </a>
+                    <img class="preview" src="hauptstaedte-lernen/icon.svg" alt="">
+                    <span class="text">Hauptstädte lernen
+                        <span class="desc">In drei Stufen: deutsche Bundesländer, Europa, weltweit</span>
+                    </span>
+                </a>
                 <a class="game-card" href="flaggen/" data-age-min="8" data-age-max="12">
-                    Länder-Flaggen
-                    <span class="desc">Welche Flagge gehört zu welchem Land?</span>                </a>
+                    <img class="preview" src="flaggen/icon.svg" alt="">
+                    <span class="text">Länder-Flaggen
+                        <span class="desc">Welche Flagge gehört zu welchem Land?</span>
+                    </span>
+                </a>
                 <a class="game-card" href="planeten/" data-age-min="7" data-age-max="12">
-                    Planeten der Reihe nach
-                    <span class="desc">Sonnensystem erkunden und ordnen</span>                </a>
+                    <img class="preview" src="planeten/icon.svg" alt="">
+                    <span class="text">Planeten der Reihe nach
+                        <span class="desc">Sonnensystem erkunden und ordnen</span>
+                    </span>
+                </a>
             </nav>
         </section>
 
@@ -327,23 +395,41 @@
             <h2 class="cat">Wahrnehmung &amp; Logik</h2>
             <nav class="games">
                 <a class="game-card" href="schatten-finden/" data-age-min="3" data-age-max="6">
-                    Schatten finden
-                    <span class="desc">Tier oben, passender Schatten unten</span>                </a>
+                    <img class="preview" src="schatten-finden/icon.svg" alt="">
+                    <span class="text">Schatten finden
+                        <span class="desc">Tier oben, passender Schatten unten</span>
+                    </span>
+                </a>
                 <a class="game-card" href="was-passt-nicht/" data-age-min="4" data-age-max="7">
-                    Was passt nicht?
-                    <span class="desc">Vier Bilder, eines fällt aus der Kategorie</span>                </a>
+                    <img class="preview" src="was-passt-nicht/icon.svg" alt="">
+                    <span class="text">Was passt nicht?
+                        <span class="desc">Vier Bilder, eines fällt aus der Kategorie</span>
+                    </span>
+                </a>
                 <a class="game-card" href="muster-fortsetzen/" data-age-min="5" data-age-max="9">
-                    Muster fortsetzen
-                    <span class="desc">Welches Symbol kommt als Nächstes?</span>                </a>
+                    <img class="preview" src="muster-fortsetzen/icon.svg" alt="">
+                    <span class="text">Muster fortsetzen
+                        <span class="desc">Welches Symbol kommt als Nächstes?</span>
+                    </span>
+                </a>
                 <a class="game-card" href="symmetrie/" data-age-min="6" data-age-max="10">
-                    Symmetrie
-                    <span class="desc">Linke Hälfte vorgegeben — Spiegel ergänzen</span>                </a>
+                    <img class="preview" src="symmetrie/icon.svg" alt="">
+                    <span class="text">Symmetrie
+                        <span class="desc">Linke Hälfte vorgegeben — Spiegel ergänzen</span>
+                    </span>
+                </a>
                 <a class="game-card" href="farben-mischen/" data-age-min="4" data-age-max="8">
-                    Farben mischen
-                    <span class="desc">Rot, Gelb, Blau — was passiert beim Mischen?</span>                </a>
+                    <img class="preview" src="farben-mischen/icon.svg" alt="">
+                    <span class="text">Farben mischen
+                        <span class="desc">Rot, Gelb, Blau — was passiert beim Mischen?</span>
+                    </span>
+                </a>
                 <a class="game-card" href="oberbegriffe/" data-age-min="4" data-age-max="7">
-                    Wohin passt das?
-                    <span class="desc">Bild zur richtigen Kategorie zuordnen — Tiere, Essen, Verkehr, Haushalt, Natur</span>                </a>
+                    <img class="preview" src="oberbegriffe/icon.svg" alt="">
+                    <span class="text">Wohin passt das?
+                        <span class="desc">Bild zur richtigen Kategorie zuordnen — Tiere, Essen, Verkehr, Haushalt, Natur</span>
+                    </span>
+                </a>
             </nav>
         </section>
 
