@@ -1,4 +1,4 @@
-const CACHE = 'muenzen-v3';
+const CACHE = 'muenzen-v4';
 const ASSETS = [
   './',
   './index.html',

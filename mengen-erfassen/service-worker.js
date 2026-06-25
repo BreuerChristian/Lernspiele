@@ -1,4 +1,4 @@
-const CACHE = 'mengen-erfassen-v5';
+const CACHE = 'mengen-erfassen-v6';
 const ASSETS = [
   './',
   './index.html',

@@ -495,7 +495,8 @@
     </div>
 </div>
 
-<script>
+<script src="../_lib/audio.js"></script>
+    <script>
 (() => {
     'use strict';
 
@@ -550,16 +551,7 @@
     //  AUDIO (sehr dezent, kein Belohnungs-Sound)
     // ====================================================
     let audioCtx = null;
-    function ensureAudio() {
-        if (!audioCtx) {
-            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-            catch (e) { audioCtx = null; }
-        }
-        if (audioCtx && audioCtx.state === 'suspended') {
-            try { audioCtx.resume(); } catch (e) { /* ignore */ }
-        }
-        return audioCtx;
-    }
+    function ensureAudio() { return Lernspiele.Audio.ensure(); }
     function plopTone() {
         const ctx = ensureAudio();
         if (!ctx) return;

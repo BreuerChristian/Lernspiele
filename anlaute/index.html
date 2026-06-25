@@ -517,7 +517,8 @@
     </div>
 </div>
 
-<script>
+<script src="../_lib/audio.js"></script>
+    <script>
 (() => {
     'use strict';
 
@@ -1378,40 +1379,8 @@
     //  AUDIO (kurzer "richtig"-Ton + Speech-Warmup)
     // ====================================================
     let audioCtx = null;
-    function ensureAudio() {
-        if (!audioCtx) {
-            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-            catch (e) { audioCtx = null; }
-        }
-        if (audioCtx && audioCtx.state === 'suspended') {
-            try { audioCtx.resume(); } catch (e) { /* ignore */ }
-        }
-        // Speech-Warmup: stille Utterance synchron im User-Geste-Click,
-        // damit spaetere setTimeout-getriggerte Utterances auf iOS/Safari erlaubt sind.
-        if (!state.speechWarmedUp && 'speechSynthesis' in window) {
-            try {
-                const u = new SpeechSynthesisUtterance(' ');
-                u.volume = 0;
-                speechSynthesis.speak(u);
-                state.speechWarmedUp = true;
-            } catch (e) { /* ignore */ }
-        }
-        return audioCtx;
-    }
-    function tone(freq, dur, vol) {
-        const ctx = audioCtx;
-        if (!ctx) return;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        gain.gain.value = 0;
-        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-        osc.connect(gain).connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + dur);
-    }
+    function ensureAudio() { return Lernspiele.Audio.ensure(); }
+    function tone(freq, dur, vol) { return Lernspiele.Audio.tone(freq, dur, vol, undefined); }
     function sfxCorrect() {
         tone(660, 0.14, 0.07);
         setTimeout(() => tone(880, 0.22, 0.07), 110);

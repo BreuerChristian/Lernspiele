@@ -1,4 +1,4 @@
-const CACHE = 'tier-geraeusche-v5';
+const CACHE = 'tier-geraeusche-v6';
 const CORE_ASSETS = [
   './',
   './index.html',

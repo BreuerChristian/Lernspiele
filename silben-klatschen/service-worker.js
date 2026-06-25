@@ -1,4 +1,4 @@
-const CACHE = 'silben-klatschen-v4';
+const CACHE = 'silben-klatschen-v5';
 const ASSETS = [
   './',
   './index.html',

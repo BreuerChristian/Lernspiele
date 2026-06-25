@@ -1,4 +1,4 @@
-const CACHE = 'farben-mischen-v3';
+const CACHE = 'farben-mischen-v4';
 const ASSETS = [
   './',
   './index.html',

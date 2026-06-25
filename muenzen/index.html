@@ -505,7 +505,8 @@
     </div>
 </div>
 
-<script>
+<script src="../_lib/audio.js"></script>
+    <script>
 (() => {
     'use strict';
 
@@ -592,31 +593,9 @@
     //  AUDIO — sehr dezent, kein Casino-Sound
     // ====================================================
     let audioCtx = null;
-    function ensureAudio() {
-        if (!audioCtx) {
-            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-            catch (e) { audioCtx = null; }
-        }
-        if (audioCtx && audioCtx.state === 'suspended') {
-            try { audioCtx.resume(); } catch (e) { /* ignore */ }
-        }
-        return audioCtx;
-    }
+    function ensureAudio() { return Lernspiele.Audio.ensure(); }
     let nextTaskTimer = null;
-    function tone(freq, dur = 0.12, type = 'sine', vol = 0.06) {
-        const ctx = ensureAudio();
-        if (!ctx) return;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = type;
-        osc.frequency.value = freq;
-        gain.gain.value = 0;
-        gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-        osc.connect(gain).connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + dur);
-    }
+    function tone(freq, dur = 0.12, type = 'sine', vol = 0.06) { return Lernspiele.Audio.tone(freq, dur, vol, type); }
     const sfx = {
         clink: () => tone(720, 0.08, 'triangle', 0.05),
         match: () => {
