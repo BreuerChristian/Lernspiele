@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: vollflaechiger Hintergrund, Inhalt im 80% Safe-Zone-Bereich (52-460) -->
+  <rect width="512" height="512" fill="#4a90d9"/>
+  <g transform="translate(256,256) scale(0.8) translate(-256,-256)">
+    <defs>
+      <clipPath id="mt1"><path d="M118,140 L118,380 Q118,412 150,412 Q182,412 182,380 L182,140 Z"/></clipPath>
+      <clipPath id="mt2"><path d="M224,100 L224,380 Q224,412 256,412 Q288,412 288,380 L288,100 Z"/></clipPath>
+      <clipPath id="mt3"><path d="M330,140 L330,380 Q330,412 362,412 Q394,412 394,380 L394,140 Z"/></clipPath>
+    </defs>
+    <g clip-path="url(#mt1)">
+      <rect x="118" y="212" width="64" height="200" fill="#f2c94c"/>
+    </g>
+    <path d="M118,140 L118,380 Q118,412 150,412 Q182,412 182,380 L182,140" fill="none" stroke="#eef4fb" stroke-width="14" stroke-linecap="round"/>
+    <rect x="104" y="126" width="92" height="18" rx="9" fill="#eef4fb"/>
+    <g clip-path="url(#mt2)">
+      <rect x="224" y="308" width="64" height="104" fill="#e05353"/>
+      <rect x="224" y="238" width="64" height="70" fill="#f2c94c"/>
+      <rect x="224" y="168" width="64" height="70" fill="#5cb85c"/>
+    </g>
+    <path d="M224,100 L224,380 Q224,412 256,412 Q288,412 288,380 L288,100" fill="none" stroke="#eef4fb" stroke-width="14" stroke-linecap="round"/>
+    <rect x="210" y="86" width="92" height="18" rx="9" fill="#eef4fb"/>
+    <g clip-path="url(#mt3)">
+      <rect x="330" y="272" width="64" height="140" fill="#e05353"/>
+    </g>
+    <path d="M330,140 L330,380 Q330,412 362,412 Q394,412 394,380 L394,140" fill="none" stroke="#eef4fb" stroke-width="14" stroke-linecap="round"/>
+    <rect x="316" y="126" width="92" height="18" rx="9" fill="#eef4fb"/>
+    <path d="M256,52 q10,14 0,24 q-10,-10 0,-24" fill="#f2c94c"/>
+    <circle cx="298" cy="70" r="7" fill="#e05353" opacity="0.85"/>
+  </g>
+</svg>
