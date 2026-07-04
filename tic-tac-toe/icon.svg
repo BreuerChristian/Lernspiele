@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#2a9d8f"/>
+  <!-- Gitter -->
+  <g stroke="#ffffff" stroke-width="16" stroke-linecap="round" opacity="0.9">
+    <line x1="196" y1="80" x2="196" y2="432"/>
+    <line x1="316" y1="80" x2="316" y2="432"/>
+    <line x1="80" y1="196" x2="432" y2="196"/>
+    <line x1="80" y1="316" x2="432" y2="316"/>
+  </g>
+  <!-- Katzen auf der Diagonale (volle Reihe) -->
+  <g fill="#e88a2e">
+    <g transform="translate(136,136)">
+      <path d="M-38,-18 L-24,-46 L-8,-26 Z"/><path d="M38,-18 L24,-46 L8,-26 Z"/>
+      <circle r="40"/>
+    </g>
+    <g transform="translate(256,256)">
+      <path d="M-38,-18 L-24,-46 L-8,-26 Z"/><path d="M38,-18 L24,-46 L8,-26 Z"/>
+      <circle r="40"/>
+    </g>
+    <g transform="translate(376,376)">
+      <path d="M-38,-18 L-24,-46 L-8,-26 Z"/><path d="M38,-18 L24,-46 L8,-26 Z"/>
+      <circle r="40"/>
+    </g>
+  </g>
+  <!-- Hunde -->
+  <g fill="#8a5a33">
+    <g transform="translate(376,136)">
+      <ellipse cx="-36" cy="4" rx="12" ry="26"/><ellipse cx="36" cy="4" rx="12" ry="26"/>
+      <circle r="40"/>
+    </g>
+    <g transform="translate(136,376)">
+      <ellipse cx="-36" cy="4" rx="12" ry="26"/><ellipse cx="36" cy="4" rx="12" ry="26"/>
+      <circle r="40"/>
+    </g>
+  </g>
+  <!-- Augen -->
+  <g fill="#3a2a1a">
+    <circle cx="121" cy="132" r="6"/><circle cx="151" cy="132" r="6"/>
+    <circle cx="241" cy="252" r="6"/><circle cx="271" cy="252" r="6"/>
+    <circle cx="361" cy="372" r="6"/><circle cx="391" cy="372" r="6"/>
+    <circle cx="361" cy="132" r="6"/><circle cx="391" cy="132" r="6"/>
+    <circle cx="121" cy="372" r="6"/><circle cx="151" cy="372" r="6"/>
+  </g>
+</svg>
