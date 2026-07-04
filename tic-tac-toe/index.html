@@ -414,7 +414,7 @@
         <span class="turn-icon" id="turn-icon" aria-hidden="true"></span>
         <span id="turn-text">Katze ist dran</span>
       </div>
-      <div class="board" id="board" role="grid" aria-label="Spielbrett 3 mal 3"></div>
+      <div class="board" id="board" role="group" aria-label="Spielbrett 3 mal 3"></div>
     </div>
   </div>
 
@@ -500,10 +500,14 @@
       turn: 'katze',
       firstTurn: 'katze',  // wechselt im Zu-zweit-Modus pro Runde
       over: false,
-      locked: false,       // true waehrend der Computer "ueberlegt"
       thinkTimer: null,
       endTimer: null
     };
+
+    // Waehrend der Computer "ueberlegt", ist das Brett fuer Taps gesperrt.
+    function isComputerTurn() {
+      return state.mode === 'computer' && state.turn === 'hund';
+    }
 
     // --- LocalStorage ---
     function loadPrefs() {
@@ -540,6 +544,17 @@
       });
     }
 
+    function bindChoiceGroup(selector, key, onChange) {
+      document.querySelectorAll(selector).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          state[key] = btn.dataset[key];
+          syncChoices(selector, key, state[key]);
+          if (onChange) onChange();
+          savePrefs({ mode: state.mode, level: state.level });
+        });
+      });
+    }
+
     function initStartScreen() {
       const prefs = loadPrefs();
       if (prefs.mode === 'zwei' || prefs.mode === 'computer') state.mode = prefs.mode;
@@ -549,26 +564,14 @@
       syncChoices('[data-level]', 'level', state.level);
       document.getElementById('group-level').hidden = (state.mode !== 'computer');
 
-      document.querySelectorAll('[data-mode]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          state.mode = btn.dataset.mode;
-          syncChoices('[data-mode]', 'mode', state.mode);
-          document.getElementById('group-level').hidden = (state.mode !== 'computer');
-          savePrefs({ mode: state.mode, level: state.level });
-        });
+      bindChoiceGroup('[data-mode]', 'mode', function () {
+        document.getElementById('group-level').hidden = (state.mode !== 'computer');
       });
-      document.querySelectorAll('[data-level]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          state.level = btn.dataset.level;
-          syncChoices('[data-level]', 'level', state.level);
-          savePrefs({ mode: state.mode, level: state.level });
-        });
-      });
+      bindChoiceGroup('[data-level]', 'level', null);
 
-      document.getElementById('btn-start').addEventListener('click', function () {
-        state.firstTurn = 'katze';
-        startGame();
-      });
+      // firstTurn absichtlich NICHT zuruecksetzen: wer als naechstes
+      // anfangen darf, bleibt auch ueber den Start-Screen hinweg fair.
+      document.getElementById('btn-start').addEventListener('click', startGame);
     }
 
     // --- Game-Screen ---
@@ -576,7 +579,6 @@
       clearTimers();
       state.board = [null, null, null, null, null, null, null, null, null];
       state.over = false;
-      state.locked = false;
       // Im Computer-Modus beginnt immer das Kind (die Katze).
       state.turn = (state.mode === 'computer') ? 'katze' : state.firstTurn;
 
@@ -595,7 +597,6 @@
         const cell = document.createElement('button');
         cell.className = 'cell';
         cell.dataset.idx = String(i);
-        cell.setAttribute('role', 'gridcell');
         cell.setAttribute('aria-label', cellLabel(i));
         cell.addEventListener('click', function () { onCellTap(i); });
         boardEl.appendChild(cell);
@@ -617,12 +618,13 @@
         text = PLAYERS[p].label + ' ist dran';
       }
       document.getElementById('turn-text').textContent = text;
-      document.getElementById('hud-progress').textContent = text;
+      const zug = state.board.filter(Boolean).length + 1;
+      document.getElementById('hud-progress').textContent = 'Zug ' + zug + '/9';
       document.getElementById('turn-icon').innerHTML = ICONS[p];
     }
 
     function onCellTap(i) {
-      if (state.over || state.locked) return;
+      if (state.over || isComputerTurn()) return;
       if (state.board[i]) {
         // Feld schon belegt: kurz wackeln, kein Straf-Sound
         const cell = boardCell(i);
@@ -654,14 +656,11 @@
       state.turn = (p === 'katze') ? 'hund' : 'katze';
       updateTurnUI();
 
-      if (state.mode === 'computer' && state.turn === 'hund') {
-        state.locked = true;
+      if (isComputerTurn()) {
         state.thinkTimer = setTimeout(function () {
           state.thinkTimer = null;
           if (state.over) return;
-          const move = computerMove();
-          state.locked = false;
-          place(move);
+          place(computerMove());
         }, 650 + Math.random() * 500);
       }
     }
@@ -670,7 +669,16 @@
     function finishWin(p, line) {
       state.over = true;
       line.forEach(function (i) { boardCell(i).classList.add('win'); });
-      Lernspiele.Audio.correct();
+      // Sound-Vokabular: correct() nur, wenn das Kind selbst die Reihe schafft.
+      // Gewinnt der Computer-Hund, gibt es einen neutralen, sanften Klang.
+      if (state.mode === 'computer' && p === 'hund') {
+        Lernspiele.Audio.sequence([
+          { freq: 440, dur: 0.14, vol: 0.05 },
+          { freq: 392, dur: 0.18, vol: 0.05, delay: 0.13 }
+        ]);
+      } else {
+        Lernspiele.Audio.correct();
+      }
 
       let title, msg;
       if (state.mode === 'computer') {
@@ -731,8 +739,8 @@
       for (const line of LINES) {
         const vals = line.map(function (i) { return board[i]; });
         if (vals.filter(function (v) { return v === p; }).length === 2) {
-          const emptyIdx = line[vals.indexOf(null)];
-          if (vals.indexOf(null) !== -1) return emptyIdx;
+          const empty = vals.indexOf(null);
+          if (empty !== -1) return line[empty];
         }
       }
       return null;

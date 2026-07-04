@@ -40,7 +40,7 @@ Highscores, Zeitdruck und Endlos-Loops fliegen raus — Anti-Pattern-Check gehö
 in jeden Plan-Pitch.
 
 ### Brett-Klassiker (2 Spieler am Gerät oder einfache KI)
-- [ ] **Tic-Tac-Toe** — der Einstiegs-Klassiker, 2 Kinder an einem Gerät.
+- [x] **Tic-Tac-Toe** (`tic-tac-toe/`) — der Einstiegs-Klassiker, 2 Kinder an einem Gerät oder gegen den Computer.
 - [ ] **4 in einer Reihe** — Connect Four, gute erste Strategie-Übung.
 - [ ] **Käsekästchen** — Punkte-Raster, Linien ziehen, Kästchen gewinnen.
 - [ ] **Dame** — einfacher Schach-Vorläufer, Regeln in 2 Minuten erklärt.
