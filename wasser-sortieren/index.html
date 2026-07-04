@@ -467,6 +467,8 @@
     }
 
     // --- Spielregeln ---
+    // HINWEIS: Engine (topRun/isDone/isSolved/generateLevel/isSolvable/undo)
+    // ist identisch in farbige-schrauben/index.html — Fixes dort spiegeln!
     function topRun(tube) {
       if (!tube.length) return 0;
       const c = tube[tube.length - 1];
@@ -692,7 +694,7 @@
         state.selected = -1;
         refreshTube(from);
         wiggle(idx);
-        Lernspiele.Audio.tone(200, 0.12, 0.04, 'triangle');
+        Lernspiele.Audio.wrong();
         return;
       }
 

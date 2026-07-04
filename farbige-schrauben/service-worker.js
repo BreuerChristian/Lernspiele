@@ -1,4 +1,4 @@
-const CACHE = 'farbige-schrauben-v2';
+const CACHE = 'farbige-schrauben-v3';
 const ASSETS = [
   './',
   './index.html',

@@ -466,6 +466,8 @@
     }
 
     // --- Hilfsfunktionen Spielregeln ---
+    // HINWEIS: Engine (topRun/isDone/isSolved/generateLevel/isSolvable/undo)
+    // ist identisch in wasser-sortieren/index.html — Fixes dort spiegeln!
     function topRun(bolt) {
       // Laenge der obersten gleichfarbigen Gruppe
       if (!bolt.length) return 0;
@@ -705,7 +707,7 @@
         state.selected = -1;
         refreshBolt(from);
         wiggle(idx);
-        Lernspiele.Audio.tone(200, 0.12, 0.04, 'triangle');
+        Lernspiele.Audio.wrong();
         return;
       }
 

@@ -1,4 +1,4 @@
-const CACHE = 'wasser-sortieren-v2';
+const CACHE = 'wasser-sortieren-v3';
 const ASSETS = [
   './',
   './index.html',
