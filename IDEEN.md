@@ -72,7 +72,7 @@ in jeden Plan-Pitch.
 - [ ] **Block Fill** — Röhre/Pfad füllt das Raster, verwandt mit Labyrinth malen.
 - [ ] **Labyrinth malen** — Kugel rollt und färbt Wege, Ziel: alles ausmalen.
 - [ ] **Escape** — Unblock-/Parkplatz-Puzzle, Auto durch Schieben befreien.
-- [ ] **Farbige Schrauben** — Muttern nach Farbe auf Gewinde sortieren.
+- [x] **Farbige Schrauben** (`farbige-schrauben/`) — Muttern nach Farbe auf Gewinde sortieren.
 - [ ] **Wasser sortieren** — Farbschichten zwischen Röhrchen umgießen; feste Level, kein Endlos-Modus.
 - [ ] **Color Blocks** — Block-Puzzle (Tetris-Formen ohne Fallen/Zeit) auf festem Raster.
 - [ ] **Animal Stack** — Tiere zu stabilem Turm stapeln, Physik-Puzzle.
