@@ -8,7 +8,7 @@ Werbefreie, datensparsame Open-Source-Lernspiele für Kinder.
 
 Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann auf GitHub gestellt, damit andere Eltern sie nutzen, forken oder anpassen können. Ohne Werbung, ohne Tracker, ohne Belohnungs-Loops, ohne Account. Pädagogisch am Montessori-Prinzip orientiert: das Spiel endet, wenn das Kind fertig ist — nicht wenn der nächste Dopamin-Hit greift.
 
-49 Spiele, sortiert nach vier Kategorien, mit Altersfilter (4 / 6 / 8 / 10 / 12 Jahre) und Favoriten-Stern auf der Landing-Seite.
+52 Spiele, sortiert nach vier Kategorien, mit Altersfilter (4 / 6 / 8 / 10 / 12 Jahre) und Favoriten-Stern auf der Landing-Seite.
 
 ## Spiele
 
@@ -80,6 +80,9 @@ Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann au
 | [Anzahl schätzen](anzahl-schaetzen/) | Kurz schauen, wie viele Sterne? | 5–9 |
 | [Spiegelbild](spiegelbild/) | Welcher Buchstabe ist gespiegelt? | 6–9 |
 | [Fehler finden](fehler-finden/) | Wo ist der Unterschied zwischen den zwei Reihen? | 5–8 |
+| [Tic-Tac-Toe](tic-tac-toe/) | Drei in einer Reihe — zu zweit oder gegen den Computer | 4–8 |
+| [Farbige Schrauben](farbige-schrauben/) | Muttern nach Farbe auf die Schrauben sortieren | 4–9 |
+| [Wasser sortieren](wasser-sortieren/) | Farbwasser umgießen, bis jedes Röhrchen einfarbig ist | 4–9 |
 
 ## Auf dem Handy installieren
 
@@ -128,7 +131,7 @@ lernspiele/
 │   ├── manifest.json
 │   ├── service-worker.js
 │   └── icon*.svg
-└── ...                     ← weitere 48 Spiele nach gleichem Muster
+└── ...                     ← weitere 51 Spiele nach gleichem Muster
 ```
 
 ## Lokal entwickeln

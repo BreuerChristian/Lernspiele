@@ -53,7 +53,7 @@ Eltern installieren *eine* App (die Sammlung), beide/alle Spiele sind drin. Einz
 Spiele werden laut Distributions-Strategie nicht als separate PWAs installiert —
 die Sammlung-PWA deckt alles ab.
 
-Aktuell 49 Spiele (Stand 2026-07): jeder Wurzel-Ordner außer `_lib/`, `_templates/`
+Aktuell 52 Spiele (Stand 2026-07): jeder Wurzel-Ordner außer `_lib/`, `_templates/`
 und `scripts/` ist ein Spiel. Vollständige, aktuelle Liste: `python scripts/check-spiele.py`
 (erste Zeile) oder Blick in die Kategorien der Wurzel-`index.html`. Der Backlog mit
 Live-Status pro Idee liegt in [IDEEN.md](IDEEN.md).
