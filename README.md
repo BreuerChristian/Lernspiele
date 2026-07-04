@@ -8,7 +8,7 @@ Werbefreie, datensparsame Open-Source-Lernspiele für Kinder.
 
 Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann auf GitHub gestellt, damit andere Eltern sie nutzen, forken oder anpassen können. Ohne Werbung, ohne Tracker, ohne Belohnungs-Loops, ohne Account. Pädagogisch am Montessori-Prinzip orientiert: das Spiel endet, wenn das Kind fertig ist — nicht wenn der nächste Dopamin-Hit greift.
 
-23 Spiele, sortiert nach vier Kategorien, mit Altersfilter (4 / 6 / 8 / 10 / 12 Jahre) auf der Landing-Seite.
+49 Spiele, sortiert nach vier Kategorien, mit Altersfilter (4 / 6 / 8 / 10 / 12 Jahre) und Favoriten-Stern auf der Landing-Seite.
 
 ## Spiele
 
@@ -22,6 +22,10 @@ Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann au
 | [Reim-Paare](reim-paare/) | Reimt sich? Haus und Maus — oder doch nicht? | 5–8 |
 | [Wort-Bild-Memory](wort-bild/) | Wort lesen und passendes Bild antippen | 6–9 |
 | [Erste englische Wörter](englisch-erste-woerter/) | Bild + Wort hören, ohne Test | 6–10 |
+| [Gross und Klein](grosskleinbuch/) | Grossbuchstabe zum passenden Kleinbuchstaben zuordnen | 5–8 |
+| [Reim-Vervollständigen](reim-vervollst/) | Welches Wort reimt sich darauf? | 5–8 |
+| [Wort-Diktat](wort-diktat/) | Buchstaben in der richtigen Reihenfolge tippen | 5–8 |
+| [Erste Sätze](erste-saetze/) | Wörter in die richtige Reihenfolge bringen | 6–9 |
 
 ### Mathe & Zahlen
 
@@ -32,7 +36,17 @@ Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann au
 | [Zahlenreihen](zahlenreihen/) | Was fehlt? 2, 4, _, 8, 10 | 6–10 |
 | [Plus-Türmchen](plus-tuermchen/) | Visuelle Addition mit Klötzchen-Stapeln | 5–8 |
 | [Münzen](muenzen/) | Beträge mit Euro-Münzen legen | 6–10 |
+| [Minus-Maschine](minus-maschine/) | Visuelle Subtraktion: etwas wird weggenommen | 5–9 |
+| [Zahlen zerlegen](zahlen-zerlegen/) | 5 ist 2 und … ? Welcher Teil fehlt? | 5–9 |
+| [Größer oder kleiner](groesser-kleiner/) | Mengen und Zahlen vergleichen: <, =, > | 4–8 |
+| [Gerade oder ungerade](gerade-ungerade/) | Finden alle einen Partner — oder bleibt einer übrig? | 6–9 |
+| [Verdoppeln & Halbieren](verdoppeln-halbieren/) | Doppelt so viele — oder die Hälfte davon? | 6–10 |
 | [Uhr lesen](uhr-lesen/) | Analog-Uhr in drei Stufen: voll, halb, viertel | 7–10 |
+| [Plus bis 20](plus-bis-20/) | Einfache Addition bis 20 | 5–8 |
+| [Mal-Reihe](mal-reihe/) | Kleines Einmaleins üben | 7–10 |
+| [Sachaufgabe](sachaufgabe/) | Bilderaufgaben: 3 Hunde + 2 Hunde = ? | 5–9 |
+| [Geld-Beträge](geld-betraege/) | Münzen zusammenzählen | 6–10 |
+| [Bruchteile](bruchteile/) | Halbieren, dritteln, vierteln | 7–10 |
 
 ### Welt & Sachkunde
 
@@ -44,6 +58,11 @@ Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann au
 | [Hauptstädte lernen](hauptstaedte-lernen/) | Drei Stufen: deutsche Bundesländer, Europa, weltweit | 8–12 |
 | [Länder-Flaggen](flaggen/) | Welche Flagge gehört zu welchem Land? | 8–12 |
 | [Planeten der Reihe nach](planeten/) | Sonnensystem erkunden und ordnen | 7–12 |
+| [Wetter](wetter/) | Welches Wetter ist das? | 4–7 |
+| [Körperteile](koerperteile/) | Tippe auf das richtige Körperteil | 4–7 |
+| [Wo wohnt das Tier?](wo-wohnt-tier/) | Tiere ihrem Lebensraum zuordnen | 4–8 |
+| [Pflanzen-Wachstum](pflanzen-wachstum/) | Same → Spross → Pflanze → Blume in Reihenfolge | 5–8 |
+| [Berufe](berufe/) | Welches Werkzeug gehört zu welchem Beruf? | 5–8 |
 
 ### Wahrnehmung & Logik
 
@@ -54,6 +73,13 @@ Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann au
 | [Muster fortsetzen](muster-fortsetzen/) | Welches Symbol kommt als Nächstes? | 5–9 |
 | [Symmetrie](symmetrie/) | Linke Hälfte vorgegeben — Spiegel ergänzen | 6–10 |
 | [Farben mischen](farben-mischen/) | Rot, Gelb, Blau — was passiert beim Mischen? | 4–8 |
+| [Wohin passt das?](oberbegriffe/) | Bild zur richtigen Kategorie zuordnen — Tiere, Essen, Verkehr, Haushalt, Natur | 4–7 |
+| [Memory](memory/) | Paare finden — klassisches Memory | 4–9 |
+| [Gehört zusammen](gehoert-zusammen/) | Was passt zusammen? Schlüssel + Schloss | 4–7 |
+| [Reihenfolge](reihenfolge/) | Bilder in zeitliche Reihenfolge bringen | 5–9 |
+| [Anzahl schätzen](anzahl-schaetzen/) | Kurz schauen, wie viele Sterne? | 5–9 |
+| [Spiegelbild](spiegelbild/) | Welcher Buchstabe ist gespiegelt? | 6–9 |
+| [Fehler finden](fehler-finden/) | Wo ist der Unterschied zwischen den zwei Reihen? | 5–8 |
 
 ## Auf dem Handy installieren
 
@@ -93,13 +119,16 @@ lernspiele/
 ├── _templates/
 │   └── new-game/           ← Vorlage für neue Spiele
 ├── scripts/
-│   └── scaffold-game.sh    ← bash scripts/scaffold-game.sh <id> "Name" "#hex"
+│   ├── scaffold-game.sh    ← bash scripts/scaffold-game.sh <id> "Name" "#hex"
+│   ├── check-spiele.py     ← Linter: prüft alle Spiele gegen die Projekt-Regeln
+│   └── icons.py            ← Icon-Lib-Werkzeug (extract/discover/update/verify)
+├── IDEEN.md                ← Spiel-Ideen-Backlog
 ├── buchstaben/             ← Spiel (eigene PWA)
 │   ├── index.html
 │   ├── manifest.json
 │   ├── service-worker.js
 │   └── icon*.svg
-└── ...                     ← weitere 22 Spiele nach gleichem Muster
+└── ...                     ← weitere 48 Spiele nach gleichem Muster
 ```
 
 ## Lokal entwickeln
@@ -120,7 +149,13 @@ bash scripts/scaffold-game.sh formen "Formen erkennen" "#5fa867"
 
 Danach `<spiel>/index.html` mit der eigentlichen Spiel-Logik füllen, die Spielkarte in der Root-[`index.html`](index.html) in der passenden Kategorie ergänzen und die Cache-Version in der Root-[`service-worker.js`](service-worker.js) bumpen (`lernspiele-landing-vXX` → `vXX+1`) — sonst zeigt der Browser die alte Landing tagelang aus dem Cache und das neue Spiel taucht nicht auf.
 
-Detaillierte Checkliste, Fallstricke (rAF-Loops, Tap-Races, SW-Scope) und Stilrichtlinien in [CLAUDE.md](CLAUDE.md).
+Vor dem Commit den Linter laufen lassen — er prüft alle Spiele gegen die Projekt-Regeln (keine externen URLs, Standard-Patterns, SW-Cache-Präfixe):
+
+```sh
+python scripts/check-spiele.py
+```
+
+Detaillierte Checkliste, Fallstricke (rAF-Loops, Tap-Races, SW-Scope) und Stilrichtlinien in [CLAUDE.md](CLAUDE.md). Offene Spielideen sammelt [IDEEN.md](IDEEN.md).
 
 ## Inspiration
 
