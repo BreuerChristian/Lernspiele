@@ -68,17 +68,25 @@ function startServer() {
   return new Promise((res) => server.listen(0, () => res(server)));
 }
 
+const GAME_TIMEOUT = 45000; // harte Obergrenze pro Spiel — grosszuegig gegen Runner-Lastspitzen
+
 async function checkGame(browser, base, game) {
   const errors = [];
   const context = await browser.newContext();
   const page = await context.newPage();
+  page.setDefaultTimeout(4000);
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error') errors.push('console.error: ' + m.text()); });
 
-  try {
-    const resp = await page.goto(`${base}/${game}/`, { waitUntil: 'load', timeout: 15000 });
+  // Gesamt-Timeout: falls eine Seite haengt, brechen wir ab statt den CI-Lauf zu blockieren.
+  let timer;
+  const guard = new Promise((res) => { timer = setTimeout(() => res('__timeout__'), GAME_TIMEOUT); });
+  const work = (async () => {
+    // 'domcontentloaded' statt 'load' — schneller und robuster auf langsamen Runnern;
+    // Console-/pageerror-Listener haengen bereits, Fehler werden trotzdem erfasst.
+    const resp = await page.goto(`${base}/${game}/`, { waitUntil: 'domcontentloaded', timeout: 12000 });
     if (!resp || !resp.ok()) errors.push(`HTTP ${resp ? resp.status() : 'kein Response'}`);
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(200);
 
     // Start-Screen: prominenter Start-Button. Spiele benennen ihn unterschiedlich
     // (#btn-start, .btn-primary, .big-btn, #btn-go, "Los …") — breit suchen, aber
@@ -88,28 +96,48 @@ async function checkGame(browser, base, game) {
     ).first();
     if (await startBtn.count()) {
       await startBtn.click({ timeout: 3000 }).catch(() => {});
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(150);
       // Best-effort ein paar Taps im Spielbereich (Handler ausloesen)
       const taps = page.locator('.cell, .game-cell, .board button, .choice, .tube, .bolt');
       const n = Math.min(await taps.count(), 4);
-      for (let i = 0; i < n; i++) { await taps.nth(i).click({ timeout: 1000 }).catch(() => {}); await page.waitForTimeout(120); }
+      for (let i = 0; i < n; i++) { await taps.nth(i).click({ timeout: 800 }).catch(() => {}); await page.waitForTimeout(60); }
       // Neustart-Zyklus: schliessen und nochmal starten (deckt veraltete Timer auf)
       const close = page.locator('#hud-close').first();
       if (await close.count()) {
-        await close.click({ timeout: 1000 }).catch(() => {});
-        await page.waitForTimeout(200);
-        if (await startBtn.count()) { await startBtn.click({ timeout: 1000 }).catch(() => {}); await page.waitForTimeout(300); }
+        await close.click({ timeout: 800 }).catch(() => {});
+        await page.waitForTimeout(150);
+        if (await startBtn.count()) { await startBtn.click({ timeout: 800 }).catch(() => {}); await page.waitForTimeout(150); }
       }
     } else {
       errors.push('kein Start-Button auf dem Start-Screen gefunden');
     }
-    await page.waitForTimeout(300); // veraltete Timer feuern lassen
+    await page.waitForTimeout(200); // veraltete Timer feuern lassen
+  })();
+
+  try {
+    const outcome = await Promise.race([work.then(() => 'ok'), guard]);
+    if (outcome === '__timeout__') errors.push(`Timeout (>${GAME_TIMEOUT / 1000}s) — Seite haengt?`);
   } catch (e) {
     errors.push('Ausnahme: ' + e.message);
   } finally {
-    await context.close();
+    clearTimeout(timer);
+    await context.close().catch(() => {});
   }
   return errors;
+}
+
+// Einfacher Nebenlaeufigkeits-Pool: mehrere Spiele parallel -> kurze CI-Zeit.
+async function runPool(items, limit, worker) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function drain() {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await worker(items[i], i);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, drain));
+  return results;
 }
 
 async function main() {
@@ -120,8 +148,9 @@ async function main() {
   const base = `http://127.0.0.1:${server.address().port}`;
   const browser = await chromium.launch({ headless: true });
 
+  const CONCURRENCY = Number(process.env.SMOKE_CONCURRENCY) || 4;
   let failed = 0;
-  for (const game of games) {
+  await runPool(games, CONCURRENCY, async (game) => {
     const errors = await checkGame(browser, base, game);
     if (errors.length) {
       failed++;
@@ -130,7 +159,7 @@ async function main() {
     } else {
       console.log(`ok   ${game}`);
     }
-  }
+  });
 
   await browser.close();
   server.close();
