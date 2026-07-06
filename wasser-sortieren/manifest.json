@@ -1,0 +1,26 @@
+{
+  "name": "Wasser sortieren",
+  "short_name": "Wasser",
+  "description": "Farbschichten umgießen, bis jedes Röhrchen einfarbig ist",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e9f1fa",
+  "theme_color": "#4a90d9",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

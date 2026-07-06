@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Farbige Schrauben</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#d97706">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Farbige Schrauben">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    :root {
+      --color-primary: #d97706;
+      --color-light:   #efc89b;
+      --color-dark:    #8d4d03;
+      --color-bg:      #faeee1;
+      --color-success: #2e7d32;
+      --color-error:   #c62828;
+      --radius-card:   28px;
+      --radius-btn:    16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Verdana', 'Tahoma', sans-serif;
+      background: var(--color-bg);
+      color: #2a2a2a;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* ---------- Screens ---------- */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    .screen.hidden { display: none; }
+
+    /* ---------- Start-Screen ---------- */
+    #screen-start {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center;
+      align-items: center;
+      padding-top: 20px;
+      overflow-y: auto;
+    }
+    #screen-start .card {
+      background: white;
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    #screen-start h1 {
+      color: var(--color-primary);
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+    #screen-start .sub {
+      color: var(--color-dark);
+      margin-bottom: 22px;
+      font-size: 1rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: bold;
+      margin-bottom: 14px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: var(--color-light);
+      transition: background 0.15s;
+    }
+    .back-link:hover, .back-link:focus { background: var(--color-bg); }
+
+    .group { margin-bottom: 22px; text-align: left; }
+    .group h2 {
+      color: var(--color-primary);
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .choice {
+      background: var(--color-bg);
+      border: 3px solid transparent;
+      border-radius: var(--radius-btn);
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--color-dark);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .choice:hover, .choice:focus { border-color: var(--color-primary); }
+    .choice.selected {
+      border-color: var(--color-primary);
+      background: var(--color-light);
+    }
+    .choice:active { transform: scale(0.98); }
+    .choice small {
+      display: block;
+      font-weight: normal;
+      font-size: 0.82rem;
+      margin-top: 2px;
+      color: var(--color-dark);
+      opacity: 0.8;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-btn);
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.1s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* ---------- Game-Screen ---------- */
+    #screen-game {
+      background: var(--color-bg);
+      padding-top: max(14px, env(safe-area-inset-top));
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 4px 14px;
+    }
+    .hud .stage {
+      color: var(--color-dark);
+      font-size: 0.9rem;
+      font-weight: bold;
+      justify-self: start;
+    }
+    .hud .progress {
+      color: var(--color-primary);
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 6px 14px;
+      background: white;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .hud .hud-right {
+      justify-self: end;
+      display: flex;
+      gap: 8px;
+    }
+    .hud .hud-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: white;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--color-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hud .hud-btn:disabled { opacity: 0.35; cursor: default; }
+
+    .play-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      padding-bottom: 10px;
+    }
+
+    /* ---------- Schrauben ---------- */
+    .bolts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 6px 4px;
+      width: 100%;
+      max-width: 560px;
+    }
+    .bolt {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 14px;
+      flex: 0 1 auto;
+    }
+    .bolt:active { transform: scale(0.97); }
+    .bolt svg { display: block; }
+    .bolt.blocked { animation: wrong-wiggle 0.45s ease; }
+    .bolt.done-pulse { animation: correct-pulse 0.6s ease; }
+
+    /* ---------- End-Screen ---------- */
+    #screen-end {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center;
+      align-items: center;
+    }
+    #screen-end .card {
+      background: white;
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    #screen-end .end-icon {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 10px;
+    }
+    #screen-end .end-icon svg { width: 100%; height: 100%; }
+    #screen-end h2 {
+      color: var(--color-primary);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    #screen-end p {
+      color: var(--color-dark);
+      margin-bottom: 22px;
+    }
+    #screen-end .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #screen-end .btn-secondary {
+      padding: 14px;
+      background: white;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius-btn);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+
+    /* ---------- Standard-Animationen ---------- */
+    @keyframes correct-pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.12); }
+    }
+    @keyframes wrong-wiggle {
+      0%, 100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .fade-in { animation: fade-in 0.25s ease; }
+
+    /* ---------- Accessibility ---------- */
+    button:focus-visible, a:focus-visible {
+      outline: 3px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #screen-start h1 { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================== START-SCREEN ====================== -->
+  <div id="screen-start" class="screen">
+    <div class="card">
+      <a href="../" class="back-link" aria-label="Zurueck zur Spiele-Uebersicht">&larr; Übersicht</a>
+      <h1>Farbige Schrauben</h1>
+      <p class="sub">Sortiere die Muttern, bis jede Schraube nur eine Farbe hat</p>
+
+      <div class="group">
+        <h2>Stufe wählen</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Schwierigkeitsstufe">
+          <button class="choice selected" data-stage="leicht" role="radio" aria-checked="true">
+            Leicht
+            <small>3 Farben, kleine Schrauben</small>
+          </button>
+          <button class="choice" data-stage="mittel" role="radio" aria-checked="false">
+            Mittel
+            <small>4 Farben, größere Schrauben</small>
+          </button>
+          <button class="choice" data-stage="schwer" role="radio" aria-checked="false">
+            Schwer
+            <small>6 Farben, volle Werkbank</small>
+          </button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-primary">Los geht's</button>
+    </div>
+  </div>
+
+  <!-- ====================== GAME-SCREEN ====================== -->
+  <div id="screen-game" class="screen hidden">
+    <div class="hud">
+      <span class="stage" id="hud-stage">Leicht</span>
+      <span class="progress" id="hud-progress">0/3 Farben fertig</span>
+      <span class="hud-right">
+        <button class="hud-btn" id="hud-undo" aria-label="Letzten Zug zurücknehmen" disabled>&#8630;</button>
+        <button class="hud-btn" id="hud-close" aria-label="Spiel beenden, zurueck zum Start">×</button>
+      </span>
+    </div>
+
+    <div class="play-area">
+      <div class="bolts" id="bolts" role="group" aria-label="Werkbank mit Schrauben"></div>
+    </div>
+  </div>
+
+  <!-- ====================== END-SCREEN ====================== -->
+  <div id="screen-end" class="screen hidden">
+    <div class="card">
+      <div class="end-icon" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <rect x="44" y="26" width="12" height="60" rx="5" fill="#9aa2ab"/>
+          <path d="M44 40 h12 M44 50 h12 M44 60 h12 M44 70 h12" stroke="#7b838c" stroke-width="3"/>
+          <polygon points="50,6 68,16 68,36 50,46 32,36 32,16" fill="#e05353"/>
+          <circle cx="50" cy="26" r="7" fill="#faeee1"/>
+        </svg>
+      </div>
+      <h2 id="end-title">Alles sortiert!</h2>
+      <p id="end-message">Jede Schraube hat jetzt ihre eigene Farbe.</p>
+      <div class="actions">
+        <button class="btn-primary" id="btn-replay">Nochmal spielen</button>
+        <button class="btn-secondary" id="btn-restage">Andere Stufe</button>
+        <a class="btn-secondary" href="../">Zur Übersicht</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== AUDIO-LIB ====================== -->
+  <script src="../_lib/audio.js"></script>
+
+  <!-- ====================== SPIEL-LOGIK ====================== -->
+  <script>
+    'use strict';
+
+    const GAME_ID = 'farbige-schrauben';
+    const PREFS_KEY = GAME_ID + '-prefs';
+
+    const COLORS = {
+      rot:     '#e05353',
+      gelb:    '#f2c94c',
+      blau:    '#4a90d9',
+      gruen:   '#5cb85c',
+      lila:    '#9b59b6',
+      tuerkis: '#38b2ac'
+    };
+    const COLOR_LABEL = {
+      rot: 'rot', gelb: 'gelb', blau: 'blau',
+      gruen: 'grün', lila: 'lila', tuerkis: 'türkis'
+    };
+
+    const STAGE_CONFIG = {
+      leicht: { label: 'Leicht', farben: ['rot', 'gelb', 'blau'], cap: 3, leere: 2 },
+      mittel: { label: 'Mittel', farben: ['rot', 'gelb', 'blau', 'gruen'], cap: 4, leere: 2 },
+      schwer: { label: 'Schwer', farben: ['rot', 'gelb', 'blau', 'gruen', 'lila', 'tuerkis'], cap: 4, leere: 2 }
+    };
+
+    const state = {
+      stage: 'leicht',
+      bolts: [],        // Array von Arrays, Index 0 = unterste Mutter
+      selected: -1,     // Index der Schraube mit angehobener Muttern-Gruppe
+      history: [],      // { from, to, count } fuer Undo
+      doneBolts: [],    // bereits gefeierte fertige Schrauben
+      over: false,
+      endTimer: null
+    };
+
+    // --- LocalStorage ---
+    function loadPrefs() {
+      try {
+        const raw = localStorage.getItem(PREFS_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) { return {}; }
+    }
+    function savePrefs(prefs) {
+      try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }
+      catch (e) { /* quota exceeded etc. */ }
+    }
+
+    // --- Screen-Wechsel ---
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function (s) { s.classList.add('hidden'); });
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('fade-in');
+      setTimeout(function () { el.classList.remove('fade-in'); }, 300);
+    }
+
+    // --- Start-Screen ---
+    function initStartScreen() {
+      const prefs = loadPrefs();
+      if (prefs.stage && STAGE_CONFIG[prefs.stage]) state.stage = prefs.stage;
+
+      document.querySelectorAll('#screen-start .choice').forEach(function (btn) {
+        btn.classList.toggle('selected', btn.dataset.stage === state.stage);
+        btn.setAttribute('aria-checked', String(btn.dataset.stage === state.stage));
+        btn.addEventListener('click', function () {
+          state.stage = btn.dataset.stage;
+          document.querySelectorAll('#screen-start .choice').forEach(function (b) {
+            b.classList.toggle('selected', b === btn);
+            b.setAttribute('aria-checked', String(b === btn));
+          });
+          savePrefs({ stage: state.stage });
+        });
+      });
+
+      document.getElementById('btn-start').addEventListener('click', startGame);
+    }
+
+    // --- Hilfsfunktionen Spielregeln ---
+    // HINWEIS: Engine (topRun/isDone/isSolved/generateLevel/isSolvable/undo)
+    // ist identisch in wasser-sortieren/index.html — Fixes dort spiegeln!
+    function topRun(bolt) {
+      // Laenge der obersten gleichfarbigen Gruppe
+      if (!bolt.length) return 0;
+      const c = bolt[bolt.length - 1];
+      let n = 0;
+      for (let i = bolt.length - 1; i >= 0 && bolt[i] === c; i--) n++;
+      return n;
+    }
+
+    function isDone(bolt, cap) {
+      return bolt.length === cap && bolt.every(function (n) { return n === bolt[0]; });
+    }
+
+    function isSolved(bolts, cap) {
+      return bolts.every(function (b) { return b.length === 0 || isDone(b, cap); });
+    }
+
+    // --- Level-Generierung (per Solver auf Loesbarkeit geprueft) ---
+    function generateLevel(cfg) {
+      for (let attempt = 0; attempt < 60; attempt++) {
+        const nuts = [];
+        cfg.farben.forEach(function (f) {
+          for (let i = 0; i < cfg.cap; i++) nuts.push(f);
+        });
+        // Fisher-Yates
+        for (let i = nuts.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const t = nuts[i]; nuts[i] = nuts[j]; nuts[j] = t;
+        }
+        const bolts = [];
+        for (let b = 0; b < cfg.farben.length; b++) {
+          bolts.push(nuts.slice(b * cfg.cap, (b + 1) * cfg.cap));
+        }
+        for (let e = 0; e < cfg.leere; e++) bolts.push([]);
+
+        // Keine schon fertig sortierte Schraube im Start
+        const tooEasy = bolts.some(function (b) { return isDone(b, cfg.cap); });
+        if (tooEasy) continue;
+        if (isSolvable(bolts, cfg.cap)) return bolts;
+      }
+      // Fallback (praktisch unerreichbar): eine Farbe pro Schraube,
+      // oberste Mutter je Schraube zyklisch getauscht -> loesbar in wenigen Zuegen
+      const bolts = cfg.farben.map(function (f) {
+        const arr = [];
+        for (let i = 0; i < cfg.cap; i++) arr.push(f);
+        return arr;
+      });
+      for (let b = 0; b < bolts.length; b++) {
+        bolts[b][cfg.cap - 1] = cfg.farben[(b + 1) % cfg.farben.length];
+      }
+      for (let e = 0; e < cfg.leere; e++) bolts.push([]);
+      return bolts;
+    }
+
+    // DFS mit Memo ueber sortierte Zustands-Signatur
+    function isSolvable(startBolts, cap) {
+      const seen = new Set();
+      const LIMIT = 120000;
+      let steps = 0;
+
+      function key(bolts) {
+        return bolts.map(function (b) { return b.join(','); }).sort().join('|');
+      }
+
+      function dfs(bolts) {
+        if (steps++ > LIMIT) return false;
+        if (isSolved(bolts, cap)) return true;
+        const k = key(bolts);
+        if (seen.has(k)) return false;
+        seen.add(k);
+
+        for (let from = 0; from < bolts.length; from++) {
+          const src = bolts[from];
+          if (!src.length) continue;
+          const run = topRun(src);
+          if (run === cap) continue; // fertige Schraube nicht anfassen
+          const color = src[src.length - 1];
+          for (let to = 0; to < bolts.length; to++) {
+            if (to === from) continue;
+            const dst = bolts[to];
+            const space = cap - dst.length;
+            if (!space) continue;
+            if (dst.length && dst[dst.length - 1] !== color) continue;
+            // Sinnloser Zug: komplette Gruppe von leerem Fuss auf leere Schraube
+            if (!dst.length && run === src.length && space >= run) continue;
+            const count = Math.min(run, space);
+            const moved = src.splice(src.length - count, count);
+            dst.push.apply(dst, moved);
+            const ok = dfs(bolts);
+            src.push.apply(src, dst.splice(dst.length - count, count));
+            if (ok) return true;
+          }
+        }
+        return false;
+      }
+
+      // Tiefe Kopie, damit der Solver den Level nicht veraendert
+      return dfs(startBolts.map(function (b) { return b.slice(); }));
+    }
+
+    // --- Game-Screen ---
+    function startGame() {
+      if (state.endTimer) { clearTimeout(state.endTimer); state.endTimer = null; }
+      const cfg = STAGE_CONFIG[state.stage];
+      state.bolts = generateLevel(cfg);
+      state.selected = -1;
+      state.history = [];
+      state.doneBolts = [];
+      state.over = false;
+
+      document.getElementById('hud-stage').textContent = cfg.label;
+      renderBolts();
+      updateHud();
+      showScreen('screen-game');
+    }
+
+    // Eine Schraube als SVG rendern
+    function boltSvg(bolt, cap, lifted) {
+      const NUT_H = 30, NUT_W = 76, GAP = 4;
+      const rodTop = 16;
+      const height = rodTop + cap * (NUT_H + GAP) + 26;
+      const width = 92;
+      const cx = width / 2;
+      const baseY = height - 14;
+
+      let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" width="' + width + '" height="' + height + '" aria-hidden="true">';
+      // Gewinde-Stab
+      svg += '<rect x="' + (cx - 7) + '" y="' + rodTop + '" width="14" height="' + (baseY - rodTop) + '" rx="6" fill="#9aa2ab"/>';
+      for (let y = rodTop + 8; y < baseY - 4; y += 9) {
+        svg += '<line x1="' + (cx - 7) + '" y1="' + y + '" x2="' + (cx + 7) + '" y2="' + (y + 3) + '" stroke="#7b838c" stroke-width="2.4"/>';
+      }
+      // Kopf oben + Fuss
+      svg += '<rect x="' + (cx - 13) + '" y="' + (rodTop - 8) + '" width="26" height="12" rx="5" fill="#7b838c"/>';
+      svg += '<rect x="' + (cx - 30) + '" y="' + (baseY - 2) + '" width="60" height="10" rx="5" fill="#b9946b"/>';
+
+      // Muttern (Index 0 = unten); angehobene Gruppe schwebt etwas hoeher
+      const liftCount = lifted ? topRun(bolt) : 0;
+      for (let i = 0; i < bolt.length; i++) {
+        const isLifted = lifted && i >= bolt.length - liftCount;
+        const y = baseY - (i + 1) * (NUT_H + GAP) + (isLifted ? -14 : 0);
+        svg += nutSvg(cx, y, NUT_W, NUT_H, COLORS[bolt[i]]);
+      }
+      svg += '</svg>';
+      return svg;
+    }
+
+    function nutSvg(cx, y, w, h, fill) {
+      const x = cx - w / 2;
+      const cy = y + h / 2;
+      const inset = w * 0.24;
+      const pts = [
+        (x + inset) + ',' + y,
+        (x + w - inset) + ',' + y,
+        (x + w) + ',' + cy,
+        (x + w - inset) + ',' + (y + h),
+        (x + inset) + ',' + (y + h),
+        x + ',' + cy
+      ].join(' ');
+      return '<polygon points="' + pts + '" fill="' + fill + '" stroke="rgba(0,0,0,0.18)" stroke-width="2" stroke-linejoin="round"/>' +
+             '<circle cx="' + cx + '" cy="' + cy + '" r="' + (h * 0.26) + '" fill="rgba(255,255,255,0.55)"/>';
+    }
+
+    function boltLabel(idx) {
+      const bolt = state.bolts[idx];
+      const cfg = STAGE_CONFIG[state.stage];
+      let desc;
+      if (!bolt.length) desc = 'leer';
+      else desc = bolt.slice().reverse().map(function (n) { return COLOR_LABEL[n]; }).join(', ');
+      let label = 'Schraube ' + (idx + 1) + ': ' + desc;
+      if (isDone(bolt, cfg.cap)) label += ' — fertig';
+      if (state.selected === idx) label += ' — ausgewählt';
+      return label;
+    }
+
+    function renderBolts() {
+      const cfg = STAGE_CONFIG[state.stage];
+      const wrap = document.getElementById('bolts');
+      wrap.innerHTML = '';
+      state.bolts.forEach(function (bolt, idx) {
+        const btn = document.createElement('button');
+        btn.className = 'bolt';
+        btn.dataset.idx = String(idx);
+        btn.setAttribute('aria-label', boltLabel(idx));
+        btn.innerHTML = boltSvg(bolt, cfg.cap, state.selected === idx);
+        btn.addEventListener('click', function () { onBoltTap(idx); });
+        wrap.appendChild(btn);
+      });
+    }
+
+    function refreshBolt(idx) {
+      const cfg = STAGE_CONFIG[state.stage];
+      const btn = document.getElementById('bolts').children[idx];
+      btn.innerHTML = boltSvg(state.bolts[idx], cfg.cap, state.selected === idx);
+      btn.setAttribute('aria-label', boltLabel(idx));
+    }
+
+    function countDone() {
+      const cfg = STAGE_CONFIG[state.stage];
+      return state.bolts.filter(function (b) { return isDone(b, cfg.cap); }).length;
+    }
+
+    function updateHud() {
+      const cfg = STAGE_CONFIG[state.stage];
+      document.getElementById('hud-progress').textContent =
+        countDone() + '/' + cfg.farben.length + ' Farben fertig';
+      document.getElementById('hud-undo').disabled = !state.history.length;
+    }
+
+    // --- Zuege ---
+    function onBoltTap(idx) {
+      if (state.over) return;
+      const cfg = STAGE_CONFIG[state.stage];
+      const bolt = state.bolts[idx];
+
+      if (state.selected === -1) {
+        // Leere oder fertige Schraube kann nicht aufgenommen werden
+        if (!bolt.length || isDone(bolt, cfg.cap)) { wiggle(idx); return; }
+        state.selected = idx;
+        Lernspiele.Audio.tap();
+        refreshBolt(idx);
+        return;
+      }
+
+      if (state.selected === idx) {
+        state.selected = -1;
+        refreshBolt(idx);
+        return;
+      }
+
+      const from = state.selected;
+      const src = state.bolts[from];
+      const color = src[src.length - 1];
+      const space = cfg.cap - bolt.length;
+      const legal = space > 0 && (!bolt.length || bolt[bolt.length - 1] === color);
+
+      if (!legal) {
+        state.selected = -1;
+        refreshBolt(from);
+        wiggle(idx);
+        Lernspiele.Audio.wrong();
+        return;
+      }
+
+      const count = Math.min(topRun(src), space);
+      const moved = src.splice(src.length - count, count);
+      bolt.push.apply(bolt, moved);
+      state.history.push({ from: from, to: idx, count: count });
+      state.selected = -1;
+      refreshBolt(from);
+      refreshBolt(idx);
+      Lernspiele.Audio.tone(430, 0.09, 0.05);
+
+      // Frisch fertig gewordene Schraube feiern
+      if (isDone(bolt, cfg.cap) && state.doneBolts.indexOf(idx) === -1) {
+        state.doneBolts.push(idx);
+        const el = document.getElementById('bolts').children[idx];
+        el.classList.add('done-pulse');
+        setTimeout(function () { el.classList.remove('done-pulse'); }, 700);
+        Lernspiele.Audio.correct();
+      }
+
+      updateHud();
+      if (isSolved(state.bolts, cfg.cap)) finishLevel();
+    }
+
+    function wiggle(idx) {
+      const el = document.getElementById('bolts').children[idx];
+      el.classList.remove('blocked');
+      void el.offsetWidth; // Animation neu starten
+      el.classList.add('blocked');
+    }
+
+    function undo() {
+      if (!state.history.length || state.over) return;
+      const m = state.history.pop();
+      const dst = state.bolts[m.to];
+      const moved = dst.splice(dst.length - m.count, m.count);
+      state.bolts[m.from].push.apply(state.bolts[m.from], moved);
+      // Falls die Ziel-Schraube als fertig gefeiert war: Status zuruecknehmen
+      const di = state.doneBolts.indexOf(m.to);
+      if (di !== -1) state.doneBolts.splice(di, 1);
+      if (state.selected !== -1) {
+        const sel = state.selected;
+        state.selected = -1;
+        refreshBolt(sel);
+      }
+      refreshBolt(m.from);
+      refreshBolt(m.to);
+      Lernspiele.Audio.tone(320, 0.08, 0.04);
+      updateHud();
+    }
+
+    // --- Spielende ---
+    function finishLevel() {
+      state.over = true;
+      Lernspiele.Audio.sequence([
+        { freq: 520, dur: 0.12, vol: 0.06 },
+        { freq: 660, dur: 0.12, vol: 0.06, delay: 0.12 },
+        { freq: 880, dur: 0.22, vol: 0.06, delay: 0.12 }
+      ]);
+      state.endTimer = setTimeout(function () {
+        state.endTimer = null;
+        showScreen('screen-end');
+      }, 1100);
+    }
+
+    // --- Buttons ---
+    document.getElementById('btn-replay').addEventListener('click', startGame);
+    document.getElementById('btn-restage').addEventListener('click', function () {
+      showScreen('screen-start');
+    });
+    document.getElementById('hud-undo').addEventListener('click', undo);
+    document.getElementById('hud-close').addEventListener('click', function () {
+      if (state.endTimer) { clearTimeout(state.endTimer); state.endTimer = null; }
+      state.over = true;
+      showScreen('screen-start');
+    });
+
+    // --- Audio einmal beim ersten Tap warmlaufen lassen (iOS-Anforderung) ---
+    document.addEventListener('pointerdown', function () {
+      if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.ensure();
+    }, { once: true });
+
+    // --- Init ---
+    initStartScreen();
+
+    // --- Service Worker ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

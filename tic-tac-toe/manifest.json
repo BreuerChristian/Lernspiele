@@ -1,0 +1,26 @@
+{
+  "name": "Tic-Tac-Toe",
+  "short_name": "Tic-Tac-Toe",
+  "description": "Drei in einer Reihe — zu zweit oder gegen den Computer",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e5f3f1",
+  "theme_color": "#2a9d8f",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
