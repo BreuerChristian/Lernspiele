@@ -8,7 +8,7 @@ Werbefreie, datensparsame Open-Source-Lernspiele für Kinder.
 
 Eine Sammlung kleiner Lernspiele, gebaut für die eigenen Kinder — und dann auf GitHub gestellt, damit andere Eltern sie nutzen, forken oder anpassen können. Ohne Werbung, ohne Tracker, ohne Belohnungs-Loops, ohne Account. Pädagogisch am Montessori-Prinzip orientiert: das Spiel endet, wenn das Kind fertig ist — nicht wenn der nächste Dopamin-Hit greift.
 
-52 Spiele, sortiert nach vier Kategorien, mit Altersfilter (4 / 6 / 8 / 10 / 12 Jahre) und Favoriten-Stern auf der Landing-Seite.
+60 Spiele, sortiert nach vier Kategorien, mit Altersfilter (4 / 6 / 8 / 10 / 12 Jahre) und Favoriten-Stern auf der Landing-Seite.
 
 ## Spiele
 
@@ -131,7 +131,7 @@ lernspiele/
 │   ├── manifest.json
 │   ├── service-worker.js
 │   └── icon*.svg
-└── ...                     ← weitere 51 Spiele nach gleichem Muster
+└── ...                     ← weitere 59 Spiele nach gleichem Muster
 ```
 
 ## Lokal entwickeln
