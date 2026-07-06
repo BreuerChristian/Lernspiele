@@ -1,4 +1,4 @@
-const CACHE = 'tic-tac-toe-v3';
+const CACHE = 'tic-tac-toe-v4';
 const ASSETS = [
   './',
   './index.html',

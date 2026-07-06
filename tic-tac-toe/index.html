@@ -388,11 +388,15 @@
           </button>
           <button class="choice" data-level="mittel" role="radio" aria-checked="false">
             Mittel
-            <small>Der Hund passt ein bisschen auf</small>
+            <small>Der Hund schnappt sich freie Reihen, passt aber noch nicht überall auf</small>
+          </button>
+          <button class="choice" data-level="schlau" role="radio" aria-checked="false">
+            Schlau
+            <small>Der Hund denkt einen Zug voraus — mit einem Trick kannst du ihn trotzdem überlisten</small>
           </button>
           <button class="choice" data-level="schwer" role="radio" aria-checked="false">
             Schwer
-            <small>Der Hund passt sehr gut auf</small>
+            <small>Der Hund passt perfekt auf — hier gibt es höchstens ein Unentschieden</small>
           </button>
         </div>
       </div>
@@ -484,7 +488,7 @@
       katze: { label: 'Katze', artikel: 'Die Katze' },
       hund:  { label: 'Hund',  artikel: 'Der Hund' }
     };
-    const LEVELS = { leicht: 'Leicht', mittel: 'Mittel', schwer: 'Schwer' };
+    const LEVELS = { leicht: 'Leicht', mittel: 'Mittel', schlau: 'Schlau', schwer: 'Schwer' };
     const LINES = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8],
       [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -687,7 +691,7 @@
           msg = 'Deine Katze hat eine ganze Reihe voll. Magst du gleich nochmal?';
         } else {
           title = 'Der Hund hat eine Reihe voll';
-          msg = 'Diesmal war der Hund schneller mit drei in einer Reihe. Magst du nochmal probieren?';
+          msg = 'Der Hund hat diesmal drei in einer Reihe gelegt. Schau mal, wo — magst du nochmal probieren?';
         }
       } else {
         title = 'Drei in einer Reihe!';
@@ -763,7 +767,25 @@
         if (block !== null) return block;
         return randomMove(board);
       }
+      if (state.level === 'schlau') {
+        return heuristicMove(board);
+      }
       return minimaxMove(board);
+    }
+
+    // Schlau: gewinnt und blockt, denkt mit Mitte/Ecken einen Zug voraus.
+    // Kennt aber keine Doppel-Fallen (Forks) — mit einem Trick schlagbar.
+    function heuristicMove(board) {
+      const win = findWinningMove(board, 'hund');
+      if (win !== null) return win;
+      const block = findWinningMove(board, 'katze');
+      if (block !== null) return block;
+      if (!board[4]) return 4;                       // Mitte
+      const corners = [0, 2, 6, 8].filter(function (i) { return !board[i]; });
+      if (corners.length) return corners[Math.floor(Math.random() * corners.length)];
+      const edges = [1, 3, 5, 7].filter(function (i) { return !board[i]; });
+      if (edges.length) return edges[Math.floor(Math.random() * edges.length)];
+      return randomMove(board);
     }
 
     // Schwer: Minimax — der Hund spielt fehlerfrei, Unentschieden ist erreichbar
