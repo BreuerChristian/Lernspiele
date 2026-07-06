@@ -450,11 +450,17 @@
       state.target = sum;
       document.getElementById('question').innerHTML = a + ' + ' + b + ' = <strong>?</strong>';
 
+      // Distraktoren nahe der Summe. Bereich erweitern, falls nahe der Grenze
+      // (sum == cfg.max) zu wenige Kandidaten in ±2 liegen — sonst Endlosschleife.
       const options = new Set([sum]);
-      while (options.size < 4) {
-        const d = sum + (Math.floor(Math.random() * 5) - 2);
+      let spread = 2, guard = 0;
+      while (options.size < 4 && guard++ < 100) {
+        const d = sum + (Math.floor(Math.random() * (spread * 2 + 1)) - spread);
         if (d > 0 && d <= cfg.max && d !== sum) options.add(d);
+        if (guard % 20 === 0) spread++;
       }
+      // Sicherheitsnetz: bei sehr kleinem Zahlenraum mit gueltigen Zahlen auffuellen.
+      for (let n = 1; options.size < 4 && n <= cfg.max; n++) options.add(n);
       const arr = shuffle([...options]);
       const answersEl = document.getElementById('answers');
       answersEl.innerHTML = '';

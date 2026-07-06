@@ -889,8 +889,11 @@
     function renderAnimal(animalKey, silhouette) {
         const animal = ANIMALS[animalKey];
         const tmp = document.createElement('div');
-        tmp.innerHTML = animal.svg;
+        // SVG liegt unter dem Tier-Key (ICON:<name>-Marker-Konvention, icons.py-kompatibel),
+        // Fallback auf .svg fuer aeltere Struktur.
+        tmp.innerHTML = animal[animalKey] || animal.svg || '';
         const svg = tmp.firstElementChild;
+        if (!svg) return tmp; // defensiv: nie crashen, falls Markup fehlt
         svg.setAttribute('aria-label', silhouette ? 'Schatten' : animal.name);
         if (silhouette) svg.classList.add('silhouette');
         return svg;

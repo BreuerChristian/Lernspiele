@@ -1,0 +1,449 @@
+{
+  "categories": [
+    {
+      "name": "Sprache & Lesen",
+      "games": [
+        {
+          "folder": "buchstaben",
+          "title": "Buchstaben-Spiel",
+          "desc": "Buchstaben hören und erkennen",
+          "ageMin": 4,
+          "ageMax": 7
+        },
+        {
+          "folder": "anlaute",
+          "title": "Anlaut-Spiel",
+          "desc": "Mit welchem Buchstaben beginnt das Wort?",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "silben-klatschen",
+          "title": "Silben klatschen",
+          "desc": "Wort hören und pro Silbe einmal tippen",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "reim-paare",
+          "title": "Reim-Paare",
+          "desc": "Reimt sich? Haus und Maus — oder doch nicht?",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "wort-bild",
+          "title": "Wort-Bild-Memory",
+          "desc": "Wort lesen und passendes Bild antippen",
+          "ageMin": 6,
+          "ageMax": 9
+        },
+        {
+          "folder": "englisch-erste-woerter",
+          "title": "Erste englische Wörter",
+          "desc": "Bild + Wort hören, ohne Test",
+          "ageMin": 6,
+          "ageMax": 10
+        },
+        {
+          "folder": "grosskleinbuch",
+          "title": "Gross und Klein",
+          "desc": "Grossbuchstabe zum passenden Kleinbuchstaben zuordnen",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "reim-vervollst",
+          "title": "Reim-Vervollständigen",
+          "desc": "Welches Wort reimt sich darauf?",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "wort-diktat",
+          "title": "Wort-Diktat",
+          "desc": "Buchstaben in der richtigen Reihenfolge tippen",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "erste-saetze",
+          "title": "Erste Sätze",
+          "desc": "Wörter in die richtige Reihenfolge bringen",
+          "ageMin": 6,
+          "ageMax": 9
+        },
+        {
+          "folder": "gegenteile",
+          "title": "Gegenteile",
+          "desc": "Groß oder klein, voll oder leer — was ist das Gegenteil?",
+          "ageMin": 4,
+          "ageMax": 8
+        }
+      ]
+    },
+    {
+      "name": "Mathe & Zahlen",
+      "games": [
+        {
+          "folder": "zahlen-parade",
+          "title": "Zahlen-Parade",
+          "desc": "Rechnen mit einer wandernden Kindergruppe",
+          "ageMin": 5,
+          "ageMax": 9
+        },
+        {
+          "folder": "mengen-erfassen",
+          "title": "Mengen erfassen",
+          "desc": "Punktwolke kurz sehen, Anzahl erkennen",
+          "ageMin": 4,
+          "ageMax": 7
+        },
+        {
+          "folder": "zahlenreihen",
+          "title": "Zahlenreihen",
+          "desc": "Was fehlt? 2, 4, _, 8, 10",
+          "ageMin": 6,
+          "ageMax": 10
+        },
+        {
+          "folder": "plus-tuermchen",
+          "title": "Plus-Türmchen",
+          "desc": "Visuelle Addition mit Klötzchen-Stapeln",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "muenzen",
+          "title": "Münzen",
+          "desc": "Beträge mit Euro-Münzen legen",
+          "ageMin": 6,
+          "ageMax": 10
+        },
+        {
+          "folder": "minus-maschine",
+          "title": "Minus-Maschine",
+          "desc": "Visuelle Subtraktion: etwas wird weggenommen",
+          "ageMin": 5,
+          "ageMax": 9
+        },
+        {
+          "folder": "zahlen-zerlegen",
+          "title": "Zahlen zerlegen",
+          "desc": "5 ist 2 und … ? Welcher Teil fehlt?",
+          "ageMin": 5,
+          "ageMax": 9
+        },
+        {
+          "folder": "groesser-kleiner",
+          "title": "Größer oder kleiner",
+          "desc": "Mengen und Zahlen vergleichen: <, =, >",
+          "ageMin": 4,
+          "ageMax": 8
+        },
+        {
+          "folder": "gerade-ungerade",
+          "title": "Gerade oder ungerade",
+          "desc": "Finden alle einen Partner — oder bleibt einer übrig?",
+          "ageMin": 6,
+          "ageMax": 9
+        },
+        {
+          "folder": "verdoppeln-halbieren",
+          "title": "Verdoppeln & Halbieren",
+          "desc": "Doppelt so viele — oder die Hälfte davon?",
+          "ageMin": 6,
+          "ageMax": 10
+        },
+        {
+          "folder": "uhr-lesen",
+          "title": "Uhr lesen",
+          "desc": "Analog-Uhr in drei Stufen: voll, halb, viertel",
+          "ageMin": 7,
+          "ageMax": 10
+        },
+        {
+          "folder": "plus-bis-20",
+          "title": "Plus bis 20",
+          "desc": "Einfache Addition bis 20",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "mal-reihe",
+          "title": "Mal-Reihe",
+          "desc": "Kleines Einmaleins üben",
+          "ageMin": 7,
+          "ageMax": 10
+        },
+        {
+          "folder": "sachaufgabe",
+          "title": "Sachaufgabe",
+          "desc": "Bilderaufgaben: 3 Hunde + 2 Hunde = ?",
+          "ageMin": 5,
+          "ageMax": 9
+        },
+        {
+          "folder": "geld-betraege",
+          "title": "Geld-Beträge",
+          "desc": "Münzen zusammenzählen",
+          "ageMin": 6,
+          "ageMax": 10
+        },
+        {
+          "folder": "bruchteile",
+          "title": "Bruchteile",
+          "desc": "Halbieren, dritteln, vierteln",
+          "ageMin": 7,
+          "ageMax": 10
+        }
+      ]
+    },
+    {
+      "name": "Welt & Sachkunde",
+      "games": [
+        {
+          "folder": "tier-geraeusche",
+          "title": "Tier-Geräusche",
+          "desc": "Hör zu und finde das passende Tier",
+          "ageMin": 3,
+          "ageMax": 6
+        },
+        {
+          "folder": "jahreszeiten-sortieren",
+          "title": "Jahreszeiten-Sortieren",
+          "desc": "Bilder den vier Jahreszeiten zuordnen",
+          "ageMin": 3,
+          "ageMax": 6
+        },
+        {
+          "folder": "bundeslaender",
+          "title": "Bundesländer-Spiel",
+          "desc": "Die 16 Bundesländer auf der Karte finden",
+          "ageMin": 7,
+          "ageMax": 11
+        },
+        {
+          "folder": "hauptstaedte-lernen",
+          "title": "Hauptstädte lernen",
+          "desc": "In drei Stufen: deutsche Bundesländer, Europa, weltweit",
+          "ageMin": 8,
+          "ageMax": 12
+        },
+        {
+          "folder": "flaggen",
+          "title": "Länder-Flaggen",
+          "desc": "Welche Flagge gehört zu welchem Land?",
+          "ageMin": 8,
+          "ageMax": 12
+        },
+        {
+          "folder": "planeten",
+          "title": "Planeten der Reihe nach",
+          "desc": "Sonnensystem erkunden und ordnen",
+          "ageMin": 7,
+          "ageMax": 12
+        },
+        {
+          "folder": "wetter",
+          "title": "Wetter",
+          "desc": "Welches Wetter ist das?",
+          "ageMin": 4,
+          "ageMax": 7
+        },
+        {
+          "folder": "koerperteile",
+          "title": "Körperteile",
+          "desc": "Tippe auf das richtige Körperteil",
+          "ageMin": 4,
+          "ageMax": 7
+        },
+        {
+          "folder": "wo-wohnt-tier",
+          "title": "Wo wohnt das Tier?",
+          "desc": "Tiere ihrem Lebensraum zuordnen",
+          "ageMin": 4,
+          "ageMax": 8
+        },
+        {
+          "folder": "pflanzen-wachstum",
+          "title": "Pflanzen-Wachstum",
+          "desc": "Same → Spross → Pflanze → Blume in Reihenfolge",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "berufe",
+          "title": "Berufe",
+          "desc": "Welches Werkzeug gehört zu welchem Beruf?",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "verkehrsmittel",
+          "title": "Verkehrsmittel",
+          "desc": "Fährt es, schwimmt es oder fliegt es?",
+          "ageMin": 4,
+          "ageMax": 8
+        },
+        {
+          "folder": "kalender",
+          "title": "Kalender",
+          "desc": "Wochentage und Monate der Reihe nach",
+          "ageMin": 5,
+          "ageMax": 9
+        }
+      ]
+    },
+    {
+      "name": "Wahrnehmung & Logik",
+      "games": [
+        {
+          "folder": "schatten-finden",
+          "title": "Schatten finden",
+          "desc": "Tier oben, passender Schatten unten",
+          "ageMin": 3,
+          "ageMax": 6
+        },
+        {
+          "folder": "was-passt-nicht",
+          "title": "Was passt nicht?",
+          "desc": "Vier Bilder, eines fällt aus der Kategorie",
+          "ageMin": 4,
+          "ageMax": 7
+        },
+        {
+          "folder": "muster-fortsetzen",
+          "title": "Muster fortsetzen",
+          "desc": "Welches Symbol kommt als Nächstes?",
+          "ageMin": 5,
+          "ageMax": 9
+        },
+        {
+          "folder": "symmetrie",
+          "title": "Symmetrie",
+          "desc": "Linke Hälfte vorgegeben — Spiegel ergänzen",
+          "ageMin": 6,
+          "ageMax": 10
+        },
+        {
+          "folder": "farben-mischen",
+          "title": "Farben mischen",
+          "desc": "Rot, Gelb, Blau — was passiert beim Mischen?",
+          "ageMin": 4,
+          "ageMax": 8
+        },
+        {
+          "folder": "oberbegriffe",
+          "title": "Wohin passt das?",
+          "desc": "Bild zur richtigen Kategorie zuordnen — Tiere, Essen, Verkehr, Haushalt, Natur",
+          "ageMin": 4,
+          "ageMax": 7
+        },
+        {
+          "folder": "memory",
+          "title": "Memory",
+          "desc": "Paare finden – klassisches Memory",
+          "ageMin": 4,
+          "ageMax": 9
+        },
+        {
+          "folder": "gehoert-zusammen",
+          "title": "Gehört zusammen",
+          "desc": "Was passt zusammen? Schlüssel + Schloss",
+          "ageMin": 4,
+          "ageMax": 7
+        },
+        {
+          "folder": "reihenfolge",
+          "title": "Reihenfolge",
+          "desc": "Bilder in zeitliche Reihenfolge bringen",
+          "ageMin": 5,
+          "ageMax": 9
+        },
+        {
+          "folder": "anzahl-schaetzen",
+          "title": "Anzahl schätzen",
+          "desc": "Kurz schauen, wie viele Sterne?",
+          "ageMin": 5,
+          "ageMax": 9
+        },
+        {
+          "folder": "spiegelbild",
+          "title": "Spiegelbild",
+          "desc": "Welcher Buchstabe ist gespiegelt?",
+          "ageMin": 6,
+          "ageMax": 9
+        },
+        {
+          "folder": "fehler-finden",
+          "title": "Fehler finden",
+          "desc": "Wo ist der Unterschied zwischen den zwei Reihen?",
+          "ageMin": 5,
+          "ageMax": 8
+        },
+        {
+          "folder": "tic-tac-toe",
+          "title": "Tic-Tac-Toe",
+          "desc": "Drei in einer Reihe — zu zweit oder gegen den Computer",
+          "ageMin": 4,
+          "ageMax": 8
+        },
+        {
+          "folder": "farbige-schrauben",
+          "title": "Farbige Schrauben",
+          "desc": "Muttern nach Farbe auf die Schrauben sortieren",
+          "ageMin": 4,
+          "ageMax": 9
+        },
+        {
+          "folder": "wasser-sortieren",
+          "title": "Wasser sortieren",
+          "desc": "Farbwasser umgießen, bis jedes Röhrchen einfarbig ist",
+          "ageMin": 4,
+          "ageMax": 9
+        },
+        {
+          "folder": "formen",
+          "title": "Formen finden",
+          "desc": "Kreis, Quadrat, Dreieck — welche Form ist das?",
+          "ageMin": 4,
+          "ageMax": 8
+        }
+      ]
+    },
+    {
+      "name": "Spiele für Zwei",
+      "games": [
+        {
+          "folder": "vier-gewinnt",
+          "title": "4 in einer Reihe",
+          "desc": "Steine einwerfen — wer zuerst vier in einer Reihe hat",
+          "ageMin": 5,
+          "ageMax": 10
+        },
+        {
+          "folder": "kaesekaestchen",
+          "title": "Käsekästchen",
+          "desc": "Linien ziehen und Kästchen sammeln",
+          "ageMin": 6,
+          "ageMax": 10
+        },
+        {
+          "folder": "muehle",
+          "title": "Mühle",
+          "desc": "Steine setzen, schieben und Mühlen bilden",
+          "ageMin": 7,
+          "ageMax": 12
+        },
+        {
+          "folder": "dame",
+          "title": "Dame",
+          "desc": "Diagonal ziehen, springen und schlagen",
+          "ageMin": 6,
+          "ageMax": 12
+        }
+      ]
+    }
+  ]
+}

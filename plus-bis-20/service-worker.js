@@ -1,4 +1,4 @@
-const CACHE = 'plus-bis-20-v1';
+const CACHE = 'plus-bis-20-v2';
 const ASSETS = [
   './',
   './index.html',

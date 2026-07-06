@@ -529,7 +529,7 @@
         <div class="stage-box">
             <div class="tower" id="tower-a">
                 <div class="tower-svg-wrap">
-                    <svg class="tower-svg" id="svg-a" viewBox="0 0 80 360" preserveAspectRatio="xMidYEnd meet"></svg>
+                    <svg class="tower-svg" id="svg-a" viewBox="0 0 80 360" preserveAspectRatio="xMidYMax meet"></svg>
                 </div>
                 <div class="controls">
                     <button class="ctrl-btn" id="minus-a" aria-label="Klötzchen wegnehmen">−</button>
@@ -539,7 +539,7 @@
             </div>
             <div class="tower" id="tower-b">
                 <div class="tower-svg-wrap">
-                    <svg class="tower-svg" id="svg-b" viewBox="0 0 80 360" preserveAspectRatio="xMidYEnd meet"></svg>
+                    <svg class="tower-svg" id="svg-b" viewBox="0 0 80 360" preserveAspectRatio="xMidYMax meet"></svg>
                 </div>
                 <div class="controls">
                     <button class="ctrl-btn" id="minus-b" aria-label="Klötzchen wegnehmen">−</button>
@@ -896,7 +896,7 @@
         // Vertikal: rechte Klötzchen müssen so weit nach oben, dass ihr
         // unteres Ende auf dem aktuellen oberen Ende des linken Turms liegt.
         // In SVG-Koordinaten ist das builtA * (blockH + gap) Pixel.
-        // Da der svg ein viewBox hat aber preserveAspectRatio meet+xMidYEnd,
+        // Da der svg ein viewBox hat aber preserveAspectRatio meet+xMidYMax,
         // skaliert er nicht horizontal anders als das Wrap. Wir berechnen
         // aus dem Layout: SVG-Wrap-Höhe = visuelle Pixel-Höhe.
         const svgWrap = towerB.querySelector('.tower-svg-wrap');
