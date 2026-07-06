@@ -1,0 +1,26 @@
+{
+  "name": "4 in einer Reihe",
+  "short_name": "4 in einer R",
+  "description": "Steine einwerfen — wer zuerst vier in einer Reihe hat",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e2ecf7",
+  "theme_color": "#1565c0",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

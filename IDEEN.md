@@ -34,18 +34,17 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 
 ## Klassiker & Puzzle (Inspiration: [offline.games](https://offline.games/))
 
-Spielsammler den die Kinder mögen (Screenshots 2026-07). Memory ist bei uns schon
-live (`memory/`), der Rest hier als Ideen. Beim Umsetzen gelten die Leitprinzipien:
-Highscores, Zeitdruck und Endlos-Loops fliegen raus — Anti-Pattern-Check gehört
-in jeden Plan-Pitch.
+Spielsammlung die Kinder mögen. Memory ist bei uns schon live (`memory/`), der Rest
+hier als Ideen. Beim Umsetzen gelten die Leitprinzipien: Highscores, Zeitdruck und
+Endlos-Loops fliegen raus — Anti-Pattern-Check gehört in jeden Plan-Pitch.
 
 ### Brett-Klassiker (2 Spieler am Gerät oder einfache KI)
 - [x] **Tic-Tac-Toe** (`tic-tac-toe/`) — der Einstiegs-Klassiker, 2 Kinder an einem Gerät oder gegen den Computer.
-- [ ] **4 in einer Reihe** — Connect Four, gute erste Strategie-Übung.
-- [ ] **Käsekästchen** — Punkte-Raster, Linien ziehen, Kästchen gewinnen.
-- [ ] **Dame** — einfacher Schach-Vorläufer, Regeln in 2 Minuten erklärt.
+- [x] **4 in einer Reihe** (`vier-gewinnt/`) — Connect Four, gute erste Strategie-Übung. 2 Spieler + sanfte KI.
+- [x] **Käsekästchen** (`kaesekaestchen/`) — Punkte-Raster, Linien ziehen, Kästchen gewinnen. 2 Spieler + KI, drei Brettgrößen.
+- [x] **Mühle** (`muehle/`) — 9 Steine setzen, dann schieben; drei in einer Reihe = Mühle, nimm einen gegnerischen Stein. 2 Spieler + KI, mit Spring-Phase bei 3 Steinen.
+- [x] **Dame** (`dame/`) — 8×8, diagonal ziehen/schlagen, Schlagzwang + Mehrfachsprünge, Dame-Umwandlung. 2 Spieler + sanfte KI.
 - [ ] **Schach** — mit sehr sanfter KI oder nur 2-Spieler; evtl. Mini-Lektionen pro Figur.
-- [ ] **Mühle** — fehlt bei offline.games, passt aber in die Reihe.
 - [ ] **Reversi** — Steine umdrehen, gut für räumliches Vorausdenken.
 - [ ] **Backgammon** — Würfel + Strategie, eher für Ältere.
 - [ ] **Dominosteine** — Anlegen nach Augenzahl, auch als Zähl-Übung für Jüngere.
@@ -148,3 +147,14 @@ in jeden Plan-Pitch.
 - [x] **Anzahl schätzen** (`anzahl-schaetzen/`)
 - [x] **Spiegelbild** (`spiegelbild/`)
 - [x] **Fehler finden** (`fehler-finden/`)
+- [x] **Tic-Tac-Toe** (`tic-tac-toe/`)
+- [x] **Farbige Schrauben** (`farbige-schrauben/`)
+- [x] **Wasser sortieren** (`wasser-sortieren/`)
+- [x] **Formen finden** (`formen/`)
+- [x] **Gegenteile** (`gegenteile/`)
+- [x] **Kalender** (`kalender/`)
+- [x] **Verkehrsmittel** (`verkehrsmittel/`)
+- [x] **4 in einer Reihe** (`vier-gewinnt/`)
+- [x] **Käsekästchen** (`kaesekaestchen/`)
+- [x] **Mühle** (`muehle/`)
+- [x] **Dame** (`dame/`)

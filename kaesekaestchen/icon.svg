@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#00897b"/>
+  <!-- geschlossenes Kästchen oben links -->
+  <rect x="150" y="150" width="106" height="106" rx="14" fill="#ffffff" opacity="0.9"/>
+  <circle cx="203" cy="203" r="26" fill="#fb8c00"/>
+  <!-- gezogene Linien -->
+  <g stroke="#ffffff" stroke-width="16" stroke-linecap="round">
+    <line x1="150" y1="150" x2="256" y2="150"/>
+    <line x1="150" y1="256" x2="256" y2="256"/>
+    <line x1="150" y1="150" x2="150" y2="256"/>
+    <line x1="256" y1="150" x2="256" y2="256"/>
+    <line x1="256" y1="256" x2="362" y2="256"/>
+  </g>
+  <!-- Punkte-Raster -->
+  <g fill="#00594f">
+    <circle cx="150" cy="150" r="16"/><circle cx="256" cy="150" r="16"/><circle cx="362" cy="150" r="16"/>
+    <circle cx="150" cy="256" r="16"/><circle cx="256" cy="256" r="16"/><circle cx="362" cy="256" r="16"/>
+    <circle cx="150" cy="362" r="16"/><circle cx="256" cy="362" r="16"/><circle cx="362" cy="362" r="16"/>
+  </g>
+</svg>

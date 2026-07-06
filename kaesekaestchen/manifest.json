@@ -1,0 +1,26 @@
+{
+  "name": "Käsekästchen",
+  "short_name": "Käsekästch",
+  "description": "Linien ziehen und Kästchen sammeln",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e0f0ef",
+  "theme_color": "#00897b",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

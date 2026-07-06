@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: vollflaechiger Hintergrund, Inhalt im 80% Safe-Zone-Bereich (52-460) -->
+  <rect width="512" height="512" fill="#1565c0"/>
+  <g>
+    <circle cx="164" cy="164" r="42" fill="#fbc02d"/>
+    <circle cx="256" cy="164" r="42" fill="#0d417c"/>
+    <circle cx="348" cy="164" r="42" fill="#e53935"/>
+    <circle cx="164" cy="256" r="42" fill="#0d417c"/>
+    <circle cx="256" cy="256" r="42" fill="#e53935"/>
+    <circle cx="348" cy="256" r="42" fill="#fbc02d"/>
+    <circle cx="164" cy="348" r="42" fill="#e53935"/>
+    <circle cx="256" cy="348" r="42" fill="#fbc02d"/>
+    <circle cx="348" cy="348" r="42" fill="#0d417c"/>
+  </g>
+</svg>

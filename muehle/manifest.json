@@ -1,0 +1,26 @@
+{
+  "name": "Mühle",
+  "short_name": "Mühle",
+  "description": "Steine setzen, schieben und Mühlen bilden",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ede3f2",
+  "theme_color": "#6a1b9a",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
