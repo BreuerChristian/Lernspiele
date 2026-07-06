@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>4 in einer Reihe</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#1565c0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="4 in einer Reihe">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    :root {
+      --color-primary: #1565c0;
+      --color-light:   #a1c1e5;
+      --color-dark:    #0d417c;
+      --color-bg:      #e2ecf7;
+      --disc-rot:      #e53935;
+      --disc-gelb:     #fbc02d;
+      --radius-card:   28px;
+      --radius-btn:    16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Verdana', 'Tahoma', sans-serif;
+      background: var(--color-bg);
+      color: #2a2a2a;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    .screen.hidden { display: none; }
+
+    /* ---------- Start-Screen ---------- */
+    #screen-start {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center;
+      align-items: center;
+      padding-top: 20px;
+      overflow-y: auto;
+    }
+    #screen-start .card {
+      background: white;
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    #screen-start h1 { color: var(--color-primary); font-size: 2.2rem; margin-bottom: 6px; }
+    #screen-start .sub { color: var(--color-dark); margin-bottom: 22px; font-size: 1rem; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--color-primary); text-decoration: none;
+      font-size: 0.95rem; font-weight: bold; margin-bottom: 14px;
+      padding: 8px 14px; border-radius: 12px; background: var(--color-light);
+      transition: background 0.15s;
+    }
+    .back-link:hover, .back-link:focus { background: var(--color-bg); }
+
+    .group { margin-bottom: 22px; text-align: left; }
+    .group h2 { color: var(--color-primary); font-size: 1.05rem; margin-bottom: 10px; font-weight: bold; text-align: center; }
+    .stage-list { display: flex; flex-direction: column; gap: 10px; }
+    .choice {
+      background: var(--color-bg); border: 3px solid transparent; border-radius: var(--radius-btn);
+      padding: 14px 16px; font-family: inherit; font-size: 1rem; color: var(--color-dark);
+      cursor: pointer; text-align: left; transition: border-color 0.15s, transform 0.1s;
+    }
+    .choice:hover, .choice:focus { border-color: var(--color-primary); }
+    .choice.selected { border-color: var(--color-primary); background: var(--color-light); }
+    .choice:active { transform: scale(0.98); }
+
+    .btn-primary {
+      width: 100%; padding: 16px; background: var(--color-primary); color: white; border: none;
+      border-radius: var(--radius-btn); font-family: inherit; font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; margin-top: 8px; transition: transform 0.1s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* ---------- Game-Screen ---------- */
+    #screen-game { background: var(--color-bg); padding-top: max(14px, env(safe-area-inset-top)); }
+
+    .hud {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      gap: 10px; padding: 6px 4px 10px;
+    }
+    .hud .stage { color: var(--color-dark); font-size: 0.9rem; font-weight: bold; justify-self: start; }
+    .hud .progress {
+      color: var(--color-primary); font-size: 1rem; font-weight: bold; padding: 6px 14px;
+      background: white; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .hud .hud-btn {
+      width: 44px; height: 44px; border: none; background: white; border-radius: 50%;
+      font-size: 1.4rem; font-weight: bold; color: var(--color-primary); cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10); justify-self: end;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .turn-dot { width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.12); }
+    .turn-dot.rot  { background: var(--disc-rot); }
+    .turn-dot.gelb { background: var(--disc-gelb); }
+
+    .play-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+
+    .board {
+      background: var(--color-primary);
+      border-radius: 20px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      width: min(94vw, 430px);
+      box-shadow: 0 10px 30px rgba(13,65,124,0.35);
+      overflow: hidden;
+    }
+    .cell {
+      aspect-ratio: 1 / 1;
+      background: var(--color-bg);
+      border: none;
+      border-radius: 50%;
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.2);
+      cursor: pointer;
+      padding: 0;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .board.locked .cell { cursor: default; }
+    .disc {
+      width: 100%; height: 100%; border-radius: 50%;
+      box-shadow: inset 0 -4px 6px rgba(0,0,0,0.25), inset 0 3px 4px rgba(255,255,255,0.35);
+    }
+    .disc.rot  { background: radial-gradient(circle at 35% 30%, #ff6f60, var(--disc-rot)); }
+    .disc.gelb { background: radial-gradient(circle at 35% 30%, #ffe082, var(--disc-gelb)); }
+    .disc.dropping { animation: drop 0.4s cubic-bezier(0.5, 0, 0.7, 1); }
+    .disc.win { animation: win-pulse 0.7s ease infinite; }
+
+    @media (hover: hover) {
+      .cell.col-hint { box-shadow: inset 0 3px 6px rgba(0,0,0,0.2), 0 0 0 3px var(--color-light); }
+    }
+
+    @keyframes drop { from { transform: translateY(-520%); } to { transform: translateY(0); } }
+    @keyframes win-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.82); } }
+
+    /* ---------- End-Screen ---------- */
+    #screen-end {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center; align-items: center;
+    }
+    #screen-end .card {
+      background: white; border-radius: var(--radius-card); padding: 32px 28px;
+      max-width: 480px; width: 100%; box-shadow: 0 18px 50px rgba(0,0,0,0.18); text-align: center;
+    }
+    #screen-end .end-emblem { font-size: 3rem; margin-bottom: 8px; }
+    #screen-end h2 { color: var(--color-primary); font-size: 1.8rem; margin-bottom: 10px; }
+    #screen-end p { color: var(--color-dark); margin-bottom: 22px; }
+    #screen-end .actions { display: flex; flex-direction: column; gap: 10px; }
+    #screen-end .btn-secondary {
+      padding: 14px; background: white; color: var(--color-primary); border: 2px solid var(--color-primary);
+      border-radius: var(--radius-btn); font-family: inherit; font-size: 1rem; font-weight: bold;
+      cursor: pointer; text-decoration: none; display: block;
+    }
+
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    .fade-in { animation: fade-in 0.25s ease; }
+
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+    .cell:focus-visible { outline: 3px solid var(--color-dark); outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #screen-start h1 { font-size: 1.8rem; }
+      .board { gap: 6px; padding: 9px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================== START-SCREEN ====================== -->
+  <div id="screen-start" class="screen">
+    <div class="card">
+      <a href="../" class="back-link" aria-label="Zurück zur Spiele-Übersicht">&larr; Übersicht</a>
+      <h1>4 in einer Reihe</h1>
+      <p class="sub">Wirf abwechselnd Steine ein. Wer zuerst vier in einer Reihe hat — waagerecht, senkrecht oder schräg!</p>
+
+      <div class="group">
+        <h2>Wie wollt ihr spielen?</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Spielmodus">
+          <button class="choice selected" data-mode="zwei" role="radio" aria-checked="true">Zu zweit — Rot gegen Gelb</button>
+          <button class="choice"          data-mode="computer" role="radio" aria-checked="false">Gegen den Computer — du bist Rot</button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-primary">Los geht's</button>
+    </div>
+  </div>
+
+  <!-- ====================== GAME-SCREEN ====================== -->
+  <div id="screen-game" class="screen hidden">
+    <div class="hud">
+      <span class="stage" id="hud-stage">Zu zweit</span>
+      <span class="progress" id="hud-progress"><span class="turn-dot rot" id="turn-dot"></span><span id="turn-text">Rot ist dran</span></span>
+      <button class="hud-btn" id="hud-close" aria-label="Spiel beenden, zurück zum Start">×</button>
+    </div>
+
+    <div class="play-area">
+      <div class="board" id="board" role="grid" aria-label="Spielbrett, 7 Spalten"></div>
+    </div>
+  </div>
+
+  <!-- ====================== END-SCREEN ====================== -->
+  <div id="screen-end" class="screen hidden">
+    <div class="card">
+      <div class="end-emblem" id="end-emblem" aria-hidden="true">🎉</div>
+      <h2 id="end-title">Schöne Runde!</h2>
+      <p id="end-message"></p>
+      <div class="actions">
+        <button class="btn-primary" id="btn-replay">Nochmal spielen</button>
+        <button class="btn-secondary" id="btn-restage">Anderer Modus</button>
+        <a class="btn-secondary" href="../">Zur Übersicht</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== AUDIO-LIB ====================== -->
+  <script src="../_lib/audio.js"></script>
+
+  <!-- ====================== SPIEL-LOGIK ====================== -->
+  <script>
+    'use strict';
+
+    const GAME_ID = 'vier-gewinnt';
+    const PREFS_KEY = GAME_ID + '-prefs';
+    const COLS = 7, ROWS = 6;
+
+    // Spieler: 1 = Rot, 2 = Gelb/Computer
+    const state = {
+      mode: 'zwei',          // 'zwei' | 'computer'
+      grid: [],              // grid[r][c] = 0 | 1 | 2  (r=0 oben)
+      current: 1,
+      locked: false          // true = keine Eingabe (Fall-Animation / Computer denkt / Spielende)
+    };
+
+    // --- LocalStorage ---
+    function loadPrefs() {
+      try { const raw = localStorage.getItem(PREFS_KEY); return raw ? JSON.parse(raw) : {}; }
+      catch (e) { return {}; }
+    }
+    function savePrefs(prefs) {
+      try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {}
+    }
+
+    // --- Screen-Wechsel ---
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function (s) { s.classList.add('hidden'); });
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('fade-in');
+      setTimeout(function () { el.classList.remove('fade-in'); }, 300);
+    }
+
+    // --- Start-Screen ---
+    function initStartScreen() {
+      const prefs = loadPrefs();
+      if (prefs.mode === 'zwei' || prefs.mode === 'computer') state.mode = prefs.mode;
+
+      document.querySelectorAll('#screen-start .choice').forEach(function (btn) {
+        const isSel = btn.dataset.mode === state.mode;
+        btn.classList.toggle('selected', isSel);
+        btn.setAttribute('aria-checked', String(isSel));
+        btn.addEventListener('click', function () {
+          state.mode = btn.dataset.mode;
+          document.querySelectorAll('#screen-start .choice').forEach(function (b) {
+            b.classList.toggle('selected', b === btn);
+            b.setAttribute('aria-checked', String(b === btn));
+          });
+          savePrefs({ mode: state.mode });
+        });
+      });
+
+      document.getElementById('btn-start').addEventListener('click', startGame);
+    }
+
+    // --- Brett aufbauen ---
+    function buildBoard() {
+      const boardEl = document.getElementById('board');
+      boardEl.innerHTML = '';
+      const canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = document.createElement('button');
+          cell.className = 'cell';
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+          cell.setAttribute('role', 'gridcell');
+          cell.setAttribute('aria-label', 'Spalte ' + (c + 1) + ', frei');
+          cell.addEventListener('click', function () { onColumnTap(c); });
+          if (canHover) {
+            cell.addEventListener('mouseenter', function () { hintColumn(c, true); });
+            cell.addEventListener('mouseleave', function () { hintColumn(c, false); });
+          }
+          boardEl.appendChild(cell);
+        }
+      }
+    }
+
+    function cellEl(r, c) {
+      return document.querySelector('.cell[data-row="' + r + '"][data-col="' + c + '"]');
+    }
+
+    function hintColumn(c, on) {
+      if (state.locked) return;
+      for (let r = 0; r < ROWS; r++) cellEl(r, c).classList.toggle('col-hint', on);
+    }
+
+    // --- Spiel starten ---
+    function startGame() {
+      state.grid = [];
+      for (let r = 0; r < ROWS; r++) state.grid.push(new Array(COLS).fill(0));
+      state.current = 1;
+      state.locked = false;
+      buildBoard();
+      document.getElementById('hud-stage').textContent = state.mode === 'computer' ? 'Gegen Computer' : 'Zu zweit';
+      document.getElementById('board').classList.remove('locked');
+      showScreen('screen-game');
+      updateTurnHud();
+    }
+
+    function updateTurnHud() {
+      const dot = document.getElementById('turn-dot');
+      const txt = document.getElementById('turn-text');
+      dot.className = 'turn-dot ' + (state.current === 1 ? 'rot' : 'gelb');
+      if (state.mode === 'computer') {
+        txt.textContent = state.current === 1 ? 'Du bist dran' : 'Computer denkt …';
+      } else {
+        txt.textContent = (state.current === 1 ? 'Rot' : 'Gelb') + ' ist dran';
+      }
+    }
+
+    // Tiefste freie Zeile einer Spalte (oder -1 wenn voll)
+    function lowestFree(c) {
+      for (let r = ROWS - 1; r >= 0; r--) if (state.grid[r][c] === 0) return r;
+      return -1;
+    }
+
+    function onColumnTap(c) {
+      if (state.locked) return;
+      if (state.mode === 'computer' && state.current === 2) return;
+      dropInColumn(c, state.current);
+    }
+
+    function dropInColumn(c, player) {
+      const r = lowestFree(c);
+      if (r < 0) return; // Spalte voll
+      state.locked = true;
+      hintColumn(c, false);
+      state.grid[r][c] = player;
+
+      const cell = cellEl(r, c);
+      const disc = document.createElement('div');
+      disc.className = 'disc ' + (player === 1 ? 'rot' : 'gelb') + ' dropping';
+      cell.appendChild(disc);
+      cell.setAttribute('aria-label', 'Spalte ' + (c + 1) + ', ' + (player === 1 ? 'Rot' : 'Gelb'));
+      if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.tone(320 - r * 18, 0.10, 0.06, 'sine');
+
+      setTimeout(function () { afterDrop(r, c, player); }, 380);
+    }
+
+    function afterDrop(r, c, player) {
+      const line = findWinningLine(r, c, player);
+      if (line) { finishGame(player, line); return; }
+      if (isBoardFull()) { finishGame(0, null); return; }
+
+      state.current = player === 1 ? 2 : 1;
+      state.locked = false;
+      updateTurnHud();
+
+      if (state.mode === 'computer' && state.current === 2) {
+        state.locked = true;
+        document.getElementById('board').classList.add('locked');
+        setTimeout(computerMove, 620);
+      }
+    }
+
+    function isBoardFull() {
+      for (let c = 0; c < COLS; c++) if (lowestFree(c) >= 0) return false;
+      return true;
+    }
+
+    // --- Gewinn-Erkennung: prüft die 4 Richtungen durch den zuletzt gesetzten Stein ---
+    const DIRS = [[0, 1], [1, 0], [1, 1], [1, -1]];
+    function findWinningLine(r, c, player) {
+      for (const dir of DIRS) {
+        const dr = dir[0], dc = dir[1];
+        const line = [[r, c]];
+        for (let s = 1; s < 4; s++) { const nr = r + dr * s, nc = c + dc * s; if (inBounds(nr, nc) && state.grid[nr][nc] === player) line.push([nr, nc]); else break; }
+        for (let s = 1; s < 4; s++) { const nr = r - dr * s, nc = c - dc * s; if (inBounds(nr, nc) && state.grid[nr][nc] === player) line.push([nr, nc]); else break; }
+        if (line.length >= 4) return line;
+      }
+      return null;
+    }
+    function inBounds(r, c) { return r >= 0 && r < ROWS && c >= 0 && c < COLS; }
+
+    // --- Sanfte KI (Spieler 2) ---
+    // Gewinnen wenn möglich > gegnerischen Gewinn blocken > Mitte bevorzugen (mit etwas Zufall)
+    function computerMove() {
+      const valid = [];
+      for (let c = 0; c < COLS; c++) if (lowestFree(c) >= 0) valid.push(c);
+      if (!valid.length) return;
+
+      // 1) Eigener Gewinnzug?
+      for (const c of valid) if (isWinningMove(c, 2)) { commitComputer(c); return; }
+      // 2) Gegner-Gewinn blocken?
+      for (const c of valid) if (isWinningMove(c, 1)) { commitComputer(c); return; }
+      // 3) Züge meiden, die dem Gegner direkt danach den Sieg schenken
+      const safe = valid.filter(function (c) { return !givesOpponentWin(c); });
+      const pool = safe.length ? safe : valid;
+      // 4) Mitte bevorzugen — gewichtete Zufallswahl
+      const weights = pool.map(function (c) { return 1 + (3 - Math.abs(3 - c)); });
+      commitComputer(weightedPick(pool, weights));
+    }
+
+    function commitComputer(c) {
+      document.getElementById('board').classList.remove('locked');
+      dropInColumn(c, 2);
+    }
+
+    function isWinningMove(c, player) {
+      const r = lowestFree(c);
+      if (r < 0) return false;
+      state.grid[r][c] = player;
+      const win = !!findWinningLine(r, c, player);
+      state.grid[r][c] = 0;
+      return win;
+    }
+
+    // Würde ein eigener Zug in Spalte c dem Gegner unmittelbar danach einen Gewinn ermöglichen?
+    function givesOpponentWin(c) {
+      const r = lowestFree(c);
+      if (r < 0) return false;
+      state.grid[r][c] = 2;
+      let bad = false;
+      const above = r - 1;
+      if (above >= 0) { state.grid[above][c] = 1; if (findWinningLine(above, c, 1)) bad = true; state.grid[above][c] = 0; }
+      state.grid[r][c] = 0;
+      return bad;
+    }
+
+    function weightedPick(items, weights) {
+      let total = 0;
+      for (const w of weights) total += w;
+      let x = Math.random() * total;
+      for (let i = 0; i < items.length; i++) { x -= weights[i]; if (x <= 0) return items[i]; }
+      return items[items.length - 1];
+    }
+
+    // --- Spielende ---
+    function finishGame(winner, line) {
+      state.locked = true;
+      document.getElementById('board').classList.add('locked');
+
+      if (line) {
+        line.forEach(function (rc) {
+          const d = cellEl(rc[0], rc[1]).querySelector('.disc');
+          if (d) d.classList.add('win');
+        });
+      }
+
+      const emblem = document.getElementById('end-emblem');
+      const title = document.getElementById('end-title');
+      const msg = document.getElementById('end-message');
+
+      if (winner === 0) {
+        emblem.textContent = '🤝';
+        title.textContent = 'Unentschieden!';
+        msg.textContent = 'Das Brett ist voll — keiner hatte vier in einer Reihe. Magst du nochmal?';
+      } else {
+        emblem.textContent = '🎉';
+        if (state.mode === 'computer') {
+          title.textContent = winner === 1 ? 'Du hast vier!' : 'Der Computer hat vier';
+          msg.textContent = winner === 1
+            ? 'Vier in einer Reihe — super gespielt! Magst du nochmal?'
+            : 'Diesmal war der Computer schneller. Magst du nochmal probieren?';
+        } else {
+          title.textContent = (winner === 1 ? 'Rot' : 'Gelb') + ' hat vier in einer Reihe!';
+          msg.textContent = 'Schön gespielt, ihr zwei. Magst du nochmal?';
+        }
+      }
+
+      if (window.Lernspiele && Lernspiele.Audio) {
+        if (winner === 0) Lernspiele.Audio.tone(440, 0.18, 0.06, 'sine');
+        else Lernspiele.Audio.correct();
+      }
+
+      setTimeout(function () { showScreen('screen-end'); }, line ? 900 : 400);
+    }
+
+    // --- Buttons ---
+    document.getElementById('hud-close').addEventListener('click', function () { showScreen('screen-start'); });
+    document.getElementById('btn-replay').addEventListener('click', startGame);
+    document.getElementById('btn-restage').addEventListener('click', function () { showScreen('screen-start'); });
+
+    // --- Audio warmlaufen (iOS) ---
+    document.addEventListener('pointerdown', function () {
+      if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.ensure();
+    }, { once: true });
+
+    // --- Init ---
+    initStartScreen();
+
+    // --- Service Worker ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

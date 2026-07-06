@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Käsekästchen</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#00897b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Käsekästchen">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    :root {
+      --color-primary: #00897b;
+      --color-light:   #99cfca;
+      --color-dark:    #00594f;
+      --color-bg:      #e0f0ef;
+      --p1:      #00897b;  --p1-light: #b2dfdb;
+      --p2:      #fb8c00;  --p2-light: #ffe0b2;
+      --radius-card:   28px;
+      --radius-btn:    16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Verdana', 'Tahoma', sans-serif;
+      background: var(--color-bg); color: #2a2a2a;
+      user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    }
+
+    .screen {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    .screen.hidden { display: none; }
+
+    /* ---------- Start-Screen ---------- */
+    #screen-start {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center; align-items: center; padding-top: 20px; overflow-y: auto;
+    }
+    #screen-start .card {
+      background: white; border-radius: var(--radius-card); padding: 32px 28px;
+      max-width: 480px; width: 100%; box-shadow: 0 18px 50px rgba(0,0,0,0.18); text-align: center;
+    }
+    #screen-start h1 { color: var(--color-primary); font-size: 2.2rem; margin-bottom: 6px; }
+    #screen-start .sub { color: var(--color-dark); margin-bottom: 22px; font-size: 1rem; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px; color: var(--color-primary);
+      text-decoration: none; font-size: 0.95rem; font-weight: bold; margin-bottom: 14px;
+      padding: 8px 14px; border-radius: 12px; background: var(--color-light); transition: background 0.15s;
+    }
+    .back-link:hover, .back-link:focus { background: var(--color-bg); }
+
+    .group { margin-bottom: 20px; text-align: left; }
+    .group h2 { color: var(--color-primary); font-size: 1.05rem; margin-bottom: 10px; font-weight: bold; text-align: center; }
+    .stage-list { display: flex; flex-direction: column; gap: 10px; }
+    .choice {
+      background: var(--color-bg); border: 3px solid transparent; border-radius: var(--radius-btn);
+      padding: 14px 16px; font-family: inherit; font-size: 1rem; color: var(--color-dark);
+      cursor: pointer; text-align: left; transition: border-color 0.15s, transform 0.1s;
+    }
+    .choice:hover, .choice:focus { border-color: var(--color-primary); }
+    .choice.selected { border-color: var(--color-primary); background: var(--color-light); }
+    .choice:active { transform: scale(0.98); }
+
+    .btn-primary {
+      width: 100%; padding: 16px; background: var(--color-primary); color: white; border: none;
+      border-radius: var(--radius-btn); font-family: inherit; font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; margin-top: 8px; transition: transform 0.1s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* ---------- Game-Screen ---------- */
+    #screen-game { background: var(--color-bg); padding-top: max(14px, env(safe-area-inset-top)); }
+    .hud {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 6px 4px 10px;
+    }
+    .hud .stage { color: var(--color-dark); font-size: 0.9rem; font-weight: bold; justify-self: start; }
+    .hud .progress {
+      color: var(--color-primary); font-size: 1rem; font-weight: bold; padding: 6px 14px;
+      background: white; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .hud .hud-btn {
+      width: 44px; height: 44px; border: none; background: white; border-radius: 50%;
+      font-size: 1.4rem; font-weight: bold; color: var(--color-primary); cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10); justify-self: end;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .turn-dot { width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.12); }
+    .turn-dot.p1 { background: var(--p1); }
+    .turn-dot.p2 { background: var(--p2); }
+
+    .play-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+
+    .scorebar { display: flex; gap: 12px; }
+    .score-chip {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px;
+      background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.08); font-weight: bold; color: var(--color-dark);
+      border: 3px solid transparent; transition: border-color 0.15s;
+    }
+    .score-chip .swatch { width: 16px; height: 16px; border-radius: 50%; }
+    .score-chip.p1 .swatch { background: var(--p1); }
+    .score-chip.p2 .swatch { background: var(--p2); }
+    .score-chip.p1.active { border-color: var(--p1); }
+    .score-chip.p2.active { border-color: var(--p2); }
+
+    .board-wrap {
+      background: white; border-radius: 20px; padding: 14px;
+      box-shadow: 0 10px 30px rgba(0,89,79,0.20); width: min(94vw, 380px);
+    }
+    svg.board { width: 100%; height: auto; display: block; }
+    .guide { stroke: #cfd8dc; stroke-width: 5; stroke-linecap: round; }
+    .drawn { stroke-linecap: round; stroke-width: 12; }
+    .drawn.p1 { stroke: var(--p1); }
+    .drawn.p2 { stroke: var(--p2); }
+    .drawn.fresh { animation: pop 0.3s ease; }
+    .hit { stroke: transparent; stroke-width: 30; cursor: pointer; }
+    .dot { fill: var(--color-dark); }
+    .boxfill.p1 { fill: var(--p1-light); }
+    .boxfill.p2 { fill: var(--p2-light); }
+    .boxmark.p1 { fill: var(--p1); }
+    .boxmark.p2 { fill: var(--p2); }
+    .boxfill.fresh { animation: fade-in 0.3s ease; }
+
+    @keyframes pop { from { stroke-width: 4; } to { stroke-width: 12; } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    .fade-in { animation: fade-in 0.25s ease; }
+
+    /* ---------- End-Screen ---------- */
+    #screen-end {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center; align-items: center;
+    }
+    #screen-end .card {
+      background: white; border-radius: var(--radius-card); padding: 32px 28px;
+      max-width: 480px; width: 100%; box-shadow: 0 18px 50px rgba(0,0,0,0.18); text-align: center;
+    }
+    #screen-end .end-emblem { font-size: 3rem; margin-bottom: 8px; }
+    #screen-end h2 { color: var(--color-primary); font-size: 1.8rem; margin-bottom: 10px; }
+    #screen-end p { color: var(--color-dark); margin-bottom: 22px; }
+    #screen-end .actions { display: flex; flex-direction: column; gap: 10px; }
+    #screen-end .btn-secondary {
+      padding: 14px; background: white; color: var(--color-primary); border: 2px solid var(--color-primary);
+      border-radius: var(--radius-btn); font-family: inherit; font-size: 1rem; font-weight: bold;
+      cursor: pointer; text-decoration: none; display: block;
+    }
+
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+    @media (max-width: 380px) { #screen-start h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+
+  <!-- ====================== START-SCREEN ====================== -->
+  <div id="screen-start" class="screen">
+    <div class="card">
+      <a href="../" class="back-link" aria-label="Zurück zur Spiele-Übersicht">&larr; Übersicht</a>
+      <h1>Käsekästchen</h1>
+      <p class="sub">Zieht abwechselnd eine Linie zwischen zwei Punkten. Wer ein Kästchen schließt, bekommt es — und darf gleich nochmal!</p>
+
+      <div class="group">
+        <h2>Wie wollt ihr spielen?</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Spielmodus">
+          <button class="choice selected" data-mode="zwei" role="radio" aria-checked="true">Zu zweit — Türkis gegen Orange</button>
+          <button class="choice"          data-mode="computer" role="radio" aria-checked="false">Gegen den Computer — du bist Türkis</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Brettgröße</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Brettgröße">
+          <button class="choice selected" data-size="3" role="radio" aria-checked="true">Klein — 3 × 3 Kästchen</button>
+          <button class="choice"          data-size="4" role="radio" aria-checked="false">Mittel — 4 × 4 Kästchen</button>
+          <button class="choice"          data-size="5" role="radio" aria-checked="false">Groß — 5 × 5 Kästchen</button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-primary">Los geht's</button>
+    </div>
+  </div>
+
+  <!-- ====================== GAME-SCREEN ====================== -->
+  <div id="screen-game" class="screen hidden">
+    <div class="hud">
+      <span class="stage" id="hud-stage">3 × 3</span>
+      <span class="progress" id="hud-progress"><span class="turn-dot p1" id="turn-dot"></span><span id="turn-text">Türkis ist dran</span></span>
+      <button class="hud-btn" id="hud-close" aria-label="Spiel beenden, zurück zum Start">×</button>
+    </div>
+
+    <div class="play-area">
+      <div class="scorebar">
+        <span class="score-chip p1" id="chip-1"><span class="swatch"></span><span id="score-1">0</span></span>
+        <span class="score-chip p2" id="chip-2"><span class="swatch"></span><span id="score-2">0</span></span>
+      </div>
+      <div class="board-wrap">
+        <svg class="board" id="board" xmlns="http://www.w3.org/2000/svg" aria-label="Käsekästchen-Brett"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== END-SCREEN ====================== -->
+  <div id="screen-end" class="screen hidden">
+    <div class="card">
+      <div class="end-emblem" id="end-emblem" aria-hidden="true">🧀</div>
+      <h2 id="end-title">Schöne Runde!</h2>
+      <p id="end-message"></p>
+      <div class="actions">
+        <button class="btn-primary" id="btn-replay">Nochmal spielen</button>
+        <button class="btn-secondary" id="btn-restage">Andere Einstellung</button>
+        <a class="btn-secondary" href="../">Zur Übersicht</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== AUDIO-LIB ====================== -->
+  <script src="../_lib/audio.js"></script>
+
+  <!-- ====================== SPIEL-LOGIK ====================== -->
+  <script>
+    'use strict';
+
+    const GAME_ID = 'kaesekaestchen';
+    const PREFS_KEY = GAME_ID + '-prefs';
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const STEP = 100, PAD = 30, DOT_R = 9;
+
+    const state = {
+      mode: 'zwei',      // 'zwei' | 'computer'
+      size: 3,           // Kästchen pro Reihe/Spalte
+      h: {},             // "r_c" -> 0|1|2   (r: 0..size, c: 0..size-1)  waagerechte Linien
+      v: {},             // "r_c" -> 0|1|2   (r: 0..size-1, c: 0..size)  senkrechte Linien
+      box: [],           // box[r][c] -> 0|1|2
+      current: 1,
+      locked: false
+    };
+
+    function key(r, c) { return r + '_' + c; }
+
+    // --- LocalStorage ---
+    function loadPrefs() {
+      try { const raw = localStorage.getItem(PREFS_KEY); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
+    }
+    function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) {} }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function (s) { s.classList.add('hidden'); });
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('fade-in');
+      setTimeout(function () { el.classList.remove('fade-in'); }, 300);
+    }
+
+    // --- Start-Screen ---
+    function initStartScreen() {
+      const prefs = loadPrefs();
+      if (prefs.mode === 'zwei' || prefs.mode === 'computer') state.mode = prefs.mode;
+      if ([3, 4, 5].indexOf(prefs.size) >= 0) state.size = prefs.size;
+
+      setupRadioGroup('[data-mode]', function (el) { return el.dataset.mode; }, function (val) { state.mode = val; }, function () { return state.mode; });
+      setupRadioGroup('[data-size]', function (el) { return Number(el.dataset.size); }, function (val) { state.size = val; }, function () { return state.size; });
+
+      document.getElementById('btn-start').addEventListener('click', startGame);
+    }
+
+    function setupRadioGroup(selector, getVal, setVal, getCurrent) {
+      const btns = document.querySelectorAll('#screen-start ' + selector);
+      btns.forEach(function (btn) {
+        const isSel = getVal(btn) === getCurrent();
+        btn.classList.toggle('selected', isSel);
+        btn.setAttribute('aria-checked', String(isSel));
+        btn.addEventListener('click', function () {
+          setVal(getVal(btn));
+          btns.forEach(function (b) {
+            b.classList.toggle('selected', b === btn);
+            b.setAttribute('aria-checked', String(b === btn));
+          });
+          savePrefs({ mode: state.mode, size: state.size });
+        });
+      });
+    }
+
+    // --- Spiel starten ---
+    function startGame() {
+      const n = state.size;
+      state.h = {}; state.v = {};
+      state.box = [];
+      for (let r = 0; r < n; r++) state.box.push(new Array(n).fill(0));
+      state.current = 1;
+      state.locked = false;
+      document.getElementById('hud-stage').textContent = n + ' × ' + n;
+      renderBoard();
+      updateHud();
+      showScreen('screen-game');
+    }
+
+    function updateHud() {
+      const dot = document.getElementById('turn-dot');
+      const txt = document.getElementById('turn-text');
+      dot.className = 'turn-dot ' + (state.current === 1 ? 'p1' : 'p2');
+      if (state.mode === 'computer') {
+        txt.textContent = state.current === 1 ? 'Du bist dran' : 'Computer denkt …';
+      } else {
+        txt.textContent = (state.current === 1 ? 'Türkis' : 'Orange') + ' ist dran';
+      }
+      const s = countScores();
+      document.getElementById('score-1').textContent = s[1];
+      document.getElementById('score-2').textContent = s[2];
+      document.getElementById('chip-1').classList.toggle('active', state.current === 1);
+      document.getElementById('chip-2').classList.toggle('active', state.current === 2);
+    }
+
+    function countScores() {
+      const s = { 1: 0, 2: 0 };
+      for (let r = 0; r < state.size; r++)
+        for (let c = 0; c < state.size; c++)
+          if (state.box[r][c]) s[state.box[r][c]]++;
+      return s;
+    }
+
+    // --- Rendering (SVG neu aufbauen) ---
+    function renderBoard(freshEdge, freshBoxes) {
+      const n = state.size;
+      const dots = n + 1;
+      const W = PAD * 2 + (dots - 1) * STEP;
+      const svg = document.getElementById('board');
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + W);
+      svg.innerHTML = '';
+
+      // 1) gefüllte Kästchen
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+        if (!state.box[r][c]) continue;
+        const owner = state.box[r][c];
+        const x = PAD + c * STEP, y = PAD + r * STEP;
+        const rect = mk('rect', { x: x + 8, y: y + 8, width: STEP - 16, height: STEP - 16, rx: 12,
+          class: 'boxfill p' + owner + (freshBoxes && freshBoxes.indexOf(r + '_' + c) >= 0 ? ' fresh' : '') });
+        svg.appendChild(rect);
+        const dotm = mk('circle', { cx: x + STEP / 2, cy: y + STEP / 2, r: 16, class: 'boxmark p' + owner });
+        svg.appendChild(dotm);
+      }
+
+      // 2) gezogene Linien (farbig)
+      forEachEdge(function (t, r, c, owner) {
+        if (!owner) return;
+        const p = edgePoints(t, r, c);
+        const cls = 'drawn p' + owner + (freshEdge && freshEdge === t + r + '_' + c ? ' fresh' : '');
+        svg.appendChild(mk('line', { x1: p.x1, y1: p.y1, x2: p.x2, y2: p.y2, class: cls }));
+      });
+
+      // 3) freie Linien: Führungslinie + Klickfläche
+      forEachEdge(function (t, r, c, owner) {
+        if (owner) return;
+        const p = edgePoints(t, r, c);
+        svg.appendChild(mk('line', { x1: p.x1, y1: p.y1, x2: p.x2, y2: p.y2, class: 'guide' }));
+        const hit = mk('line', { x1: p.x1, y1: p.y1, x2: p.x2, y2: p.y2, class: 'hit', 'pointer-events': 'all',
+          'data-t': t, 'data-r': r, 'data-c': c });
+        hit.setAttribute('aria-label', 'Linie ziehen');
+        svg.appendChild(hit);
+      });
+
+      // 4) Punkte
+      for (let r = 0; r < dots; r++) for (let c = 0; c < dots; c++) {
+        svg.appendChild(mk('circle', { cx: PAD + c * STEP, cy: PAD + r * STEP, r: DOT_R, class: 'dot' }));
+      }
+    }
+
+    function mk(tag, attrs) {
+      const el = document.createElementNS(SVG_NS, tag);
+      for (const k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+
+    function edgePoints(t, r, c) {
+      const x = PAD + c * STEP, y = PAD + r * STEP;
+      if (t === 'h') return { x1: x, y1: y, x2: x + STEP, y2: y };
+      return { x1: x, y1: y, x2: x, y2: y + STEP };
+    }
+
+    // Iteriert über alle Linien-Positionen und ruft cb(type, r, c, owner)
+    function forEachEdge(cb) {
+      const n = state.size;
+      for (let r = 0; r <= n; r++) for (let c = 0; c < n; c++) cb('h', r, c, state.h[key(r, c)] || 0);
+      for (let r = 0; r < n; r++) for (let c = 0; c <= n; c++) cb('v', r, c, state.v[key(r, c)] || 0);
+    }
+
+    // --- Regeln ---
+    function boxSides(r, c) {
+      let s = 0;
+      if (state.h[key(r, c)]) s++;         // oben
+      if (state.h[key(r + 1, c)]) s++;     // unten
+      if (state.v[key(r, c)]) s++;         // links
+      if (state.v[key(r, c + 1)]) s++;     // rechts
+      return s;
+    }
+
+    function affectedBoxes(t, r, c) {
+      const n = state.size, list = [];
+      if (t === 'h') {
+        if (r - 1 >= 0) list.push([r - 1, c]);
+        if (r < n) list.push([r, c]);
+      } else {
+        if (c - 1 >= 0) list.push([r, c - 1]);
+        if (c < n) list.push([r, c]);
+      }
+      return list;
+    }
+
+    function applyMove(t, r, c, player) {
+      const map = t === 'h' ? state.h : state.v;
+      map[key(r, c)] = player;
+      const completed = [];
+      affectedBoxes(t, r, c).forEach(function (b) {
+        if (!state.box[b[0]][b[1]] && boxSides(b[0], b[1]) === 4) {
+          state.box[b[0]][b[1]] = player;
+          completed.push(b[0] + '_' + b[1]);
+        }
+      });
+      return completed;
+    }
+
+    function isDrawn(t, r, c) {
+      const map = t === 'h' ? state.h : state.v;
+      return !!map[key(r, c)];
+    }
+
+    function boardFull() {
+      for (let r = 0; r < state.size; r++) for (let c = 0; c < state.size; c++) if (!state.box[r][c]) return false;
+      return true;
+    }
+
+    // --- Eingabe ---
+    document.getElementById('board').addEventListener('click', function (e) {
+      const hit = e.target.closest('[data-t]');
+      if (!hit) return;
+      if (state.locked) return;
+      if (state.mode === 'computer' && state.current === 2) return;
+      const t = hit.dataset.t, r = Number(hit.dataset.r), c = Number(hit.dataset.c);
+      if (isDrawn(t, r, c)) return;
+      doMove(t, r, c, state.current);
+    });
+
+    function doMove(t, r, c, player) {
+      const completed = applyMove(t, r, c, player);
+      renderBoard(t + r + '_' + c, completed);
+
+      if (window.Lernspiele && Lernspiele.Audio) {
+        if (completed.length) Lernspiele.Audio.correct();
+        else Lernspiele.Audio.tap();
+      }
+
+      if (boardFull()) { updateHud(); setTimeout(endGame, 500); return; }
+
+      if (completed.length === 0) state.current = player === 1 ? 2 : 1;
+      updateHud();
+
+      if (state.mode === 'computer' && state.current === 2) {
+        state.locked = true;
+        setTimeout(computerTurn, 650);
+      }
+    }
+
+    // --- Sanfte KI (Spieler 2) ---
+    function computerTurn() {
+      if (state.current !== 2) { state.locked = false; return; }
+      const move = chooseComputerMove();
+      if (!move) { state.locked = false; return; }
+
+      const completed = applyMove(move.t, move.r, move.c, 2);
+      renderBoard(move.t + move.r + '_' + move.c, completed);
+      if (window.Lernspiele && Lernspiele.Audio) {
+        if (completed.length) Lernspiele.Audio.correct(); else Lernspiele.Audio.tap();
+      }
+
+      if (boardFull()) { updateHud(); setTimeout(endGame, 500); return; }
+
+      if (completed.length > 0) {
+        updateHud();
+        setTimeout(computerTurn, 650); // Kästchen geschlossen → nochmal
+      } else {
+        state.current = 1;
+        state.locked = false;
+        updateHud();
+      }
+    }
+
+    function allFreeMoves() {
+      const moves = [];
+      forEachEdge(function (t, r, c, owner) { if (!owner) moves.push({ t: t, r: r, c: c }); });
+      return moves;
+    }
+
+    // Simuliert einen Zug und zählt geschlossene / auf 3 Seiten gebrachte Kästchen
+    function evalMove(m) {
+      const map = m.t === 'h' ? state.h : state.v;
+      map[key(m.r, m.c)] = 1; // temporär
+      let completes = 0, makesThree = 0;
+      affectedBoxes(m.t, m.r, m.c).forEach(function (b) {
+        const s = boxSides(b[0], b[1]);
+        if (s === 4) completes++;
+        else if (s === 3) makesThree++;
+      });
+      delete map[key(m.r, m.c)];
+      return { completes: completes, makesThree: makesThree };
+    }
+
+    function chooseComputerMove() {
+      const moves = allFreeMoves();
+      if (!moves.length) return null;
+
+      // 1) Kästchen schließen wenn möglich
+      const winning = moves.filter(function (m) { return evalMove(m).completes > 0; });
+      if (winning.length) return pick(winning);
+
+      // 2) Sichere Züge, die dem Gegner kein 3-Seiten-Kästchen schenken
+      const safe = moves.filter(function (m) { return evalMove(m).makesThree === 0; });
+      if (safe.length) return pick(safe);
+
+      // 3) Notgedrungen: Zug mit den wenigsten verschenkten Kästchen
+      let bestThree = Infinity;
+      moves.forEach(function (m) { const th = evalMove(m).makesThree; if (th < bestThree) bestThree = th; });
+      const leastBad = moves.filter(function (m) { return evalMove(m).makesThree === bestThree; });
+      return pick(leastBad);
+    }
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    // --- Spielende ---
+    function endGame() {
+      state.locked = true;
+      const s = countScores();
+      const emblem = document.getElementById('end-emblem');
+      const title = document.getElementById('end-title');
+      const msg = document.getElementById('end-message');
+
+      if (s[1] === s[2]) {
+        emblem.textContent = '🤝';
+        title.textContent = 'Gleichstand!';
+        msg.textContent = 'Beide gleich viele Kästchen — ' + s[1] + ' zu ' + s[2] + '. Magst du nochmal?';
+      } else {
+        const p1wins = s[1] > s[2];
+        emblem.textContent = '🧀';
+        if (state.mode === 'computer') {
+          title.textContent = p1wins ? 'Du hast die meisten!' : 'Der Computer hat mehr';
+          msg.textContent = 'Du hast ' + s[1] + ' Kästchen, der Computer ' + s[2] + '. '
+            + (p1wins ? 'Schön gespielt!' : 'Magst du nochmal probieren?');
+        } else {
+          title.textContent = (p1wins ? 'Türkis' : 'Orange') + ' hat die meisten Kästchen!';
+          msg.textContent = 'Türkis ' + s[1] + ', Orange ' + s[2] + '. Schön gespielt, ihr zwei!';
+        }
+      }
+      if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.tone(520, 0.2, 0.06, 'sine');
+      showScreen('screen-end');
+    }
+
+    // --- Buttons ---
+    document.getElementById('hud-close').addEventListener('click', function () { showScreen('screen-start'); });
+    document.getElementById('btn-replay').addEventListener('click', startGame);
+    document.getElementById('btn-restage').addEventListener('click', function () { showScreen('screen-start'); });
+
+    document.addEventListener('pointerdown', function () {
+      if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.ensure();
+    }, { once: true });
+
+    initStartScreen();
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

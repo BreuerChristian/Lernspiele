@@ -32,6 +32,49 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [x] **Symmetrie-Vervollständigen** — linke Hälfte vorgegeben, rechte spiegeln (auf Raster).
 - [x] **Farben mischen** — Wassertropfen-Optik, Gelb+Blau → Grün. Sandbox, keine Aufgaben.
 
+## Klassiker & Puzzle (Inspiration: [offline.games](https://offline.games/))
+
+Spielsammlung die Kinder mögen. Memory ist bei uns schon live (`memory/`), der Rest
+hier als Ideen. Beim Umsetzen gelten die Leitprinzipien: Highscores, Zeitdruck und
+Endlos-Loops fliegen raus — Anti-Pattern-Check gehört in jeden Plan-Pitch.
+
+### Brett-Klassiker (2 Spieler am Gerät oder einfache KI)
+- [ ] **Tic-Tac-Toe** — der Einstiegs-Klassiker, 2 Kinder an einem Gerät oder gegen den Computer.
+- [x] **4 in einer Reihe** (`vier-gewinnt/`) — Connect Four, gute erste Strategie-Übung. 2 Spieler + sanfte KI.
+- [x] **Käsekästchen** (`kaesekaestchen/`) — Punkte-Raster, Linien ziehen, Kästchen gewinnen. 2 Spieler + KI, drei Brettgrößen.
+- [x] **Mühle** (`muehle/`) — 9 Steine setzen, dann schieben; drei in einer Reihe = Mühle, nimm einen gegnerischen Stein. 2 Spieler + KI, mit Spring-Phase bei 3 Steinen.
+- [ ] **Dame** — einfacher Schach-Vorläufer, Regeln in 2 Minuten erklärt.
+- [ ] **Schach** — mit sehr sanfter KI oder nur 2-Spieler; evtl. Mini-Lektionen pro Figur.
+- [ ] **Reversi** — Steine umdrehen, gut für räumliches Vorausdenken.
+- [ ] **Backgammon** — Würfel + Strategie, eher für Ältere.
+- [ ] **Dominosteine** — Anlegen nach Augenzahl, auch als Zähl-Übung für Jüngere.
+- [ ] **Yatzy** — Würfelblock; Achtung: reines Punkte-Sammeln, braucht warmen Rahmen ohne Gewinner-Fokus.
+
+### Karten
+- [ ] **Solitaire (Klondike)** — der Klassiker, gut offline spielbar.
+- [ ] **Spider Solitaire** — inkl. leichter Spiderette-Variante als Einstiegsstufe.
+- [ ] **Freecell** — immer lösbar, dadurch frustarm.
+- [ ] **Herzen (Hearts)** — Stichspiel gegen 3 einfache KI-Hände.
+- [ ] **Spades** — wie Herzen, eher für Ältere.
+- [ ] **Color Cards** — Uno-artiges Farben/Zahlen-Anlegen, auch als Farb-Lernspiel für Jüngere.
+
+### Logik & Puzzle
+- [ ] **Sudoku** — Kinder-Varianten zuerst: 4×4 mit Symbolen, dann 6×6, dann 9×9.
+- [ ] **Schiebepuzzle** — 8er/15er-Puzzle mit Bildern statt nur Zahlen.
+- [ ] **Minesweeper** — mit kindgerechtem Thema (Blumen statt Minen).
+- [ ] **Cross Sums (Kakuro)** — Kopfrechnen-Training für Ältere, passt zu Mathe-Reihe.
+- [ ] **Number Slide (2048)** — Verdoppeln-Mechanik, knüpft an Verdoppeln & Halbieren an.
+- [ ] **Farben verbinden (Flow)** — Punktpaare kreuzungsfrei verbinden, sehr gut stufbar.
+- [ ] **Farbige Schrauben** — Muttern nach Farbe auf Gewinde sortieren.
+- [ ] **Wasser sortieren** — Farbschichten zwischen Röhrchen umgießen; feste Level, kein Endlos-Modus.
+- [ ] **Labyrinth malen** — Kugel rollt und färbt Wege, Ziel: alles ausmalen.
+- [ ] **Escape** — Unblock-/Parkplatz-Puzzle, Auto durch Schieben befreien.
+
+### Wort & Gedächtnis
+- [ ] **Wörter finden** — Buchstabenkreis, Wörter zusammenwischen; gute Ergänzung zur Lese-Reihe.
+- [ ] **Galgenmännchen** — Wort raten; kindgerecht umbauen: statt Galgen z.B. eine Blume die Blätter verliert.
+- [ ] **Klanggedächtnis (Simon)** — Ton-Farb-Folgen nachtippen, knüpft an Tier-Geräusche an.
+
 ---
 
 ## Bereits live
@@ -58,3 +101,6 @@ Konvention: `[ ]` = offen, `[~]` = in Arbeit, `[x]` = live, `[-]` = verworfen (m
 - [x] **Bundesländer-Spiel** (`bundeslaender/`)
 - [x] **Länder-Flaggen** (`flaggen/`)
 - [x] **Planeten der Reihe nach** (`planeten/`)
+- [x] **4 in einer Reihe** (`vier-gewinnt/`)
+- [x] **Käsekästchen** (`kaesekaestchen/`)
+- [x] **Mühle** (`muehle/`)

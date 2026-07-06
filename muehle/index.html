@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Mühle</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#6a1b9a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Mühle">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    :root {
+      --color-primary: #6a1b9a;
+      --color-light:   #c3a3d6;
+      --color-dark:    #441164;
+      --color-bg:      #ede3f2;
+      --p1:      #6a1b9a;  --p1-hi: #9c4dcc;
+      --p2:      #ff8f00;  --p2-hi: #ffb74d;
+      --radius-card:   28px;
+      --radius-btn:    16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Verdana', 'Tahoma', sans-serif;
+      background: var(--color-bg); color: #2a2a2a;
+      user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    }
+
+    .screen {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    .screen.hidden { display: none; }
+
+    /* ---------- Start-Screen ---------- */
+    #screen-start {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center; align-items: center; padding-top: 20px; overflow-y: auto;
+    }
+    #screen-start .card {
+      background: white; border-radius: var(--radius-card); padding: 32px 28px;
+      max-width: 480px; width: 100%; box-shadow: 0 18px 50px rgba(0,0,0,0.18); text-align: center;
+    }
+    #screen-start h1 { color: var(--color-primary); font-size: 2.2rem; margin-bottom: 6px; }
+    #screen-start .sub { color: var(--color-dark); margin-bottom: 22px; font-size: 1rem; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px; color: var(--color-primary);
+      text-decoration: none; font-size: 0.95rem; font-weight: bold; margin-bottom: 14px;
+      padding: 8px 14px; border-radius: 12px; background: var(--color-light); transition: background 0.15s;
+    }
+    .back-link:hover, .back-link:focus { background: var(--color-bg); }
+
+    .group { margin-bottom: 20px; text-align: left; }
+    .group h2 { color: var(--color-primary); font-size: 1.05rem; margin-bottom: 10px; font-weight: bold; text-align: center; }
+    .stage-list { display: flex; flex-direction: column; gap: 10px; }
+    .choice {
+      background: var(--color-bg); border: 3px solid transparent; border-radius: var(--radius-btn);
+      padding: 14px 16px; font-family: inherit; font-size: 1rem; color: var(--color-dark);
+      cursor: pointer; text-align: left; transition: border-color 0.15s, transform 0.1s;
+    }
+    .choice:hover, .choice:focus { border-color: var(--color-primary); }
+    .choice.selected { border-color: var(--color-primary); background: var(--color-light); }
+    .choice:active { transform: scale(0.98); }
+
+    .btn-primary {
+      width: 100%; padding: 16px; background: var(--color-primary); color: white; border: none;
+      border-radius: var(--radius-btn); font-family: inherit; font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; margin-top: 8px; transition: transform 0.1s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* ---------- Game-Screen ---------- */
+    #screen-game { background: var(--color-bg); padding-top: max(14px, env(safe-area-inset-top)); }
+    .hud {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 6px 4px 10px;
+    }
+    .hud .stage { color: var(--color-dark); font-size: 0.9rem; font-weight: bold; justify-self: start; }
+    .hud .progress {
+      color: var(--color-primary); font-size: 1rem; font-weight: bold; padding: 6px 14px;
+      background: white; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .hud .hud-btn {
+      width: 44px; height: 44px; border: none; background: white; border-radius: 50%;
+      font-size: 1.4rem; font-weight: bold; color: var(--color-primary); cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10); justify-self: end;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .turn-dot { width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.12); }
+    .turn-dot.p1 { background: var(--p1); }
+    .turn-dot.p2 { background: var(--p2); }
+
+    .play-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+
+    .board-wrap {
+      background: white; border-radius: 20px; padding: 16px;
+      box-shadow: 0 10px 30px rgba(68,17,100,0.20); width: min(92vw, 380px);
+    }
+    svg.board { width: 100%; height: auto; display: block; }
+    .grid-line { stroke: var(--color-dark); stroke-width: 5; stroke-linecap: round; opacity: 0.55; }
+    .node { fill: var(--color-light); }
+    .stone-p1 { fill: var(--p1); }
+    .stone-p2 { fill: var(--p2); }
+    .stone-hi { stroke: #ffffff; stroke-width: 4; }
+    .stone.fresh { animation: pop 0.28s ease; }
+    .sel-ring { fill: none; stroke: var(--color-dark); stroke-width: 5; }
+    .target-ring { fill: none; stroke: var(--color-primary); stroke-width: 5; stroke-dasharray: 8 8; animation: spin 6s linear infinite; }
+    .removable-ring { fill: none; stroke: #c62828; stroke-width: 5; animation: blink 1s ease-in-out infinite; }
+    .hit { fill: transparent; cursor: pointer; }
+
+    @keyframes pop { from { transform: scale(0.4); transform-box: fill-box; transform-origin: center; } to { transform: scale(1); } }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes spin { to { stroke-dashoffset: 32; } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    .fade-in { animation: fade-in 0.25s ease; }
+
+    .hint {
+      font-size: 0.95rem; color: var(--color-dark); text-align: center; min-height: 1.3em;
+      font-weight: bold;
+    }
+
+    /* ---------- End-Screen ---------- */
+    #screen-end {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center; align-items: center;
+    }
+    #screen-end .card {
+      background: white; border-radius: var(--radius-card); padding: 32px 28px;
+      max-width: 480px; width: 100%; box-shadow: 0 18px 50px rgba(0,0,0,0.18); text-align: center;
+    }
+    #screen-end .end-emblem { font-size: 3rem; margin-bottom: 8px; }
+    #screen-end h2 { color: var(--color-primary); font-size: 1.8rem; margin-bottom: 10px; }
+    #screen-end p { color: var(--color-dark); margin-bottom: 22px; }
+    #screen-end .actions { display: flex; flex-direction: column; gap: 10px; }
+    #screen-end .btn-secondary {
+      padding: 14px; background: white; color: var(--color-primary); border: 2px solid var(--color-primary);
+      border-radius: var(--radius-btn); font-family: inherit; font-size: 1rem; font-weight: bold;
+      cursor: pointer; text-decoration: none; display: block;
+    }
+
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+    @media (max-width: 380px) { #screen-start h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+
+  <!-- ====================== START-SCREEN ====================== -->
+  <div id="screen-start" class="screen">
+    <div class="card">
+      <a href="../" class="back-link" aria-label="Zurück zur Spiele-Übersicht">&larr; Übersicht</a>
+      <h1>Mühle</h1>
+      <p class="sub">Setzt zuerst eure 9 Steine, dann zieht sie. Drei in einer Reihe sind eine Mühle — dann darfst du einen gegnerischen Stein wegnehmen!</p>
+
+      <div class="group">
+        <h2>Wie wollt ihr spielen?</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Spielmodus">
+          <button class="choice selected" data-mode="zwei" role="radio" aria-checked="true">Zu zweit — Lila gegen Orange</button>
+          <button class="choice"          data-mode="computer" role="radio" aria-checked="false">Gegen den Computer — du bist Lila</button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-primary">Los geht's</button>
+    </div>
+  </div>
+
+  <!-- ====================== GAME-SCREEN ====================== -->
+  <div id="screen-game" class="screen hidden">
+    <div class="hud">
+      <span class="stage" id="hud-stage">Setzen</span>
+      <span class="progress" id="hud-progress"><span class="turn-dot p1" id="turn-dot"></span><span id="turn-text">Lila ist dran</span></span>
+      <button class="hud-btn" id="hud-close" aria-label="Spiel beenden, zurück zum Start">×</button>
+    </div>
+
+    <div class="play-area">
+      <div class="board-wrap">
+        <svg class="board" id="board" xmlns="http://www.w3.org/2000/svg" viewBox="-16 -16 672 672" aria-label="Mühle-Brett"></svg>
+      </div>
+      <div class="hint" id="hint"></div>
+    </div>
+  </div>
+
+  <!-- ====================== END-SCREEN ====================== -->
+  <div id="screen-end" class="screen hidden">
+    <div class="card">
+      <div class="end-emblem" id="end-emblem" aria-hidden="true">🎉</div>
+      <h2 id="end-title">Schöne Runde!</h2>
+      <p id="end-message"></p>
+      <div class="actions">
+        <button class="btn-primary" id="btn-replay">Nochmal spielen</button>
+        <button class="btn-secondary" id="btn-restage">Anderer Modus</button>
+        <a class="btn-secondary" href="../">Zur Übersicht</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== AUDIO-LIB ====================== -->
+  <script src="../_lib/audio.js"></script>
+
+  <!-- ====================== SPIEL-LOGIK ====================== -->
+  <script>
+    'use strict';
+
+    const GAME_ID = 'muehle';
+    const PREFS_KEY = GAME_ID + '-prefs';
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+
+    // 24 Brettpunkte (drei Quadrate + 4 Speichen)
+    const POS = [
+      [20,20],[320,20],[620,20],[620,320],[620,620],[320,620],[20,620],[20,320],       // 0-7  außen
+      [120,120],[320,120],[520,120],[520,320],[520,520],[320,520],[120,520],[120,320], // 8-15 mitte
+      [220,220],[320,220],[420,220],[420,320],[420,420],[320,420],[220,420],[220,320]  // 16-23 innen
+    ];
+    const ADJ = [
+      [1,7],[0,2,9],[1,3],[2,4,11],[3,5],[4,6,13],[5,7],[6,0,15],
+      [9,15],[8,10,1,17],[9,11],[10,12,3,19],[11,13],[12,14,5,21],[13,15],[14,8,7,23],
+      [17,23],[16,18,9],[17,19],[18,20,11],[19,21],[20,22,13],[21,23],[22,16,15]
+    ];
+    const MILLS = [
+      [0,1,2],[2,3,4],[4,5,6],[6,7,0],
+      [8,9,10],[10,11,12],[12,13,14],[14,15,8],
+      [16,17,18],[18,19,20],[20,21,22],[22,23,16],
+      [1,9,17],[3,11,19],[5,13,21],[7,15,23]
+    ];
+
+    const state = {
+      mode: 'zwei',
+      board: new Array(24).fill(0),
+      current: 1,
+      phase: 'place',               // 'place' | 'move'
+      placed: { 1: 0, 2: 0 },
+      onBoard: { 1: 0, 2: 0 },
+      selected: null,
+      awaitingRemoval: false,
+      lastChanged: null,            // Index für frische Animation
+      locked: false,
+      running: false
+    };
+
+    function other(p) { return p === 1 ? 2 : 1; }
+    function flying(p) { return state.phase === 'move' && state.onBoard[p] === 3; }
+
+    // --- LocalStorage ---
+    function loadPrefs() { try { const raw = localStorage.getItem(PREFS_KEY); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; } }
+    function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) {} }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function (s) { s.classList.add('hidden'); });
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('fade-in');
+      setTimeout(function () { el.classList.remove('fade-in'); }, 300);
+    }
+
+    // --- Start-Screen ---
+    function initStartScreen() {
+      const prefs = loadPrefs();
+      if (prefs.mode === 'zwei' || prefs.mode === 'computer') state.mode = prefs.mode;
+      const btns = document.querySelectorAll('#screen-start .choice');
+      btns.forEach(function (btn) {
+        const isSel = btn.dataset.mode === state.mode;
+        btn.classList.toggle('selected', isSel);
+        btn.setAttribute('aria-checked', String(isSel));
+        btn.addEventListener('click', function () {
+          state.mode = btn.dataset.mode;
+          btns.forEach(function (b) {
+            b.classList.toggle('selected', b === btn);
+            b.setAttribute('aria-checked', String(b === btn));
+          });
+          savePrefs({ mode: state.mode });
+        });
+      });
+      document.getElementById('btn-start').addEventListener('click', startGame);
+    }
+
+    // --- Spiel starten ---
+    function startGame() {
+      state.board = new Array(24).fill(0);
+      state.current = 1;
+      state.phase = 'place';
+      state.placed = { 1: 0, 2: 0 };
+      state.onBoard = { 1: 0, 2: 0 };
+      state.selected = null;
+      state.awaitingRemoval = false;
+      state.lastChanged = null;
+      state.locked = false;
+      state.running = true;
+      render();
+      updateHud();
+      showScreen('screen-game');
+    }
+
+    // --- Mühlen-Helfer ---
+    function millsContaining(i) { return MILLS.filter(function (m) { return m.indexOf(i) >= 0; }); }
+    function formedMillAt(i, player) {
+      return millsContaining(i).some(function (m) { return m.every(function (idx) { return state.board[idx] === player; }); });
+    }
+    function isInMill(i) {
+      const owner = state.board[i];
+      if (!owner) return false;
+      return MILLS.some(function (m) { return m.indexOf(i) >= 0 && m.every(function (idx) { return state.board[idx] === owner; }); });
+    }
+    function allInMills(p) {
+      for (let i = 0; i < 24; i++) if (state.board[i] === p && !isInMill(i)) return false;
+      return true;
+    }
+    function removableStones(byPlayer) {
+      const opp = other(byPlayer), res = [];
+      const oppAllMills = allInMills(opp);
+      for (let i = 0; i < 24; i++) {
+        if (state.board[i] === opp && (oppAllMills || !isInMill(i))) res.push(i);
+      }
+      return res;
+    }
+    function cnt(m, val) { return m.filter(function (idx) { return state.board[idx] === val; }).length; }
+
+    function hasLegalMove(p) {
+      if (flying(p)) return state.board.indexOf(0) >= 0;
+      for (let i = 0; i < 24; i++) {
+        if (state.board[i] !== p) continue;
+        if (ADJ[i].some(function (a) { return state.board[a] === 0; })) return true;
+      }
+      return false;
+    }
+    function getLegalMoves(p) {
+      const moves = [];
+      const fly = flying(p);
+      for (let i = 0; i < 24; i++) {
+        if (state.board[i] !== p) continue;
+        const targets = fly ? allEmpties() : ADJ[i].filter(function (a) { return state.board[a] === 0; });
+        targets.forEach(function (t) { moves.push({ from: i, to: t }); });
+      }
+      return moves;
+    }
+    function allEmpties() { const e = []; for (let i = 0; i < 24; i++) if (state.board[i] === 0) e.push(i); return e; }
+
+    // --- Rendering ---
+    function render() {
+      const svg = document.getElementById('board');
+      svg.innerHTML = '';
+
+      // Linien (jede Kante einmal)
+      for (let i = 0; i < 24; i++) {
+        ADJ[i].forEach(function (j) {
+          if (j > i) svg.appendChild(mk('line', { x1: POS[i][0], y1: POS[i][1], x2: POS[j][0], y2: POS[j][1], class: 'grid-line' }));
+        });
+      }
+
+      // Interaktions-Hinweise vorbereiten
+      let targets = [];
+      if (state.selected != null) {
+        const fly = flying(state.current);
+        targets = fly ? allEmpties() : ADJ[state.selected].filter(function (a) { return state.board[a] === 0; });
+      }
+      const removable = state.awaitingRemoval ? removableStones(state.current) : [];
+
+      // Knoten + Steine
+      for (let i = 0; i < 24; i++) {
+        const x = POS[i][0], y = POS[i][1];
+        svg.appendChild(mk('circle', { cx: x, cy: y, r: 12, class: 'node' }));
+
+        if (state.board[i]) {
+          const fresh = state.lastChanged === i ? ' fresh' : '';
+          svg.appendChild(mk('circle', { cx: x, cy: y, r: 30, class: 'stone stone-p' + state.board[i] + fresh }));
+        }
+        if (state.selected === i) svg.appendChild(mk('circle', { cx: x, cy: y, r: 37, class: 'sel-ring' }));
+        if (targets.indexOf(i) >= 0) svg.appendChild(mk('circle', { cx: x, cy: y, r: 22, class: 'target-ring' }));
+        if (removable.indexOf(i) >= 0) svg.appendChild(mk('circle', { cx: x, cy: y, r: 37, class: 'removable-ring' }));
+
+        const hit = mk('circle', { cx: x, cy: y, r: 42, class: 'hit', 'data-i': i });
+        hit.setAttribute('aria-label', 'Punkt ' + (i + 1));
+        svg.appendChild(hit);
+      }
+    }
+
+    function mk(tag, attrs) {
+      const el = document.createElementNS(SVG_NS, tag);
+      for (const k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+
+    function updateHud() {
+      const dot = document.getElementById('turn-dot');
+      const txt = document.getElementById('turn-text');
+      dot.className = 'turn-dot ' + (state.current === 1 ? 'p1' : 'p2');
+      const name = state.current === 1 ? 'Lila' : 'Orange';
+
+      document.getElementById('hud-stage').textContent =
+        state.phase === 'place' ? 'Setzen' : (flying(state.current) ? 'Springen' : 'Ziehen');
+
+      if (state.mode === 'computer' && state.current === 2) {
+        txt.textContent = 'Computer denkt …';
+      } else {
+        txt.textContent = name + ' ist dran';
+      }
+      setHint();
+    }
+
+    function setHint() {
+      const el = document.getElementById('hint');
+      const isComputer = state.mode === 'computer' && state.current === 2;
+      if (isComputer) { el.textContent = 'Der Computer ist am Zug …'; return; }
+      if (state.awaitingRemoval) { el.textContent = 'Mühle! Nimm einen gegnerischen Stein weg.'; return; }
+      if (state.phase === 'place') {
+        el.textContent = 'Noch ' + (9 - state.placed[state.current]) + ' Steine zum Setzen.';
+      } else if (state.selected == null) {
+        el.textContent = flying(state.current) ? 'Wähle einen Stein zum Springen.' : 'Wähle einen deiner Steine.';
+      } else {
+        el.textContent = 'Zieh ihn auf einen freien Punkt.';
+      }
+    }
+
+    // --- Zug-Bausteine ---
+    function place(i, p) { state.board[i] = p; state.placed[p]++; state.onBoard[p]++; state.lastChanged = i; }
+    function moveStone(from, to, p) { state.board[from] = 0; state.board[to] = p; state.lastChanged = to; }
+    function removeStone(i) { const owner = state.board[i]; state.board[i] = 0; state.onBoard[owner]--; state.lastChanged = null; }
+
+    function sound(name) {
+      if (!(window.Lernspiele && Lernspiele.Audio)) return;
+      if (name === 'place') Lernspiele.Audio.tap();
+      else if (name === 'mill') Lernspiele.Audio.correct();
+      else if (name === 'remove') Lernspiele.Audio.tone(240, 0.14, 0.06, 'triangle');
+      else if (name === 'end') Lernspiele.Audio.correct();
+    }
+
+    // --- Aktion abschließen (evtl. Mühle → Entfernen, sonst Zugende) ---
+    function resolveAction(millFormed, player) {
+      render();
+      if (millFormed) {
+        const rem = removableStones(player);
+        if (rem.length > 0) {
+          state.awaitingRemoval = true;
+          sound('mill');
+          render();
+          updateHud();
+          if (state.mode === 'computer' && player === 2) {
+            state.locked = true;
+            setTimeout(aiRemove, 600);
+          } else {
+            state.locked = false;
+          }
+          return;
+        }
+      }
+      endTurn();
+    }
+
+    function endTurn() {
+      state.awaitingRemoval = false;
+      state.selected = null;
+
+      if (state.phase === 'place' && state.placed[1] >= 9 && state.placed[2] >= 9) {
+        state.phase = 'move';
+      }
+
+      state.current = other(state.current);
+
+      // Verlust-Bedingungen in der Zieh-Phase
+      if (state.phase === 'move') {
+        if (state.onBoard[state.current] < 3) { finishGame(other(state.current)); return; }
+        if (!hasLegalMove(state.current)) { finishGame(other(state.current)); return; }
+      }
+
+      render();
+      updateHud();
+
+      if (state.mode === 'computer' && state.current === 2) {
+        state.locked = true;
+        setTimeout(aiTurn, 650);
+      } else {
+        state.locked = false;
+      }
+    }
+
+    // --- Eingabe (Mensch) ---
+    document.getElementById('board').addEventListener('click', function (e) {
+      if (!state.running || state.locked) return;
+      if (state.mode === 'computer' && state.current === 2) return;
+      const hit = e.target.closest('[data-i]');
+      if (!hit) return;
+      const i = Number(hit.dataset.i);
+
+      if (state.awaitingRemoval) {
+        if (state.board[i] === other(state.current) && removableStones(state.current).indexOf(i) >= 0) {
+          removeStone(i);
+          sound('remove');
+          endTurn();
+        }
+        return;
+      }
+
+      if (state.phase === 'place') {
+        if (state.board[i] === 0) {
+          place(i, state.current);
+          sound('place');
+          resolveAction(formedMillAt(i, state.current), state.current);
+        }
+        return;
+      }
+
+      // Zieh-Phase
+      if (state.board[i] === state.current) {
+        state.selected = (state.selected === i) ? null : i;
+        render();
+        setHint();
+        return;
+      }
+      if (state.selected != null && state.board[i] === 0) {
+        const fly = flying(state.current);
+        if (fly || ADJ[state.selected].indexOf(i) >= 0) {
+          moveStone(state.selected, i, state.current);
+          const mv = formedMillAt(i, state.current);
+          state.selected = null;
+          sound('place');
+          resolveAction(mv, state.current);
+        }
+      }
+    });
+
+    // --- KI (Spieler 2) ---
+    function aiTurn() {
+      if (!state.running || state.current !== 2) return;
+      if (state.phase === 'place') {
+        const i = aiChoosePlacement();
+        if (i == null) { endTurn(); return; }
+        place(i, 2);
+        sound('place');
+        resolveAction(formedMillAt(i, 2), 2);
+      } else {
+        const mv = aiChooseMove();
+        if (!mv) { finishGame(1); return; }
+        moveStone(mv.from, mv.to, 2);
+        sound('place');
+        resolveAction(formedMillAt(mv.to, 2), 2);
+      }
+    }
+
+    function aiRemove() {
+      const i = aiChooseRemoval();
+      if (i != null) { removeStone(i); sound('remove'); }
+      endTurn();
+    }
+
+    function aiChoosePlacement() {
+      const empties = allEmpties();
+      if (!empties.length) return null;
+      // 1) eigene Mühle vollenden
+      for (const e of empties) { state.board[e] = 2; const m = formedMillAt(e, 2); state.board[e] = 0; if (m) return e; }
+      // 2) gegnerische Mühle blocken
+      const blocks = [];
+      for (const e of empties) { state.board[e] = 1; const m = formedMillAt(e, 1); state.board[e] = 0; if (m) blocks.push(e); }
+      if (blocks.length) return pick(blocks);
+      // 3) Punkte bewerten (eigene Reihen aufbauen + Kreuzungen)
+      let best = [], bestScore = -Infinity;
+      for (const e of empties) {
+        let s = ADJ[e].length * 0.5;
+        millsContaining(e).forEach(function (m) {
+          const own = cnt(m, 2), opp = cnt(m, 1);
+          if (opp === 0 && own === 2) s += 6;
+          else if (opp === 0 && own === 1) s += 2;
+        });
+        if (s > bestScore) { bestScore = s; best = [e]; }
+        else if (s === bestScore) best.push(e);
+      }
+      return pick(best);
+    }
+
+    function aiChooseMove() {
+      const moves = getLegalMoves(2);
+      if (!moves.length) return null;
+      // 1) Zug, der eine Mühle bildet
+      const millMoves = moves.filter(function (m) { return moveFormsMill(m.from, m.to, 2); });
+      if (millMoves.length) return pick(millMoves);
+      // 2) gegnerische Mühle blocken
+      const threat = oppMillEmpties(1);
+      const blockMoves = moves.filter(function (m) { return threat.indexOf(m.to) >= 0; });
+      if (blockMoves.length) return pick(blockMoves);
+      // 3) Zug bewerten (Reihen aufbauen)
+      let best = [], bestScore = -Infinity;
+      moves.forEach(function (m) {
+        const s = scoreMove(m);
+        if (s > bestScore) { bestScore = s; best = [m]; }
+        else if (s === bestScore) best.push(m);
+      });
+      return pick(best);
+    }
+
+    function moveFormsMill(from, to, p) {
+      state.board[from] = 0; state.board[to] = p;
+      const m = formedMillAt(to, p);
+      state.board[to] = 0; state.board[from] = p;
+      return m;
+    }
+    function scoreMove(m) {
+      state.board[m.from] = 0; state.board[m.to] = 2;
+      let s = 0;
+      millsContaining(m.to).forEach(function (mm) {
+        if (cnt(mm, 1) === 0 && cnt(mm, 2) === 2 && cnt(mm, 0) === 1) s += 3;
+      });
+      state.board[m.to] = 0; state.board[m.from] = 2;
+      return s;
+    }
+    // Freie Punkte, auf denen der Gegner opp eine Mühle vollenden könnte (und erreichbar)
+    function oppMillEmpties(opp) {
+      const res = [];
+      const fly = flying(opp);
+      allEmpties().forEach(function (e) {
+        state.board[e] = opp; const m = formedMillAt(e, opp); state.board[e] = 0;
+        if (m && (state.phase === 'place' || fly || ADJ[e].some(function (a) { return state.board[a] === opp; }))) res.push(e);
+      });
+      return res;
+    }
+
+    function aiChooseRemoval() {
+      const rem = removableStones(2);
+      if (!rem.length) return null;
+      let best = [], bestScore = -Infinity;
+      rem.forEach(function (i) {
+        let s = ADJ[i].length * 0.3;
+        millsContaining(i).forEach(function (m) {
+          if (cnt(m, 1) === 2 && cnt(m, 0) === 1) s += 5; // zerstört drohende Mühle
+        });
+        if (s > bestScore) { bestScore = s; best = [i]; }
+        else if (s === bestScore) best.push(i);
+      });
+      return pick(best);
+    }
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    // --- Spielende ---
+    function finishGame(winner) {
+      state.running = false;
+      state.locked = true;
+      state.selected = null;
+      state.awaitingRemoval = false;
+      render();
+
+      const emblem = document.getElementById('end-emblem');
+      const title = document.getElementById('end-title');
+      const msg = document.getElementById('end-message');
+      emblem.textContent = '🎉';
+
+      if (state.mode === 'computer') {
+        title.textContent = winner === 1 ? 'Du hast gewonnen!' : 'Der Computer gewinnt';
+        msg.textContent = winner === 1
+          ? 'Toll gespielt — magst du nochmal?'
+          : 'Diesmal hatte der Computer die bessere Mühle. Magst du nochmal probieren?';
+      } else {
+        title.textContent = (winner === 1 ? 'Lila' : 'Orange') + ' gewinnt!';
+        msg.textContent = 'Schön gespielt, ihr zwei. Magst du nochmal?';
+      }
+      sound('end');
+      setTimeout(function () { showScreen('screen-end'); }, 500);
+    }
+
+    // --- Buttons ---
+    document.getElementById('hud-close').addEventListener('click', function () { state.running = false; showScreen('screen-start'); });
+    document.getElementById('btn-replay').addEventListener('click', startGame);
+    document.getElementById('btn-restage').addEventListener('click', function () { showScreen('screen-start'); });
+
+    document.addEventListener('pointerdown', function () {
+      if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.ensure();
+    }, { once: true });
+
+    initStartScreen();
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

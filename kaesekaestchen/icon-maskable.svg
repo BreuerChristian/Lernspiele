@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: vollflaechiger Hintergrund, Inhalt im 80% Safe-Zone-Bereich (52-460) -->
+  <rect width="512" height="512" fill="#00897b"/>
+  <rect x="180" y="180" width="76" height="76" rx="12" fill="#ffffff" opacity="0.9"/>
+  <circle cx="218" cy="218" r="20" fill="#fb8c00"/>
+  <g stroke="#ffffff" stroke-width="14" stroke-linecap="round">
+    <line x1="180" y1="180" x2="256" y2="180"/>
+    <line x1="180" y1="256" x2="256" y2="256"/>
+    <line x1="180" y1="180" x2="180" y2="256"/>
+    <line x1="256" y1="180" x2="256" y2="256"/>
+    <line x1="256" y1="256" x2="332" y2="256"/>
+  </g>
+  <g fill="#00594f">
+    <circle cx="180" cy="180" r="14"/><circle cx="256" cy="180" r="14"/><circle cx="332" cy="180" r="14"/>
+    <circle cx="180" cy="256" r="14"/><circle cx="256" cy="256" r="14"/><circle cx="332" cy="256" r="14"/>
+    <circle cx="180" cy="332" r="14"/><circle cx="256" cy="332" r="14"/><circle cx="332" cy="332" r="14"/>
+  </g>
+</svg>

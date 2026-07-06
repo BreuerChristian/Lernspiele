@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#6a1b9a"/>
+  <g fill="none" stroke="#e6d5f0" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <rect x="96"  y="96"  width="320" height="320"/>
+    <rect x="156" y="156" width="200" height="200"/>
+    <rect x="216" y="216" width="80"  height="80"/>
+    <line x1="256" y1="96"  x2="256" y2="216"/>
+    <line x1="256" y1="416" x2="256" y2="296"/>
+    <line x1="96"  y1="256" x2="216" y2="256"/>
+    <line x1="416" y1="256" x2="296" y2="256"/>
+  </g>
+  <!-- eine Mühle (drei Lila-Steine) + ein Orange-Stein -->
+  <g>
+    <circle cx="96"  cy="96"  r="34" fill="#ffffff"/>
+    <circle cx="256" cy="96"  r="34" fill="#ffffff"/>
+    <circle cx="416" cy="96"  r="34" fill="#ffffff"/>
+    <circle cx="416" cy="416" r="34" fill="#ff8f00"/>
+  </g>
+</svg>
