@@ -14,6 +14,7 @@ Live (nach Pages-Aktivierung): https://breuerchristian.github.io/Lernspiele/
 lernspiele/
 ├── CLAUDE.md            ← du liest gerade
 ├── README.md
+├── IDEEN.md             ← Spiel-Ideen-Backlog ([ ] offen, [x] live, [-] verworfen)
 ├── LICENSE              ← MIT
 ├── .nojekyll            ← GitHub Pages: kein Jekyll-Processing
 ├── index.html           ← Landing (selbst PWA: Sammlung-App)
@@ -33,6 +34,7 @@ lernspiele/
 │   └── new-game/        ← Vorlage fuer neue Spiele (alle Standard-Patterns)
 ├── scripts/
 │   ├── scaffold-game.sh ← bash scripts/scaffold-game.sh <id> "Name" "#hex"
+│   ├── check-spiele.py  ← Linter: alle Spiele gegen die Regeln hier pruefen
 │   ├── icons.py         ← Subkommandos: extract / discover / update / verify
 │   ├── download-openmoji.py ← OpenMoji-SVGs nach _lib/icons/ holen
 │   ├── cleanup-icons.py ← One-Shot-Aufraeumen (Englisch->Deutsch, etc.)
@@ -51,7 +53,10 @@ Eltern installieren *eine* App (die Sammlung), beide/alle Spiele sind drin. Einz
 Spiele werden laut Distributions-Strategie nicht als separate PWAs installiert —
 die Sammlung-PWA deckt alles ab.
 
-Aktuell vorhandene Spiele: `buchstaben/`, `zahlen-parade/`, `hauptstaedte-lernen/`, `uhr-lesen/`, `was-passt-nicht/`, `schatten-finden/`, `tier-geraeusche/`, `jahreszeiten-sortieren/`, `muster-fortsetzen/`, `mengen-erfassen/`, `zahlenreihen/`, `symmetrie/`, `farben-mischen/`, `muenzen/`, `plus-tuermchen/`, `silben-klatschen/`, `anlaute/`, `reim-paare/`, `wort-bild/`, `englisch-erste-woerter/`, `bundeslaender/`, `flaggen/`, `planeten/`
+Aktuell 52 Spiele (Stand 2026-07): jeder Wurzel-Ordner außer `_lib/`, `_templates/`
+und `scripts/` ist ein Spiel. Vollständige, aktuelle Liste: `python scripts/check-spiele.py`
+(erste Zeile) oder Blick in die Kategorien der Wurzel-`index.html`. Der Backlog mit
+Live-Status pro Idee liegt in [IDEEN.md](IDEEN.md).
 
 ## Leitprinzipien (NICHT verhandelbar)
 
@@ -73,9 +78,11 @@ Aktuell vorhandene Spiele: `buchstaben/`, `zahlen-parade/`, `hauptstaedte-lernen
 
 ## Standardisierte Patterns (verbindlich für neue Spiele)
 
-Bei den ersten Spielen wurden viele Patterns ad-hoc gebaut. Ab jetzt sind sie
-verbindlich, damit über alle Spiele hinweg visuelle und akustische
-Wiedererkennung entsteht.
+Bei den ersten Spielen wurden viele Patterns ad-hoc gebaut; inzwischen sind die
+Altbestände per Standards-Migration nachgezogen (CSS-Vars, a11y, `_lib/audio.js`).
+Für alle Spiele verbindlich, damit über die Sammlung hinweg visuelle und
+akustische Wiedererkennung entsteht — `scripts/check-spiele.py` prueft das
+automatisch (siehe unten).
 
 ### `_lib/audio.js` — Sound-Vokabular
 
@@ -102,9 +109,10 @@ Eigene Töne für Spielmechanik (zählen, stapeln, fliegen) sind erlaubt — üb
 ### `_lib/icons/` — Spiel-Icons als Source-of-Truth
 
 178 Icons in `_lib/icons/`, ueberwiegend aus **OpenMoji** (CC-BY-SA 4.0,
-siehe [_lib/icons/NOTICE.md](_lib/icons/NOTICE.md)). 8 Spiele nutzen bereits
+siehe [_lib/icons/NOTICE.md](_lib/icons/NOTICE.md)). 9 Spiele nutzen bereits
 das Marker-Pattern: anlaute, was-passt-nicht, jahreszeiten-sortieren,
-englisch-erste-woerter, reim-paare, flaggen, wort-bild, schatten-finden.
+englisch-erste-woerter, reim-paare, flaggen, wort-bild, schatten-finden,
+oberbegriffe. Welche Spiele Marker haben: `grep -l "ICON:" */index.html`.
 
 **Galerie-Browser:** `python -m http.server 8000` im Repo-Wurzel, dann
 http://localhost:8000/_lib/icons-gallery.html — zeigt alle Icons mit
@@ -210,6 +218,22 @@ function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p))
 - `prefers-reduced-motion` respektieren (siehe oben)
 - Tap-Targets ≥ 44×44 px
 
+### `scripts/check-spiele.py` — Regel-Linter
+
+Prueft alle Spiele automatisch gegen die Regeln in dieser Datei:
+
+```bash
+python scripts/check-spiele.py
+```
+
+- **ERROR** = Leitprinzip-Verletzung (externe URLs/CDNs, Tracker, Cursive-Fonts,
+  `Lernspiele.Audio` ohne eingebundene Lib) → Exit-Code 1, muss gefixt werden
+- **WARN** = Standard-Drift (HUD-Klassen fehlen, End-Screen-Wortlaut, kein
+  `--color-primary`, LocalStorage-Key ohne Praefix, SW-Cache-Name ohne Spiel-Praefix)
+- **INFO** = optional (fehlende Standard-Animationen, Wortlaut-Varianten)
+
+Vor jedem Commit laufen lassen; neue ERRORs sind nicht verhandelbar.
+
 ## Neues Spiel hinzufügen — Checkliste
 
 **0. Vor dem Codieren (Plan-Pitch).** Konzept in 5-7 Sätzen vorstellen + Nutzer-Bestätigung einholen. Modi, Stufen, Steuerung früh klären. Bei Vorbild-Spielen: Anti-Patterns identifizieren (was raus muss um Montessori-konform zu sein — Wettbewerb, Zeitdruck, Belohnungs-Loops, manipulative Sounds).
@@ -230,16 +254,22 @@ function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p))
    `python scripts/download-openmoji.py` laufen lassen, oder eigenes SVG
    anlegen + INDEX.json-Eintrag (Stil siehe [_lib/README.md](_lib/README.md)).
    Konsistenz prüfen: `python scripts/icons.py verify`.
-5. In Wurzel-`index.html` die Spielkarte ergänzen.
+5. In Wurzel-`index.html` die Spielkarte in der passenden Kategorie ergänzen —
+   Markup: `<a class="game-card" href="<id>/" data-age-min="X" data-age-max="Y">`
+   mit `<img class="preview" src="<id>/icon.svg" alt="">` + Name + `<span class="desc">`.
+   Die `data-age-*`-Attribute speisen den Altersfilter der Landing.
 6. Wurzel-`service-worker.js`: Cache-Version bumpen
    (`lernspiele-landing-vXX` → `vXX+1`), neue `_lib/`-Pfade in `ASSETS` ergänzen
    wenn weitere Lib-Dateien hinzugekommen sind.
 7. Lokal testen: `python -m http.server 8000` → DevTools → Application prüfen
    (Manifest erkannt, SW registriert, Audio-Lib geladen).
-8. **Code-Review** (code-reviewer Agent) → Pflicht-Fixes umsetzen → re-review
+8. **Linter:** `python scripts/check-spiele.py` — keine neuen ERRORs, WARNs im
+   neuen Spiel fixen.
+9. **Code-Review** (code-reviewer Agent) → Pflicht-Fixes umsetzen → re-review
    wenn nötig.
-9. Commit + push. Hard-Reload-Hinweis (`Strg+Shift+R`) wenn jemand schon die
-   alte Version im Browser hat.
+10. In `IDEEN.md` die Idee auf `[x]` setzen (bzw. eintragen falls sie dort fehlt).
+11. Commit + push. Hard-Reload-Hinweis (`Strg+Shift+R`) wenn jemand schon die
+    alte Version im Browser hat.
 
 **Bei jeder Code-Änderung am Spiel:** SW-Cache-Version bumpen (v1 → v2 → ...).
 Sonst zeigt der Browser tagelang die alte Version aus dem Cache.
