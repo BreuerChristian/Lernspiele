@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Kalender</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#558b2f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Kalender">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    :root {
+      --color-primary: #558b2f;
+      --color-light:   #bbd0ab;
+      --color-dark:    #375a1e;
+      --color-bg:      #eaf1e6;
+      --color-success: #2e7d32;
+      --color-error:   #c62828;
+      --radius-card:   28px;
+      --radius-btn:    16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Verdana', 'Tahoma', sans-serif;
+      background: var(--color-bg);
+      color: #2a2a2a;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* ---------- Screens ---------- */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    .screen.hidden { display: none; }
+
+    /* ---------- Start-Screen ---------- */
+    #screen-start {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center;
+      align-items: center;
+      padding-top: 20px;
+      overflow-y: auto;
+    }
+    #screen-start .card {
+      background: white;
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    #screen-start h1 {
+      color: var(--color-primary);
+      font-size: 2.2rem;
+      margin-bottom: 6px;
+    }
+    #screen-start .sub {
+      color: var(--color-dark);
+      margin-bottom: 22px;
+      font-size: 1rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: bold;
+      margin-bottom: 14px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: var(--color-light);
+      transition: background 0.15s;
+    }
+    .back-link:hover, .back-link:focus { background: var(--color-bg); }
+
+    .group { margin-bottom: 22px; text-align: left; }
+    .group h2 {
+      color: var(--color-primary);
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .choice {
+      background: var(--color-bg);
+      border: 3px solid transparent;
+      border-radius: var(--radius-btn);
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--color-dark);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .choice:hover, .choice:focus {
+      border-color: var(--color-primary);
+    }
+    .choice.selected {
+      border-color: var(--color-primary);
+      background: var(--color-light);
+    }
+    .choice:active { transform: scale(0.98); }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-btn);
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.1s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ---------- Game-Screen ---------- */
+    #screen-game {
+      background: var(--color-bg);
+      padding-top: max(14px, env(safe-area-inset-top));
+    }
+
+    /* HUD: links Stufe | Mitte Fortschritt | rechts Schliessen */
+    .hud {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 4px 14px;
+    }
+    .hud .stage {
+      color: var(--color-dark);
+      font-size: 0.9rem;
+      font-weight: bold;
+      justify-self: start;
+    }
+    .hud .progress {
+      color: var(--color-primary);
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 6px 14px;
+      background: white;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .hud .hud-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: white;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--color-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    .question {
+      font-size: 1.4rem;
+      color: var(--color-dark);
+      text-align: center;
+    }
+    .answers {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .answer {
+      width: 100px;
+      height: 100px;
+      border-radius: 22px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      transition: transform 0.1s;
+    }
+    .answer:active { transform: scale(0.96); }
+    .answer.correct { animation: correct-pulse 0.5s ease; }
+    .answer.wrong   { animation: wrong-wiggle 0.45s ease; }
+
+    /* ---------- End-Screen ---------- */
+    #screen-end {
+      background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-light) 100%);
+      justify-content: center;
+      align-items: center;
+    }
+    #screen-end .card {
+      background: white;
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    #screen-end h2 {
+      color: var(--color-primary);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    #screen-end p {
+      color: var(--color-dark);
+      margin-bottom: 22px;
+    }
+    #screen-end .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #screen-end .btn-secondary {
+      padding: 14px;
+      background: white;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius-btn);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+
+    /* ---------- Standard-Animationen ---------- */
+    @keyframes correct-pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.12); }
+    }
+    @keyframes wrong-wiggle {
+      0%, 100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .fade-in { animation: fade-in 0.25s ease; }
+
+    /* ---------- Accessibility ---------- */
+    button:focus-visible, a:focus-visible {
+      outline: 3px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #screen-start h1 { font-size: 1.8rem; }
+      .answer { width: 80px; height: 80px; }
+    }
+
+    /* ---------- Kalender-spezifisch ---------- */
+    .seq-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .seq-pill {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 16px 20px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--color-dark);
+    }
+    .seq-pill.gap {
+      background: var(--color-light);
+      color: var(--color-primary);
+      border: 3px dashed var(--color-primary);
+    }
+    .seq-arrow { color: var(--color-primary); font-size: 1.6rem; font-weight: bold; }
+    .answers { gap: 12px; flex-wrap: wrap; }
+    .answer.answer-text {
+      width: auto; height: auto;
+      background: white;
+      color: var(--color-dark);
+      font-family: inherit;
+      font-size: 1.1rem; font-weight: bold;
+      padding: 16px 22px;
+      border: 3px solid var(--color-primary);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+      border-radius: var(--radius-btn);
+    }
+    .answer.answer-text.correct {
+      background: var(--color-light);
+      border-color: var(--color-dark);
+    }
+    @media (max-width: 380px) {
+      .seq-pill { font-size: 1.05rem; padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================== START-SCREEN ====================== -->
+  <div id="screen-start" class="screen">
+    <div class="card">
+      <a href="../" class="back-link" aria-label="Zurueck zur Spiele-Uebersicht">&larr; Übersicht</a>
+      <h1>Kalender</h1>
+      <p class="sub">Wochentage und Monate der Reihe nach</p>
+
+      <div class="group">
+        <h2>Was üben?</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Thema">
+          <button class="choice selected" data-thema="wochentage" role="radio" aria-checked="true">Wochentage</button>
+          <button class="choice"          data-thema="monate"     role="radio" aria-checked="false">Monate</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Aufgabe</h2>
+        <div class="stage-list" role="radiogroup" aria-label="Aufgabe">
+          <button class="choice selected" data-stage="leicht" role="radio" aria-checked="true">Was kommt danach?</button>
+          <button class="choice"          data-stage="mittel" role="radio" aria-checked="false">Was kommt davor?</button>
+          <button class="choice"          data-stage="schwer" role="radio" aria-checked="false">Welcher fehlt?</button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-primary">Los geht's</button>
+    </div>
+  </div>
+
+  <!-- ====================== GAME-SCREEN ====================== -->
+  <div id="screen-game" class="screen hidden">
+    <div class="hud">
+      <span class="stage" id="hud-stage">Leicht</span>
+      <span class="progress" id="hud-progress">Aufgabe 1/5</span>
+      <button class="hud-btn" id="hud-close" aria-label="Spiel beenden, zurueck zum Start">×</button>
+    </div>
+
+    <div class="play-area">
+      <div class="seq-display" id="seq-display"></div>
+      <div class="question" id="question">Was kommt danach?</div>
+      <div class="answers" id="answers"></div>
+    </div>
+  </div>
+
+  <!-- ====================== END-SCREEN ====================== -->
+  <div id="screen-end" class="screen hidden">
+    <div class="card">
+      <h2 id="end-title">Schoene Runde!</h2>
+      <p id="end-message">Du hast alle Aufgaben gemacht.</p>
+      <div class="actions">
+        <button class="btn-primary" id="btn-replay">Nochmal spielen</button>
+        <button class="btn-secondary" id="btn-restage">Andere Stufe</button>
+        <a class="btn-secondary" href="../">Zur Übersicht</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== AUDIO-LIB ====================== -->
+  <script src="../_lib/audio.js"></script>
+
+  <!-- ====================== SPIEL-LOGIK ====================== -->
+  <script>
+    'use strict';
+
+    const GAME_ID = 'kalender';
+    const PREFS_KEY = GAME_ID + '-prefs';
+
+    // --- Reihen ---
+    const REIHEN = {
+      wochentage: {
+        einheit: 'Tag',
+        items: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
+      },
+      monate: {
+        einheit: 'Monat',
+        items: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+      }
+    };
+
+    const STAGE_CONFIG = {
+      leicht: { label: 'Danach', mode: 'next', count: 3, runde: 8 },
+      mittel: { label: 'Davor',  mode: 'prev', count: 3, runde: 8 },
+      schwer: { label: 'Lücke',  mode: 'gap',  count: 4, runde: 10 }
+    };
+
+    const state = { thema: 'wochentage', stage: 'leicht', taskIdx: 0, target: null, locked: false, recent: [] };
+
+    // --- LocalStorage ---
+    function loadPrefs() { try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (e) { return {}; } }
+    function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify({ thema: state.thema, stage: state.stage })); } catch (e) {} }
+
+    // --- Helpers ---
+    function shuffle(a) { return a.slice().sort(function () { return Math.random() - 0.5; }); }
+    function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function (s) { s.classList.add('hidden'); });
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('fade-in');
+      setTimeout(function () { el.classList.remove('fade-in'); }, 300);
+    }
+
+    // --- Start-Screen: zwei Auswahl-Gruppen (Thema + Aufgabe) ---
+    function bindGroup(attr, apply) {
+      const buttons = document.querySelectorAll('#screen-start .choice[data-' + attr + ']');
+      buttons.forEach(function (btn) {
+        const val = btn.getAttribute('data-' + attr);
+        const active = apply(null, val, true);
+        btn.classList.toggle('selected', active);
+        btn.setAttribute('aria-checked', String(active));
+        btn.addEventListener('click', function () {
+          apply(val, null, false);
+          buttons.forEach(function (b) {
+            b.classList.toggle('selected', b === btn);
+            b.setAttribute('aria-checked', String(b === btn));
+          });
+          savePrefs();
+        });
+      });
+    }
+
+    function initStartScreen() {
+      const prefs = loadPrefs();
+      if (prefs.thema && REIHEN[prefs.thema]) state.thema = prefs.thema;
+      if (prefs.stage && STAGE_CONFIG[prefs.stage]) state.stage = prefs.stage;
+
+      bindGroup('thema', function (setVal, checkVal, isCheck) {
+        if (isCheck) return state.thema === checkVal;
+        state.thema = setVal;
+      });
+      bindGroup('stage', function (setVal, checkVal, isCheck) {
+        if (isCheck) return state.stage === checkVal;
+        state.stage = setVal;
+      });
+
+      document.getElementById('btn-start').addEventListener('click', startGame);
+    }
+
+    // --- Game-Screen ---
+    function startGame() {
+      state.taskIdx = 0;
+      state.recent = [];
+      showScreen('screen-game');
+      const cfg = STAGE_CONFIG[state.stage];
+      const themaLabel = state.thema === 'wochentage' ? 'Wochentage' : 'Monate';
+      document.getElementById('hud-stage').textContent = themaLabel + ' · ' + cfg.label;
+      nextTask();
+    }
+
+    function nextTask() {
+      const cfg = STAGE_CONFIG[state.stage];
+      if (state.taskIdx >= cfg.runde) { endGame(); return; }
+      state.taskIdx++;
+      state.locked = false;
+      document.getElementById('hud-progress').textContent = 'Aufgabe ' + state.taskIdx + '/' + cfg.runde;
+
+      const reihe = REIHEN[state.thema];
+      const items = reihe.items;
+      const n = items.length;
+
+      // Ankerindex waehlen (nicht zuletzt genutzt)
+      let idxPool = [];
+      for (let i = 0; i < n; i++) if (state.recent.indexOf(i) === -1) idxPool.push(i);
+      if (idxPool.length < 1) idxPool = items.map(function (_, i) { return i; });
+      const i = pick(idxPool);
+      state.recent = [i].concat(state.recent).slice(0, Math.min(5, n - 1));
+
+      let correctIdx, shownIdx;
+      const seqEl = document.getElementById('seq-display');
+      seqEl.innerHTML = '';
+
+      if (cfg.mode === 'next') {
+        correctIdx = (i + 1) % n;
+        shownIdx = [i];
+        seqEl.appendChild(pill(items[i]));
+        seqEl.appendChild(arrow());
+        seqEl.appendChild(gapPill());
+        document.getElementById('question').textContent = 'Was kommt nach ' + items[i] + '?';
+      } else if (cfg.mode === 'prev') {
+        correctIdx = (i - 1 + n) % n;
+        shownIdx = [i];
+        seqEl.appendChild(gapPill());
+        seqEl.appendChild(arrow());
+        seqEl.appendChild(pill(items[i]));
+        document.getElementById('question').textContent = 'Was kommt vor ' + items[i] + '?';
+      } else { // gap
+        correctIdx = i;
+        const prevIdx = (i - 1 + n) % n;
+        const nextIdx = (i + 1) % n;
+        shownIdx = [prevIdx, nextIdx];
+        seqEl.appendChild(pill(items[prevIdx]));
+        seqEl.appendChild(arrow());
+        seqEl.appendChild(gapPill());
+        seqEl.appendChild(arrow());
+        seqEl.appendChild(pill(items[nextIdx]));
+        document.getElementById('question').textContent = 'Welcher ' + reihe.einheit + ' fehlt?';
+      }
+
+      state.target = items[correctIdx];
+
+      // Distraktoren: andere Namen, nicht die Loesung, nicht bereits sichtbar
+      const exclude = shownIdx.concat([correctIdx]);
+      const distractPool = shuffle(items.filter(function (name, idx) {
+        return exclude.indexOf(idx) === -1;
+      })).slice(0, cfg.count - 1);
+      const options = shuffle([items[correctIdx]].concat(distractPool));
+
+      const answersEl = document.getElementById('answers');
+      answersEl.innerHTML = '';
+      options.forEach(function (name) {
+        const btn = document.createElement('button');
+        btn.className = 'answer answer-text';
+        btn.textContent = name;
+        btn.setAttribute('aria-label', name);
+        btn.addEventListener('click', function () { onAnswer(btn, name); });
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function pill(text) {
+      const el = document.createElement('span');
+      el.className = 'seq-pill';
+      el.textContent = text;
+      return el;
+    }
+    function gapPill() {
+      const el = document.createElement('span');
+      el.className = 'seq-pill gap';
+      el.textContent = '?';
+      return el;
+    }
+    function arrow() {
+      const el = document.createElement('span');
+      el.className = 'seq-arrow';
+      el.setAttribute('aria-hidden', 'true');
+      el.textContent = '→';
+      return el;
+    }
+
+    function onAnswer(btn, name) {
+      if (state.locked) return;
+      if (name === state.target) {
+        state.locked = true;
+        btn.classList.add('correct');
+        Lernspiele.Audio.correct();
+        setTimeout(nextTask, 750);
+      } else {
+        btn.classList.add('wrong');
+        Lernspiele.Audio.wrong();
+        setTimeout(function () { btn.classList.remove('wrong'); }, 500);
+      }
+    }
+
+    // --- End-Screen ---
+    function endGame() {
+      showScreen('screen-end');
+      document.getElementById('end-title').textContent = 'Schöne Runde!';
+      document.getElementById('end-message').textContent = 'Du kennst die Reihenfolge gut. Magst du nochmal?';
+      document.getElementById('btn-replay').onclick = startGame;
+      document.getElementById('btn-restage').onclick = function () { showScreen('screen-start'); };
+    }
+
+    // --- HUD ---
+    document.getElementById('hud-close').addEventListener('click', function () {
+      showScreen('screen-start');
+    });
+
+    // --- Audio einmal beim ersten Tap warmlaufen lassen (iOS-Anforderung) ---
+    document.addEventListener('pointerdown', function () {
+      if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.ensure();
+    }, { once: true });
+
+    // --- Init ---
+    initStartScreen();
+
+    // --- Service Worker ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

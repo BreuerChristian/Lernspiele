@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: vollflaechiger Hintergrund, Inhalt im 80% Safe-Zone-Bereich (52-460) -->
+  <rect width="512" height="512" fill="#4527a0"/>
+  <circle cx="176" cy="188" r="64" fill="white" opacity="0.95"/>
+  <rect x="264" y="124" width="128" height="128" rx="12" fill="white" opacity="0.95"/>
+  <polygon points="256,296 348,428 164,428" fill="white" opacity="0.95"/>
+</svg>
