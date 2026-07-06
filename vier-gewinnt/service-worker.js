@@ -1,4 +1,4 @@
-const CACHE = 'vier-gewinnt-v1';
+const CACHE = 'vier-gewinnt-v2';
 const ASSETS = [
   './',
   './index.html',

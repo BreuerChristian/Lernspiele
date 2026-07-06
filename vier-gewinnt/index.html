@@ -263,7 +263,9 @@
       mode: 'zwei',          // 'zwei' | 'computer'
       grid: [],              // grid[r][c] = 0 | 1 | 2  (r=0 oben)
       current: 1,
-      locked: false          // true = keine Eingabe (Fall-Animation / Computer denkt / Spielende)
+      locked: false,         // true = keine Eingabe (Fall-Animation / Computer denkt / Spielende)
+      running: false,        // true = laufende Runde; blockt veraltete Timer nach Verlassen/Neustart
+      timer: null            // Handle des laufenden verzoegerten Zugs bzw. Endes
     };
 
     // --- LocalStorage ---
@@ -339,7 +341,16 @@
     }
 
     // --- Spiel starten ---
+    function stopGame() {
+      state.running = false;
+      clearTimeout(state.timer);
+      state.timer = null;
+    }
+
     function startGame() {
+      clearTimeout(state.timer);
+      state.timer = null;
+      state.running = true;
       state.grid = [];
       for (let r = 0; r < ROWS; r++) state.grid.push(new Array(COLS).fill(0));
       state.current = 1;
@@ -388,10 +399,11 @@
       cell.setAttribute('aria-label', 'Spalte ' + (c + 1) + ', ' + (player === 1 ? 'Rot' : 'Gelb'));
       if (window.Lernspiele && Lernspiele.Audio) Lernspiele.Audio.tone(320 - r * 18, 0.10, 0.06, 'sine');
 
-      setTimeout(function () { afterDrop(r, c, player); }, 380);
+      state.timer = setTimeout(function () { afterDrop(r, c, player); }, 380);
     }
 
     function afterDrop(r, c, player) {
+      if (!state.running) return;
       const line = findWinningLine(r, c, player);
       if (line) { finishGame(player, line); return; }
       if (isBoardFull()) { finishGame(0, null); return; }
@@ -403,7 +415,7 @@
       if (state.mode === 'computer' && state.current === 2) {
         state.locked = true;
         document.getElementById('board').classList.add('locked');
-        setTimeout(computerMove, 620);
+        state.timer = setTimeout(computerMove, 620);
       }
     }
 
@@ -429,6 +441,7 @@
     // --- Sanfte KI (Spieler 2) ---
     // Gewinnen wenn möglich > gegnerischen Gewinn blocken > Mitte bevorzugen (mit etwas Zufall)
     function computerMove() {
+      if (!state.running) return;
       const valid = [];
       for (let c = 0; c < COLS; c++) if (lowestFree(c) >= 0) valid.push(c);
       if (!valid.length) return;
@@ -481,6 +494,7 @@
 
     // --- Spielende ---
     function finishGame(winner, line) {
+      state.running = false;
       state.locked = true;
       document.getElementById('board').classList.add('locked');
 
@@ -505,7 +519,7 @@
           title.textContent = winner === 1 ? 'Du hast vier!' : 'Der Computer hat vier';
           msg.textContent = winner === 1
             ? 'Vier in einer Reihe — super gespielt! Magst du nochmal?'
-            : 'Diesmal war der Computer schneller. Magst du nochmal probieren?';
+            : 'Der Computer hatte diesmal vier in einer Reihe. Magst du nochmal probieren?';
         } else {
           title.textContent = (winner === 1 ? 'Rot' : 'Gelb') + ' hat vier in einer Reihe!';
           msg.textContent = 'Schön gespielt, ihr zwei. Magst du nochmal?';
@@ -517,13 +531,13 @@
         else Lernspiele.Audio.correct();
       }
 
-      setTimeout(function () { showScreen('screen-end'); }, line ? 900 : 400);
+      state.timer = setTimeout(function () { showScreen('screen-end'); }, line ? 900 : 400);
     }
 
     // --- Buttons ---
-    document.getElementById('hud-close').addEventListener('click', function () { showScreen('screen-start'); });
+    document.getElementById('hud-close').addEventListener('click', function () { stopGame(); showScreen('screen-start'); });
     document.getElementById('btn-replay').addEventListener('click', startGame);
-    document.getElementById('btn-restage').addEventListener('click', function () { showScreen('screen-start'); });
+    document.getElementById('btn-restage').addEventListener('click', function () { stopGame(); showScreen('screen-start'); });
 
     // --- Audio warmlaufen (iOS) ---
     document.addEventListener('pointerdown', function () {

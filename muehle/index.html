@@ -548,6 +548,7 @@
     }
 
     function aiRemove() {
+      if (!state.running || state.current !== 2) return;
       const i = aiChooseRemoval();
       if (i != null) { removeStone(i); sound('remove'); }
       endTurn();
