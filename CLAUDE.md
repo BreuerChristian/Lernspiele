@@ -254,25 +254,45 @@ Vor jedem Commit laufen lassen; neue ERRORs sind nicht verhandelbar.
    `python scripts/download-openmoji.py` laufen lassen, oder eigenes SVG
    anlegen + INDEX.json-Eintrag (Stil siehe [_lib/README.md](_lib/README.md)).
    Konsistenz prüfen: `python scripts/icons.py verify`.
-5. In Wurzel-`index.html` die Spielkarte in der passenden Kategorie ergänzen —
-   Markup: `<a class="game-card" href="<id>/" data-age-min="X" data-age-max="Y">`
-   mit `<img class="preview" src="<id>/icon.svg" alt="">` + Name + `<span class="desc">`.
-   Die `data-age-*`-Attribute speisen den Altersfilter der Landing.
-6. Wurzel-`service-worker.js`: Cache-Version bumpen
-   (`lernspiele-landing-vXX` → `vXX+1`), neue `_lib/`-Pfade in `ASSETS` ergänzen
-   wenn weitere Lib-Dateien hinzugekommen sind.
-7. Lokal testen: `python -m http.server 8000` → DevTools → Application prüfen
+5. **Landing + SW + Spielzahl automatisch:** Eintrag in `games.json` ergänzen
+   (Kategorie → Spiel mit `folder`, `title`, `desc`, `ageMin`, `ageMax`), dann
+   `python scripts/sync-games.py`. Das generiert die Spielkarte in `index.html`
+   (zwischen `<!-- GAMES:AUTO START/END -->`), bumpt die Root-SW-Cache-Version
+   und aktualisiert die Spielzahl in README/CLAUDE. **Nicht mehr von Hand** an
+   Landing-Karten oder `lernspiele-landing-vXX` schrauben — das war die Quelle
+   fast aller Merge-Konflikte.
+6. Lokal testen: `python -m http.server 8000` → DevTools → Application prüfen
    (Manifest erkannt, SW registriert, Audio-Lib geladen).
-8. **Linter:** `python scripts/check-spiele.py` — keine neuen ERRORs, WARNs im
-   neuen Spiel fixen.
-9. **Code-Review** (code-reviewer Agent) → Pflicht-Fixes umsetzen → re-review
+7. **Automatische Prüfung** (läuft auch als CI bei jedem PR, siehe unten):
+   - `python scripts/check-spiele.py` — Regeln, keine neuen ERRORs
+   - `python scripts/check-syntax.py` — JS-Syntax aller Spiele
+   - `python scripts/sync-games.py --check` — Landing/SW/Doku in sync?
+   - `node scripts/smoke-test.mjs <id>` — Headless-Durchlauf (keine Console-Errors,
+     Start→Spiel→End→Replay). Fängt Runtime-Bugs, die statisch unsichtbar sind.
+8. **Code-Review** (code-reviewer Agent) → Pflicht-Fixes umsetzen → re-review
    wenn nötig.
-10. In `IDEEN.md` die Idee auf `[x]` setzen (bzw. eintragen falls sie dort fehlt).
-11. Commit + push. Hard-Reload-Hinweis (`Strg+Shift+R`) wenn jemand schon die
+9. In `IDEEN.md` die Idee auf `[x]` setzen (bzw. eintragen falls sie dort fehlt).
+10. Commit + push. Hard-Reload-Hinweis (`Strg+Shift+R`) wenn jemand schon die
     alte Version im Browser hat.
 
-**Bei jeder Code-Änderung am Spiel:** SW-Cache-Version bumpen (v1 → v2 → ...).
-Sonst zeigt der Browser tagelang die alte Version aus dem Cache.
+**Bei jeder Code-Änderung am Spiel:** SW-Cache-Version des *Spiels* bumpen
+(`<id>-vN`). Die Root-SW-Version übernimmt `sync-games.py`.
+
+### Automatisierung / CI
+
+`.github/workflows/ci.yml` läuft bei jedem Push/PR und lässt die vier Prüfungen
+aus Schritt 7 laufen (ERROR ⇒ rot). Lokal dieselben Befehle. Die Scripts:
+
+| Script | Zweck |
+|---|---|
+| `scripts/check-spiele.py` | Statische Regeln (Leitprinzipien, HUD, Fonts, SW, Manifest, Wettbewerbs-Vokabular, rAF-ohne-cancel) |
+| `scripts/check-syntax.py` | `node --check` über jeden inline-`<script>`-Block |
+| `scripts/sync-games.py` | `games.json` → Landing-Karten + Root-SW-Version + Spielzahl (`--check` = nur prüfen) |
+| `scripts/smoke-test.mjs` | Playwright-Headless-Durchlauf jedes Spiels |
+
+`games.json` ist die Quelle der Wahrheit für die Landing. `_templates/new-game/`
+bringt das `running`-Flag + `timer`-Handle + `stopGame()`-Muster schon mit, damit
+neue Spiele die „veralteter Timer nach Neustart"-Bug-Klasse gar nicht erst haben.
 
 ## Häufige Fallstricke
 

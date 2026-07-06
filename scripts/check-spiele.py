@@ -120,6 +120,13 @@ def check_spiel(spiel: str) -> list[tuple[str, str]]:
         if re.search(r'createOscillator|new\s+AudioContext|webkitAudioContext', content):
             findings.append(('WARN', 'Eigener Web-Audio-Code statt _lib/audio.js'))
 
+    # 9b. rAF-Loop-Akkumulation (haeufigster Runtime-Bug, siehe CLAUDE.md).
+    # Wer requestAnimationFrame nutzt, sollte auch cancelAnimationFrame haben,
+    # sonst laufen bei mehrfachem Start mehrere Loops parallel.
+    if 'requestAnimationFrame' in content and 'cancelAnimationFrame' not in content:
+        findings.append(('WARN', 'requestAnimationFrame ohne cancelAnimationFrame '
+                                 '(rAF-Loop-Akkumulation moeglich — Handle merken + canceln)'))
+
     # 10. CSS-Custom-Properties
     if not re.search(r':root\s*\{[^}]*--color-primary', content):
         findings.append(('WARN', 'Kein --color-primary in :root (CSS-Custom-Properties fehlen)'))

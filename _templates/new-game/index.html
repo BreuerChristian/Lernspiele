@@ -380,7 +380,9 @@
       stage: 'leicht',
       taskIdx: 0,
       target: null,
-      locked: false
+      locked: false,
+      running: false,   // laufende Runde? Blockt veraltete Timer nach Verlassen/Neustart
+      timer: null        // Handle des verzoegerten naechsten Schritts
     };
 
     // --- LocalStorage ---
@@ -426,14 +428,28 @@
     }
 
     // --- Game-Screen ---
+    // WICHTIG: running-Flag + timer-Handle verhindern, dass ein verzoegerter
+    // setTimeout-Callback (z.B. nextTask) eine bereits verlassene/neugestartete
+    // Runde korrumpiert. Guard in jeder verzoegerten Funktion, stopGame beim
+    // Verlassen. (Siehe CLAUDE.md -> "Tap-Race bei verzoegerten Aktionen".)
     function startGame() {
+      clearTimeout(state.timer);
+      state.timer = null;
+      state.running = true;
       state.taskIdx = 0;
       showScreen('screen-game');
       document.getElementById('hud-stage').textContent = STAGE_CONFIG[state.stage].label;
       nextTask();
     }
 
+    function stopGame() {
+      state.running = false;
+      clearTimeout(state.timer);
+      state.timer = null;
+    }
+
     function nextTask() {
+      if (!state.running) return;
       const cfg = STAGE_CONFIG[state.stage];
       if (state.taskIdx >= cfg.runde) {
         endGame();
@@ -467,7 +483,7 @@
         state.locked = true;
         btn.classList.add('correct');
         Lernspiele.Audio.correct();
-        setTimeout(nextTask, 700);
+        state.timer = setTimeout(nextTask, 700);
       } else {
         btn.classList.add('wrong');
         Lernspiele.Audio.wrong();
@@ -477,13 +493,15 @@
 
     // --- End-Screen ---
     function endGame() {
+      state.running = false;
       showScreen('screen-end');
       document.getElementById('btn-replay').onclick = startGame;
-      document.getElementById('btn-restage').onclick = function () { showScreen('screen-start'); };
+      document.getElementById('btn-restage').onclick = function () { stopGame(); showScreen('screen-start'); };
     }
 
     // --- HUD ---
     document.getElementById('hud-close').addEventListener('click', function () {
+      stopGame();
       showScreen('screen-start');
     });
 
