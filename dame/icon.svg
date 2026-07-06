@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#a0522d"/>
+  <!-- 4x4 Mini-Damebrett -->
+  <g>
+    <rect x="96"  y="96"  width="320" height="320" rx="12" fill="#f0dcc0"/>
+    <rect x="176" y="96"  width="80" height="80" fill="#99633c"/>
+    <rect x="336" y="96"  width="80" height="80" fill="#99633c"/>
+    <rect x="96"  y="176" width="80" height="80" fill="#99633c"/>
+    <rect x="256" y="176" width="80" height="80" fill="#99633c"/>
+    <rect x="176" y="256" width="80" height="80" fill="#99633c"/>
+    <rect x="336" y="256" width="80" height="80" fill="#99633c"/>
+    <rect x="96"  y="336" width="80" height="80" fill="#99633c"/>
+    <rect x="256" y="336" width="80" height="80" fill="#99633c"/>
+  </g>
+  <!-- Hell-Stein -->
+  <circle cx="136" cy="376" r="32" fill="#f8f0e0" stroke="#6b3410" stroke-width="5"/>
+  <!-- Rote Dame mit Krone -->
+  <circle cx="376" cy="136" r="32" fill="#c62828" stroke="#7a1616" stroke-width="5"/>
+  <path d="M376 118 L382 132 L397 132 L385 141 L390 155 L376 146 L362 155 L367 141 L355 132 L370 132 Z" fill="#ffca28"/>
+</svg>

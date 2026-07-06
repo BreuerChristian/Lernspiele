@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable: vollflaechiger Hintergrund, Inhalt im 80% Safe-Zone-Bereich (52-460) -->
+  <rect width="512" height="512" fill="#a0522d"/>
+  <g>
+    <rect x="128" y="128" width="256" height="256" rx="10" fill="#f0dcc0"/>
+    <rect x="192" y="128" width="64" height="64" fill="#99633c"/>
+    <rect x="320" y="128" width="64" height="64" fill="#99633c"/>
+    <rect x="128" y="192" width="64" height="64" fill="#99633c"/>
+    <rect x="256" y="192" width="64" height="64" fill="#99633c"/>
+    <rect x="192" y="256" width="64" height="64" fill="#99633c"/>
+    <rect x="320" y="256" width="64" height="64" fill="#99633c"/>
+    <rect x="128" y="320" width="64" height="64" fill="#99633c"/>
+    <rect x="256" y="320" width="64" height="64" fill="#99633c"/>
+  </g>
+  <circle cx="160" cy="352" r="26" fill="#f8f0e0" stroke="#6b3410" stroke-width="4"/>
+  <circle cx="352" cy="160" r="26" fill="#c62828" stroke="#7a1616" stroke-width="4"/>
+  <path d="M352 146 L357 157 L369 157 L359 164 L363 176 L352 168 L341 176 L345 164 L335 157 L347 157 Z" fill="#ffca28"/>
+</svg>

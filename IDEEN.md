@@ -43,7 +43,7 @@ Endlos-Loops fliegen raus — Anti-Pattern-Check gehört in jeden Plan-Pitch.
 - [x] **4 in einer Reihe** (`vier-gewinnt/`) — Connect Four, gute erste Strategie-Übung. 2 Spieler + sanfte KI.
 - [x] **Käsekästchen** (`kaesekaestchen/`) — Punkte-Raster, Linien ziehen, Kästchen gewinnen. 2 Spieler + KI, drei Brettgrößen.
 - [x] **Mühle** (`muehle/`) — 9 Steine setzen, dann schieben; drei in einer Reihe = Mühle, nimm einen gegnerischen Stein. 2 Spieler + KI, mit Spring-Phase bei 3 Steinen.
-- [ ] **Dame** — einfacher Schach-Vorläufer, Regeln in 2 Minuten erklärt.
+- [x] **Dame** (`dame/`) — 8×8, diagonal ziehen/schlagen, Schlagzwang + Mehrfachsprünge, Dame-Umwandlung. 2 Spieler + sanfte KI.
 - [ ] **Schach** — mit sehr sanfter KI oder nur 2-Spieler; evtl. Mini-Lektionen pro Figur.
 - [ ] **Reversi** — Steine umdrehen, gut für räumliches Vorausdenken.
 - [ ] **Backgammon** — Würfel + Strategie, eher für Ältere.
@@ -104,3 +104,4 @@ Endlos-Loops fliegen raus — Anti-Pattern-Check gehört in jeden Plan-Pitch.
 - [x] **4 in einer Reihe** (`vier-gewinnt/`)
 - [x] **Käsekästchen** (`kaesekaestchen/`)
 - [x] **Mühle** (`muehle/`)
+- [x] **Dame** (`dame/`)
