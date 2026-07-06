@@ -4,13 +4,22 @@ icons.py - Werkzeug fuer die _lib/icons/-Sammlung.
 
 Subkommandos:
   extract   Extrahiert SVG-Definitionen aus existierenden Spielen in _lib/icons/.
-  update    (geplant) Propagiert _lib/icons/<name>.svg in Spiele mit Marker-Pattern.
-  verify    (geplant) Konsistenz-Check (alle Marker haben Pendants, alle SVGs valide).
+  discover  Scannt alle Spiele nach Icon-Kandidaten, die noch nicht in der Lib sind.
+  update    Propagiert _lib/icons/<name>.svg in Spiele mit Marker-Pattern,
+            bumpt die SW-Cache-Version der geaenderten Spiele und pflegt
+            das verwendet-in-Feld in INDEX.json.
+  verify    Konsistenz-Check: Marker-Paare (START/END), fehlende Lib-Icons,
+            INDEX.json vs. Dateisystem. Exit-Code 1 bei Problemen.
 
 Verwendung:
   python scripts/icons.py extract                 # liest scripts/extract-manifest.json
   python scripts/icons.py extract --dry-run       # zeigt was geschehen wuerde, schreibt nichts
   python scripts/icons.py extract --manifest <p>  # alternatives Manifest
+  python scripts/icons.py discover                # Kandidaten nur auflisten
+  python scripts/icons.py discover --write-manifest  # scripts/discover-manifest.json erzeugen
+  python scripts/icons.py update                  # Marker ersetzen + SW-Cache bumpen
+  python scripts/icons.py update --dry-run --no-bump  # nur zeigen, kein Cache-Bump
+  python scripts/icons.py verify                  # Konsistenz pruefen
 
 Manifest-Format (JSON):
   [
